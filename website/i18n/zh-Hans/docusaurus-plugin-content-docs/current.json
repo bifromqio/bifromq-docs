@@ -1,0 +1,130 @@
+{
+  "version.label": {
+    "message": "最新版本",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Introduction": {
+    "message": "介绍",
+    "description": "The label for category Introduction in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Introduction.link.generated-index.description": {
+    "message": "BifroMQ 介绍，特性列表，系统限制和发布日志",
+    "description": "The generated-index page description for category Introduction in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Get Started": {
+    "message": "快速开始",
+    "description": "The label for category Get Started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Get Started.link.generated-index.description": {
+    "message": "BifroMQ 介绍，特性列表，系统限制和发布日志",
+    "description": "The generated-index page description for category Get Started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Install & Deploy": {
+    "message": "安装部署",
+    "description": "The label for category Install & Deploy in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Install & Deploy.link.generated-index.description": {
+    "message": "BifroMQ 安装和部署",
+    "description": "The generated-index page description for category Install & Deploy in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Configuration": {
+    "message": "配置",
+    "description": "The label for category Configuration in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Configuration.link.generated-index.description": {
+    "message": "BifroMQ 配置.",
+    "description": "The generated-index page description for category Configuration in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.User Guide": {
+    "message": "用户指南",
+    "description": "The label for category User Guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.User Guide.link.generated-index.description": {
+    "message": "BifroMQ 用户指南",
+    "description": "The generated-index page description for category User Guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Connect to BifroMQ": {
+    "message": "连接及消息",
+    "description": "The label for category Connect to BifroMQ in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Connect to BifroMQ.link.generated-index.description": {
+    "message": "连接到 BifroMQ 并进行消息发布、订阅。",
+    "description": "The generated-index page description for category Connect to BifroMQ in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Data Integration": {
+    "message": "数据集成",
+    "description": "The label for category Data Integration in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Data Integration.link.generated-index.description": {
+    "message": "BifroMQ 数据集成",
+    "description": "The generated-index page description for category Data Integration in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.API Usage": {
+    "message": "API 使用",
+    "description": "The label for category API Usage in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.API Usage.link.generated-index.description": {
+    "message": "BifroMQ API 使用.",
+    "description": "The generated-index page description for category API Usage in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Plugin": {
+    "message": "插件",
+    "description": "The label for category Plugin in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Plugin.link.generated-index.description": {
+    "message": "BifroMQ 插件.",
+    "description": "The generated-index page description for category Plugin in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Operations": {
+    "message": "运维",
+    "description": "The label for category Operations in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Operations.link.generated-index.description": {
+    "message": "BifroMQ 运维.",
+    "description": "The generated-index page description for category Operations in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.configs": {
+    "message": "配置",
+    "description": "The label for category configs in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Best Practices": {
+    "message": "最佳实践",
+    "description": "The label for category Best Practices in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Best Practices.link.generated-index.description": {
+    "message": "最佳实践",
+    "description": "The generated-index page description for category Best Practices in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.FAQ": {
+    "message": "FAQ",
+    "description": "The label for category FAQ in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.FAQ.link.generated-index.description": {
+    "message": "常见问题",
+    "description": "The generated-index page description for category FAQ in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.MQTT": {
+    "message": "MQTT",
+    "description": "The label for category MQTT in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.MQTT.link.generated-index.description": {
+    "message": "MQTT 协议链接",
+    "description": "The generated-index page description for category MQTT in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Test Report": {
+    "message": "测试报告",
+    "description": "The label for category Test Report in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Test Report.link.generated-index.description": {
+    "message": "BifroMQ 测试报告",
+    "description": "The generated-index page description for category Test Report in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Configs": {
+    "message": "Configs",
+    "description": "The label for category Configs in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Configs.link.generated-index.description": {
+    "message": "Configs",
+    "description": "The generated-index page description for category Configs in sidebar tutorialSidebar"
+  }
+}

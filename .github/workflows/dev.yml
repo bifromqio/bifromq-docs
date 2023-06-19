@@ -1,0 +1,23 @@
+name: Dev
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Sync the docs
+        run: bash ./script/doc-sync.sh
+        env:
+          BOS_ACCESS_KEY_ID: ${{ secrets.BOS_ACCESS_KEY_ID }}
+          BOS_SECRET_ACCESS_KEY: ${{ secrets.BOS_SECRET_ACCESS_KEY }}
+          BOS_BUCKET: ${{ secrets.BOS_DEV_BUCKET }}

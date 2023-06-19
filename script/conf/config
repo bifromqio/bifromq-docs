@@ -1,0 +1,11 @@
+[Defaults]
+Domain = hkg.bcebos.com
+Region = hkg
+AutoSwitchDomain = yes
+BreakpointFileExpiration = 
+Https = yes
+MultiUploadThreadNum = 
+SyncProcessingNum = 
+MultiUploadPartSize = 
+ProxyHost = 
+

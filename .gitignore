@@ -1,0 +1,12 @@
+npm-debug.log
+.DS_Store
+.idea
+website/.docusaurus/
+website/node_modules/
+website/package-lock.json
+website/.pnp.cjs
+website/.pnp.loader.mjs
+website/yarn.lock
+website/.yarn
+website/build/
+script/conf/cre*
