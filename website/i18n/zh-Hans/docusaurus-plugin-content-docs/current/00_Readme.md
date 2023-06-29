@@ -16,4 +16,14 @@ BifroMQ 的名称灵感来自于北欧神话中的`Bifröst`，一座彩虹之�
 
 ## 讨论组
 
+### 微信群
+
+如果你对我们的项目感兴趣，你可以微信扫描二维码添加小助手，邀请入群。
+
+<img src="https://bifromq.io/img/qrcode.png" width="30%" />
+
+### Discord
+
+或加入我们的 Discord 群组（英文）
+
 <a href="https://discord.gg/Pfs3QRadRB"><img src="https://img.shields.io/discord/1115542029531885599?logo=discord&logoColor=white" alt="BifroMQ Discord server" /></a>
