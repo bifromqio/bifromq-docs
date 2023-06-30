@@ -1,29 +1,28 @@
-# Website
+[<img src="website/static/img/logo.svg" width="60%" height="30%">](https://bifromq.io/)
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This repository is for [bifromq](https://bifromq.io/) documentations and blogs. 
+The website is built on [Docusaurus 2](https://docusaurus.io/) which is a modern static website generator.
+
+## Getting Started
 
 ### Installation
-
+Get into `website` directory.
 ```
-$ cd website
-$ yarn
+cd website
+npm install
+npm start
 ```
+A browser window will open up, pointing to the docs. Most changes are reflected instantly without rebooting.
 
-### Local Development
-
+Also, in `website` directory, one can type following commands to check changes.
 ```
-$ cd website
-$ yarn install
-$ yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ cd website
-$ yarn build
+npm install
+npm run build
+npm run serve
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+### Deployment
+[Baidu BOS](https://cloud.baidu.com/product/bos.html) handles the deployment of this website.
+
+### Contribution Guide
+This repository welcomes contributions and suggestions through [pull request](https://github.com/baidu/bifromq-docs/pulls).
