@@ -23,8 +23,8 @@ The authentication of MQTT client connections takes place during the Connect pha
 CompletableFuture<MQTT3AuthResult> auth(MQTT3AuthData authData);
 ```
 
-Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting the connection performance of BifroMQ. 
-[MQTT3AuthData](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto) 
+Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting the connection performance of BifroMQ.
+[MQTT3AuthData](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
 and [MQTT3AuthResult](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto) are Protobuf objects, defined as follows:
 
 #### MQTT3AuthData
@@ -82,7 +82,7 @@ A Reject return value indicates that the authentication failed. There are curren
     * The MQTT client will receive `0x05 Connection Refused, not authorized`
     * A `UNAUTHENTICATED_CLIENT` event is generated
 * Error: Other internal errors occurring during the authentication process. Additional error information can be provided through the optional reason field. The associated behavior includes:
-    * The MQTT client will receive `0x03 Connection Refused, Server unavailable`    
+    * The MQTT client will receive `0x03 Connection Refused, Server unavailable`
     * An `AUTH_ERROR` event is generated, containing the content within the reason field
 
 ## Authorization
@@ -90,11 +90,11 @@ A Reject return value indicates that the authentication failed. There are curren
 BifroMQ currently supports permission checks for client actions such as Publish, Subscribe, and Unsubscribe. The plugin’s callback interface is as follows:
 
 ```java
-CompletableFuture<Boolean> check(ClientInfo client, MQTTAction action);
+CompletableFuture<Boolean> check(ClientInfo client,MQTTAction action);
 ```
 
-Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting BifroMQ’s messaging performance. 
-[ClientInfo](https://github.com/baidu/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto) 
+Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting BifroMQ’s messaging performance.
+[ClientInfo](https://github.com/baidu/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
 and [MQTTAction](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto) are Protobuf objects, defined as follows:
 
 #### ClientInfo
@@ -149,24 +149,14 @@ message MQTTAction {
 }
 ```
 
-The check method returns a boolean value asynchronously; true indicates permission granted, while false indicates denied. If the check method terminates with an exception, the final behavior is controlled by the runtime setting `ByPassPermissionCheck`. By default, this setting is true, which means that if check returns an exception, BifroMQ considers the permission check to be passed. However, BifroMQ will always generate an `ACCESS_CONTROL_ERROR` event.
-
-## Caching
-
-To avoid frequent calls to the auth and check methods, the return results of these methods are cached. The behavior of the cache can be controlled using the following JVM System Properties:
-
-| Property                    | Default | Description                        |
-|-----------------------------|---------|------------------------------------|
-| max_cached_auth_results     | 100000L | Maximum number of cached auth results |
-| max_cached_check_results    | 100000L | Maximum number of cached check results |
-| auth_result_expiry_seconds  | 5L      | Expiry time (in seconds) for cached auth results |
-| check_result_expiry_seconds | 5L      | Expiry time (in seconds) for cached check results |
+The check method returns a boolean value asynchronously; true indicates permission granted, while false indicates denied. If the check method terminates with an exception, the final behavior is controlled by the runtime
+setting `ByPassPermissionCheck`. By default, this setting is true, which means that if check returns an exception, BifroMQ considers the permission check to be passed. However, BifroMQ will always generate an `ACCESS_CONTROL_ERROR` event.
 
 ## DevOnly Mode
 
-For ease of development and testing, when an AuthPlugin implementation type is not specified, BifroMQ uses the default [DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bif
-
-romq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java). This default implementation does not authenticate the client or check permissions.
+For ease of development and testing, when an AuthPlugin implementation type is not specified, BifroMQ uses the
+default [DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java). This default implementation does not authenticate the client or
+check permissions.
 
 Note that the DevOnly Mode is only recommended for development and testing environments. It should never be used in a production environment, as it lacks security measures.
    
