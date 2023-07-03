@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-title: "Event Collector Plugin"
+title: "Event Collector"
 ---
 # Event Collector Plugin
 

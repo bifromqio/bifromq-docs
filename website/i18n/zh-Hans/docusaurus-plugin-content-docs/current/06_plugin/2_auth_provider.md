@@ -1,12 +1,11 @@
 ---
 sidebar_position: 2
-title: "Auth Provider Plugin"
+title: "Auth Provider"
 ---
 
 # Auth Provider Plugin
 
-Auth Provider Plugin 用于向BifroMQ的运行时提供MQTT连接客户端身份认证与Pub/Sub消息主题鉴权的能力。Plugin的接口定义在以下Maven模块：
-
+Auth Provider插件旨在为BifroMQ运行时提供验证MQTT客户端连接和授权发布/订阅消息主题的能力。该插件的接口定义在以下Maven模块中：
 ```
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
@@ -17,15 +16,15 @@ Auth Provider Plugin 用于向BifroMQ的运行时提供MQTT连接客户端身份
 
 ## 身份认证
 
-MQTT连接客户端的身份认证发生在Connect阶段，BifroMQ目前支持对使用MQTT 3.1和3.1.1协议的客户端的身份认证，plugin的回调接口如下：
+MQTT客户端连接的认证是在连接阶段进行的。BifroMQ目前支持使用MQTT 3.1和3.1.1协议的客户端认证。该插件的回调接口如下：
 
 ```java
- CompletableFuture<MQTT3AuthResult> auth(MQTT3AuthData authData);
+CompletableFuture<MQTT3AuthResult> auth(MQTT3AuthData authData);
 ```
 
-实现方应尽可能保证接口实现的轻量和非阻塞，以免对BifroMQ的连接性能产生负面影响。
-[MQTT3AuthData]((https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto))
-与[MQTT3AuthResult]((https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto))是Protobuf对象，如下：
+实施者应该确保接口的实现是轻量级和非阻塞的，以避免对BifroMQ的连接性能产生负面影响。
+[MQTT3AuthData](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
+和[MQTT3AuthResult](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)是Protobuf对象，定义如下：
 
 #### MQTT3AuthData
 
@@ -57,7 +56,7 @@ message Reject{
     Error = 2;
   }
   Code code = 1;
-  optional string reason = 2; // optional description
+  optional string reason = 2; // 可选描述
 }
 
 message MQTT3AuthResult {
@@ -68,33 +67,37 @@ message MQTT3AuthResult {
 }
 ```
 
-当客户端身份认证通过时，BifroMQ期待接口返回Ok结构，结构包含的字段含义如下：
+当客户端成功通过身份验证时，BifroMQ期望接口返回一个Ok结构体，包含以下字段：
 
-* trafficId: 客户端身份所属的租户标识
-* userId：客户端对应的身份表示
+* trafficId：表示客户端身份所属的租户标识符
 
-接口返回Reject表示认证不通过，目前支持3种原因：
+* userId：表示客户端的标识符
 
-* BadPass：表示身份信息认证不通过，并对应以下行为
-  * 对应MQTT客户端将收到`0x04 Connection Refused, bad user name or password`
-  * 产生`NOT_AUTHORIZED_CLIENT`事件
+拒绝（Reject）返回值表示身份验证失败。目前支持三个原因：
+
+* BadPass：表示认证信息不正确。相关行为包括：：
+  * MQTT客户端将收到 `0x04 Connection Refused, bad user name or password`。
+  * 会产生一个`NOT_AUTHORIZED_CLIENT`事件。
+
 * NotAuthorized：表示客户端身份确认，但不被授权连接，并对应以下行为
   * 应MQTT客户端将收到`0x05 Connection Refused, not authorized`
   * 产生`UNAUTHENTICATED_CLIENT`事件
+  
 * Error：其他认证过程中发生内部错误，额外错误信息可以通过reason可选字段补充，并对应以下行为
   * 对应MQTT客户端将收到`0x03 Connection Refused, Server unavailable`
   * 产生`AUTH_ERROR`事件，事件中包含reason中的内容
 
 ## 行为鉴权
 
-BifroMQ目前支持对客户端的Publish, Subscribe, Unsubscribe的行为进行权限检查，plugin的回调接口如下：
+BifroMQ目前支持对客户端操作（如发布、订阅和取消订阅）进行权限检查。插件的回调接口如下：
 
 ```java
 CompletableFuture<Boolean> check(ClientInfo client,MQTTAction action);
 ```
+实施者应确保接口实现轻量且非阻塞，以避免对BifroMQ的消息性能产生负面影响。
 
-实现方应尽可能保证接口实现的轻量和非阻塞，以免对BifroMQ的消息性能产生负面影响。
 [ClientInfo](https://github.com/baidu/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
+
 与[MQTTAction](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto)是Protobuf对象，定义如下：
 
 #### ClientInfo
@@ -113,9 +116,9 @@ message SysClientInfo{
 }
 
 message ClientInfo{
-  string trafficId = 1; // 与auth方法返回Ok结构中的trafficId一致
-  string userId = 2; // // 与auth方法返回Ok结构中的userId一致
-  oneof client_type{
+    string trafficId = 1; // 与auth方法返回Ok结构中的trafficId一致
+    string userId = 2; // 与auth方法返回Ok结构中的userId一致
+    oneof client_type{
     SysClientInfo sysClientInfo = 3;
     MQTT3ClientInfo mqtt3ClientInfo = 4;
   }
@@ -149,8 +152,10 @@ message MQTTAction {
 }
 ```
 
-check方法异步返回boolean值，true表示允许，false表示不允许。当check方法异常结束时，最终的结果由运行时Setting：ByPassPermissionCheck控制对应的行为，默认为true，表示当check返回异常时BifroMQ认为权限检查通过，但BifroMQ始终会产生`ACCESS_CONTROL_ERROR`事件。
+check方法以异步方式返回一个布尔值；true表示授予权限，false表示拒绝。如果check方法以异常终止，则最终行为由运行时设置`ByPassPermissionCheck`来控制。默认情况下，该设置为true，这意味着如果check返回异常，BifroMQ将认为权限检查已通过。然而，BifroMQ始终会生成一个`ACCESS_CONTROL_ERROR`事件。
 
 ## DevOnly Mode
-为方便开发测试，当不指定加载在的AuthPlugin实现类型时，BifroMQ使用默认的[DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bifromq-plugin-helper/bifromq-plugin-auth-provider-helper/src/main/java/com/baidu/bifromq/plugin/authprovider/DevOnlyAuthProvider.java)
-，具体逻辑请参考源码
+
+为了方便开发和测试，当未指定AuthPlugin实现类型时，BifroMQ使用默认的[DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)。该默认实现不对客户端进行身份验证或权限检查。
+
+请注意，仅建议在开发和测试环境中使用DevOnly模式。在生产环境中绝不能使用它，因为它缺乏安全措施。

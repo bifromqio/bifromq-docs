@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-title: "Setting Provider Plugin"
+title: "Setting Provider"
 ---
 
 # Setting Provider Plugin
