@@ -9,7 +9,7 @@ export default function Home(): JSX.Element {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`${siteConfig.title}`}
+      title="BifroMQ Open Source"
       description={`${siteConfig.tagline}`}
     >
       <div className="bg-white dark:bg-gray-900 dark:text-gray-100 text-gray-500">

@@ -7,8 +7,8 @@ const tailwindPlugin = require('./plugins/tailwind-plugin.cjs')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'BifroMQ',
-  tagline: 'BifroMQ is a high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.',
+  title: ' BifroMQ.io - Serverless MQTT Broker',
+  tagline: 'BifroMQ is a Java-based high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.',
   favicon: 'img/favicon.ico',
   // Set the production url of your site here
   url: 'https://bifromq.io/',
