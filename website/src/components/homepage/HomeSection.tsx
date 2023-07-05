@@ -85,7 +85,7 @@ export default function HeroSection() {
                 {/* <Translate>OpenSource</Translate> */}
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
-                <b>BifroMQ </b><Translate>is a high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.</Translate>
+                <b>BifroMQ </b><Translate>is a Java-based high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.</Translate>
               </p>
               {/* <div className="mt-6">
                 <a href="https://iwenjuan.baidu.com/?code=kw9gi9" target="_blank" 

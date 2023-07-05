@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # BifroMQ
 
-BifroMQ is a high-performance, distributed MQTT broker implementation that seamlessly integrates native multi-tenancy
+BifroMQ is a Java-based high-performance, distributed MQTT broker implementation that seamlessly integrates native multi-tenancy
 support. It is designed to support building large-scale IoT device connections and messaging systems. Presently, BifroMQ serves as the foundational technology for [Baidu IoTCore](https://cloud.baidu.com/product/iot.html), a public serverless
 cloud service.
 
