@@ -17,17 +17,19 @@ dd {
   margin-left: 0px;
 }
 
-/* hidden sidebar logo */
-aside a>.bifromq-navbar-logo-class,
-aside a>img,
-aside a>b {
-  visibility: hidden;
-}
-
 .bifromq-navbar-logo-class {
   margin-left: 1rem;
-  width: 50%;
-  max-width: 10rem;
+  max-width: 5rem;
+}
+
+/* hidden sidebar logo */
+/* 
+aside a>img {
+  visibility: hidden;
+  } */
+
+aside a>b {
+  visibility: hidden;
 }
 
 a {
@@ -63,7 +65,6 @@ button.clean-btn.menu__caret {
   transform: scale(0.75);
 }
 
-
 table {
   border-collapse: collapse;
   text-align: left;
@@ -78,7 +79,7 @@ table :is(tr, td, th, thead) {
 table th {
   font-weight: 500;
   font-size: 14px;
-  background-color: #ffffff10;
+  background-color: #66666622;
 }
 
 .card

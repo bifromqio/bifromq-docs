@@ -1,4 +1,4 @@
-[<img src="website/static/img/logo.svg" width="60%" height="30%">](https://bifromq.io/)
+[<img src="website/static/img/logo.svg" width="20%">](https://bifromq.io/)
 
 This repository is for [bifromq](https://bifromq.io/) documentations and blogs. 
 The website is built on [Docusaurus 2](https://docusaurus.io/) which is a modern static website generator.
