@@ -110,7 +110,7 @@ export default function HeroSection() {
       </div>
 
       {/* Logo cloud */}
-      <div className="bg-gray-50 dark:bg-gray-900 py-12 sm:py-18">
+      <div className="bg-gray-50 dark:bg-inherit py-12 sm:py-18">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <h2 className="text-center text-lg font-semibold leading-8">
             <Translate>Trusted by the world’s most innovative teams</Translate>

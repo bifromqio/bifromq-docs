@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
       title="BifroMQ Open Source"
       description={`${siteConfig.tagline}`}
     >
-      <div className="bg-white dark:bg-gray-900 dark:text-gray-100 text-gray-500">
+      <div className='dark:text-gray-100 text-gray-500'>
         <HomeSection />
         <HomeFooter />
       </div>
