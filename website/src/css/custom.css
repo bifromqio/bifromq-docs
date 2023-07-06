@@ -87,21 +87,26 @@ table th {
   background-color: #ffffff11 !important; 
 }
 
-pre.prism-code {
-  border: 0.1rem solid #ffffff15;
-}
-
-.theme-code-block,
-pre,
-code {
+html[data-theme='dark'] code {
+  border: 0.1rem solid #ffffff10;
   box-shadow: none !important;
-  background-color: #55658111 !important;
+  background-color: #1E2E49 !important;
 }
 
-.dropdown__menu {
+html[data-theme='light'] code {
+  border: 0.1rem solid #ffffff10;
+  box-shadow: none !important;
+  background-color: #f1f1f1 !important;
+}
+
+html[data-theme='dark'] .dropdown__menu {
   @apply bg-gray-800;
 }
 
-.navbar-sidebar__backdrop {
+html[data-theme='dark'] .navbar-sidebar__backdrop {
   @apply bg-gray-800;
+}
+
+html[data-theme='light'] .navbar-sidebar__backdrop {
+  @apply bg-gray-100;
 }
