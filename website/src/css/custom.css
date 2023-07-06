@@ -101,3 +101,7 @@ code {
 .dropdown__menu {
   @apply bg-gray-800;
 }
+
+.navbar-sidebar__backdrop {
+  @apply bg-gray-800;
+}
