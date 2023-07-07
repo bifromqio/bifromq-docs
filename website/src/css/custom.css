@@ -111,3 +111,9 @@ html[data-theme='dark'] .navbar-sidebar__backdrop {
 html[data-theme='light'] .navbar-sidebar__backdrop {
   @apply bg-gray-100;
 }
+
+header h1,
+h2 a {
+  font-size: 2.2rem !important;
+  display: inline-block;
+}
