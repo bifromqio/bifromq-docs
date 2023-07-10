@@ -17,6 +17,7 @@ BifroMQ utilizes [pf4j](https://pf4j.org) for managing the runtime lifecycle of 
 
 * `com.baidu.bifromq.*`
 * `io.micrometer.core.*`
+* `com.google.protobuf.*`
 * `org.slf4j.*`
 
 # Performance Considerations
