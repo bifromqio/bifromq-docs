@@ -15,4 +15,4 @@ BifroMQ提供丰富的SSL/TLS接入能力支持，包括TLS接入及WebSocket Se
 
 ## 通过配置开启
 
-按照[配置文件手册](../04_configuration/3_sys_props_manual.md)中`brokerSSLCtxConfig`部分参数的介绍：开启对应的认证级别，填写对应的证书名称，并将证书文件放置在配置参数描述中的位置。
+按照[配置文件手册](../04_configuration/2_file_configs_manual.md)中`brokerSSLCtxConfig`部分参数的介绍：开启对应的认证级别，填写对应的证书名称，并将证书文件放置在配置参数描述中的位置。

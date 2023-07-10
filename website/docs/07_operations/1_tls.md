@@ -11,4 +11,4 @@ TLS allows for the secure transmission of information across the network between
 You will need to prepare and configure the SSL/TLS certificates that you will use. In a testing environment, you can generate self-signed certificates using the OpenSSL tool. However, in a production environment, you should use certificates issued by a trusted CA (Certificate Authority).
 
 ## Enabling via Configuration
-Follow the instructions in the `brokerSSLCtxConfig` section of the [Configuration File Manual](../04_configuration/3_sys_props_manual.md). Enable the desired level of authentication, enter the appropriate certificate names, and place the certificate files in the location specified by the configuration parameters.
+Follow the instructions in the `brokerSSLCtxConfig` section of the [Configuration File Manual](../04_configuration/2_file_configs_manual.md). Enable the desired level of authentication, enter the appropriate certificate names, and place the certificate files in the location specified by the configuration parameters.
