@@ -16,6 +16,12 @@ The robustness of Bifröst is emblematic of BifroMQ's stability and reliability,
 
 ## Discussion
 
-If you are interested in our projects, please join our Discord group.
+Join our Discord or WeChat group if you are interested in our work.
+
+### Discord
 
 <a href="https://discord.gg/Pfs3QRadRB"><img src="https://img.shields.io/discord/1115542029531885599?logo=discord&logoColor=white" alt="BifroMQ Discord server" /></a>
+
+### WeChat group
+
+<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="30%">
