@@ -11,7 +11,7 @@ The Event Collector Plugin is designed to gather various events generated during
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-event-collector</artifactId>
-    <version>X.Y.Z</version>
+    <version>X.Y.Z</version> <!--replace X.Y.Z with the latest version number-->
 </dependency>
 ```
 

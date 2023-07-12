@@ -10,7 +10,7 @@ Auth Provider插件旨在为BifroMQ运行时提供验证MQTT客户端连接和�
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-auth-provider</artifactId>
-    <version>X.Y.Z</version>
+    <version>X.Y.Z</version> <!-- X.Y.Z 需替换成最新版本号-->
 </dependency>
 ```
 

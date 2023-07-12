@@ -11,7 +11,7 @@ The Auth Provider plugin is designed to provide BifroMQ runtime with the capabil
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-auth-provider</artifactId>
-    <version>X.Y.Z</version>
+    <version>X.Y.Z</version> <!--replace X.Y.Z with the latest version number-->
 </dependency>
 ```
 

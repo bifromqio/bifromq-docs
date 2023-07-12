@@ -4,7 +4,14 @@ title: "Setting Provider"
 ---
 # Setting Provider Plugin
 
-BifroMQ defines a category of settings ([Setting](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java)) that can be modified at runtime, allowing for dynamic adjustment of BifroMQ's service behavior per tenant. The purpose of the Setting Provider Plugin is to supply custom values for these settings at runtime.
+BifroMQ defines a category of settings ([Setting](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java)) that can be modified at runtime, allowing for dynamic adjustment of BifroMQ's service behavior per tenant. The purpose of the Setting Provider Plugin is to supply custom values for these settings at runtime. The Plugin's interface is defined in the following Maven module:
+```
+<dependency>
+    <groupId>com.baidu.bifromq</groupId>
+    <artifactId>bifromq-plugin-setting-provider</artifactId>
+    <version>X.Y.Z</version> <!--replace X.Y.Z with latest version number-->
+</dependency>
+```
 
 ## Initial Values and Validation of Settings
 Each Setting has an initial value, for example, MaxTopicLength has an initial value of 255 and is validated to be an integer between 0 and 65535. A Setting’s initial value can be overridden by a System Property of the same name, for example, adding `-DMaxTopicLength=128` to the JVM launch parameters of BifroMQ. Note that the initial value passed through the System Property must be correctly parsed to the corresponding data type, otherwise, the override will not be successful.

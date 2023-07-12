@@ -10,7 +10,7 @@ Event Collector Plugin 用于收集BifroMQ运行中产生的各类事件，您�
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-event-collector</artifactId>
-    <version>X.Y.Z</version>
+    <version>X.Y.Z</version> <!-- X.Y.Z 需替换成最新版本号-->
 </dependency>
 ```
 
