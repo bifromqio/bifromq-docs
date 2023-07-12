@@ -24,4 +24,4 @@ Join our Discord or WeChat group if you are interested in our work.
 
 ### WeChat group
 
-<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="30%">
+<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="30%"/>
