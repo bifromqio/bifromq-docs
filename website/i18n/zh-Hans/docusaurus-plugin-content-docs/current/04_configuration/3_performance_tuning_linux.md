@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# 系统参数调优（Liniux）
+# 系统参数调优（Linux）
 
 以下Kernel参数会影响BifroMQ所在机器能接受的最大连接数
 
