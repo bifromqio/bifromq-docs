@@ -164,8 +164,6 @@ A small number of clients act as Publishers, and a large number of clients subsc
 | Scenario Combination              | QoS  | MPS per Connection | Payload(byte) | PubNumber of Connections (C) | Number of Sub connections | Publish m/s | Subscribe m/s | Average Response Time (ms) | P99 Response Time (ms) | CPU  |
 | --------------------- | ---- | --------- | ------------- | ---------- | --------- | ---------- | ---------- | -------------- | ------------- | ---- |
 | 1_1k_qos1_p32_1mps    | 1    | 1         | 32            | 1          | 1k        | 1          | 1k         | 6              | 18            | 4%   |
-| 1_10k_qos1_p32_1mps   | 1    | 1         | 32            | 1          | 10K       | 1          | 10k        |                |               | %    |
-| 1k_100k_qos1_p32_1mps | 1    | 1         | 32            | 1          | 100K      | 1          | 100k       |                |               | %    |
 
 ##### Graphs for the 1_1k_qos1_p32_1mps Scenario:
 
