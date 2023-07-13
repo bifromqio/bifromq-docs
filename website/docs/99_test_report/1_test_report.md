@@ -60,7 +60,7 @@ Explanation of Parameters:
 
 5. In some test scenarios, the latency data of the first sampling point in the attached images is significantly larger. This is caused by the sudden increase in stress load resulting from the test case being run without any warm-up time directly from a cold start. This situation will not occur during normal stable operation of the service.
 
-6. There is a several-fold difference in performance between cleanSession set to false and cleanSession set to true scenarios. This is because BifroMQ provides a true persistence strategy based on disk rather than in memory, ensuring reliability without data loss in the event of a restart or unexpectedly shutdown. The offline message storage performance of the Standalone version is limited by local disk IO bottlenecks and cannot be effectively scaled up. In clustered environments, combined with corresponding load distribution strategies, it can be effectively improved.
+6. There is a several-fold performance difference between cleanSession=false and cleanSession=true scenarios. The reason for this is that the architecture of BifroMQ is designed for building serverless cloud services, and offline message reliability is an important indicator of cloud service SLA. Therefore, BifroMQ chooses a disk-based rather than memory-based persistence strategy to ensure that data would not lost during unexpectedly shutdown or restarts. The offline message storage performance of the Standalone version is limited by local disk IO bottlenecks and cannot be effectively scaled up. In clustered environments, combined with corresponding load distribution strategies, it can be effectively improved.
 
    
 
