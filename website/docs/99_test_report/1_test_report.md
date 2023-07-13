@@ -50,19 +50,17 @@ Explanation of Parameters:
 
 ### Result description
 
-1. With cleanSession set to true, the maximum message throughput for high-frequency scenarios can reach over 200,000 messages per second, and for low-frequency scenarios, the maximum message throughput can reach over 100,000 messages per second.
+1. When `cleanSession=true`, the highest message throughput in high-frequency scenarios can reach over 200,000 messages per second, and in low-frequency scenarios it can reach over 100,000 messages per second.
 
-2. With cleanSession set to false, the maximum message throughout for high-frequency scenarios can reach over 15,000 messages per second, and for low-frequency scenarios, the maximum message throughout can reach over 10,000 messages per second.
+2. When `cleanSession=false`, the highest message throughput in high-frequency scenarios can reach over 15,000 messages per second, and in low-frequency scenarios it can reach over 10,000 messages per second.
 
-3. Message response time from the Pub to the Sub is in the millisecond range, and CPU load is in a low-usage state.
+3. The response time from the publishing end to the subscribing end is in the millisecond range, and the CPU load remains low.
 
-4. System throughput and delay performance are greatly affected by QoS (Quality of Service). The difference between QoS 0 and QoS 1 scenarios is not significant, while the QoS 2 scenario is more significantly affected due to the complexity of the protocol itself.
+4. The system throughput and latency performance are greatly influenced by the QoS (Quality of Service). The difference between QoS0 and QoS1 scenarios is not significant, while QoS2 scenarios are more affected due to the complexity of the protocol itself.
 
-5. In some test scenarios, the latency data of the first sampling point in the attached images is significantly larger. This is caused by the sudden increase in stress load resulting from the test case being run without any warm-up time directly from a cold start. This situation will not occur during normal stable operation of the service.
+5. In some test scenarios, the latency data of the first sampling point in the attached images is significantly larger. This is caused by the sudden increase in pressure due to cold-starting the test case without pre-warming. This situation will not occur during smooth operation of the service.
 
-6. There is a several-fold performance difference between cleanSession=false and cleanSession=true scenarios. The reason for this is that the architecture of BifroMQ is designed for building serverless cloud services, and offline message reliability is an important indicator of cloud service SLA. Therefore, BifroMQ chooses a disk-based rather than memory-based persistence strategy to ensure that data would not lost during unexpectedly shutdown or restarts. The offline message storage performance of the Standalone version is limited by local disk IO bottlenecks and cannot be effectively scaled up. In clustered environments, combined with corresponding load distribution strategies, it can be effectively improved.
-
-   
+6. There is a significant difference in performance results between `cleanSession=false` and `cleanSession=true` scenarios. This is because the architecture of BifroMQ is designed for building serverless cloud services, and the reliability of offline messages is an important SLA indicator for cloud services. Therefore, BifroMQ chose a disk-based persistence strategy instead of in-memory storage, ensuring that data is not lost during crashes or restarts. The performance of offline message storage in the standalone version is limited by the local disk IO performance of the current testing machine. By using high-performance disks or implementing suitable load balancing strategies in a clustered environment, performance can be effectively improved.
 
 ### High-frequency Scenario with cleanSession=true
 
