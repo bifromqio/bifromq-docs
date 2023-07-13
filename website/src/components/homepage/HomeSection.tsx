@@ -80,7 +80,7 @@ export default function HeroSection() {
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <div className="mx-auto max-w-4xl text-center">
               <h1 className="text-6xl font-bold bg-gradient-to-r from-[#F303C8] via-[#03B6F1] to-[#03F7E7] text-transparent bg-clip-text leading-tight">
-                <span className="text-gray-300"> 🚀 </span>
+                <span className="text-gray-300"> ⚡️ </span>
                 BifroMQ 
                 {/* <Translate>OpenSource</Translate> */}
               </h1>
