@@ -30,13 +30,39 @@ Each test scenario is comprised of combinations from the dimensions listed above
 
 ## Test Results
 
+The Scenario name is derived from the combination of parameters from the test cases. 
+
+The name "100_100_qos0_p1024_50mps" represents the following: 
+
+* 100 Pub MQTT clients 
+* 100 Sub MQTT clients 
+* Messages use QoS0 
+* Single message payload size is 1024 bytes 
+* A single Pub client sends 50 messages per second to BifroMQ
+
 Explanation of Parameters:
 
 | Parameter | Description          |
 | --------- | -------------------- |
-| C         | Number of Connections|
-| m/s       | Messages per Second  |
-| ms        | Response Time in Milliseconds |
+| C         | Total number of MQTT connections in test cases. |
+| m/s       | Number of messages sent to BifroMQ per second. |
+| ms        | Message response time from Pub to Sub, measured in milliseconds. |
+
+### Result description
+
+1. With cleanSession set to true, the maximum message throughput for high-frequency scenarios can reach over 200,000 messages per second, and for low-frequency scenarios, the maximum message throughput can reach over 100,000 messages per second.
+
+2. With cleanSession set to false, the maximum message throughout for high-frequency scenarios can reach over 15,000 messages per second, and for low-frequency scenarios, the maximum message throughout can reach over 10,000 messages per second.
+
+3. Message response time from the Pub to the Sub is in the millisecond range, and CPU load is in a low-usage state.
+
+4. System throughput and delay performance are greatly affected by QoS (Quality of Service). The difference between QoS 0 and QoS 1 scenarios is not significant, while the QoS 2 scenario is more significantly affected due to the complexity of the protocol itself.
+
+5. In some test scenarios, the latency data of the first sampling point in the attached images is significantly larger. This is caused by the sudden increase in stress load resulting from the test case being run without any warm-up time directly from a cold start. This situation will not occur during normal stable operation of the service.
+
+6. There is a several-fold difference in performance between cleanSession set to false and cleanSession set to true scenarios. This is because BifroMQ provides a true persistence strategy based on disk rather than in memory, ensuring reliability without data loss in the event of a restart or unexpectedly shutdown. The offline message storage performance of the Standalone version is limited by local disk IO bottlenecks and cannot be effectively scaled up. In clustered environments, combined with corresponding load distribution strategies, it can be effectively improved.
+
+   
 
 ### High-frequency Scenario with cleanSession=true
 
@@ -150,7 +176,7 @@ Explanation of Parameters:
 | 5k_50_qos1_p1024_1mps | 1   | 1      | 1024          | 5050 | 5k     | 6.79     | 27.23 | 7%  |
 | 5k_50_qos2_p1024_1mps | 2   | 1      | 1024          | 5050 | 5k     | 16.24     | 56.56      | 7%  |
 
-##### Graphs for the 40k_400_qos2_p1024_1mps Scenario:
+##### Graphs for the 5k_50_qos2_p1024_1mps Scenario:
 
 ![qps](./images/share_false_40k_400_qos2_p1024_1mps/qps.png)
 ![mean](./images/share_false_40k_400_qos2_p1024_1mps/mean.png)
