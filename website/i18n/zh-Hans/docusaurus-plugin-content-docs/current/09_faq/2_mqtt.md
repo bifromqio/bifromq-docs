@@ -1,8 +1,8 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-# FAQ
+# MQTT 的使用
 
 ## 为什么物联网要使用MQTT协议？对比HTTP协议有什么优势？
 

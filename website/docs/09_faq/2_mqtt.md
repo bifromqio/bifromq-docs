@@ -1,8 +1,8 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-# FAQ
+# Utilizing MQTT Protocol
 
 ## Why use MQTT protocol for IoT? What are the advantages compared to HTTP protocol?
 
