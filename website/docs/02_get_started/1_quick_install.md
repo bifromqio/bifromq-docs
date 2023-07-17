@@ -6,7 +6,7 @@ sidebar_position: 1
 
 ## Docker
 ```
-docker run -d --name biformq -p 1883:1883 bifromq/bifromq:latest
+docker run -d --name bifromq -p 1883:1883 bifromq/bifromq:latest
 ```
 
 ## bash

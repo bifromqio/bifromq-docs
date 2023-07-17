@@ -30,4 +30,4 @@ mvn wrapper:wrapper
 
 * bifromq-xxx-all.tar.gz // 适用于 Linux 和 macOS 的 standalone 集群部署 tar.gz 包
 * bifromq-xxx-standalone.tar.gz  // 适用于 Linux 和 macOS 的 standalone 部署 tar.gz 包
-* biformq-xxx-windows-standalone.zip // 适用于 Windows 的 standalone 部署的 zip 包
+* bifromq-xxx-windows-standalone.zip // 适用于 Windows 的 standalone 部署的 zip 包

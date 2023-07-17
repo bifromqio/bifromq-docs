@@ -14,5 +14,5 @@ sidebar_position: 1
 Run the following command, which will run BifroMQ in `standalone` mode within a container as the Linux user `bifromq`.
 
 ```
-docker run -d --name biformq -p 1883:1883 bifromq/bifromq:latest
+docker run -d --name bifromq -p 1883:1883 bifromq/bifromq:latest
 ```

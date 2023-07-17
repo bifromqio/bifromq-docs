@@ -14,6 +14,6 @@ sidebar_position: 1
 运行以下命令，会将 BifroMQ 以 linux 用户 `bifromq` 在容器中以 `standalone` 模式运行。
 
 ```
-docker run -d --name biformq -p 1883:1883 bifromq/bifromq:latest
+docker run -d --name bifromq -p 1883:1883 bifromq/bifromq:latest
 ```
 

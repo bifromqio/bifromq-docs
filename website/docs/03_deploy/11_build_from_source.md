@@ -27,4 +27,4 @@ The build output are two tar.gz and one zip files under `/build/build-bifromq-st
 
 * bifromq-xxx-all.tar.gz // standard cluster deployment tar.gz for linux and mac os
 * bifromq-xxx-standalone.tar.gz  // standalone deployment tar.gz for linux and mac os
-* biformq-xxx-windows-standalone.zip // standalone deployment zip for windows
+* bifromq-xxx-windows-standalone.zip // standalone deployment zip for windows
