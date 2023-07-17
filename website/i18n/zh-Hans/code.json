@@ -350,5 +350,29 @@
   },
   "Customers": {
     "message": "服务用户数"
+  },
+  "MQTT Broker": {
+    "message": "MQTT Broker"
+  },
+  "High-Performance": {
+    "message": "高性能"
+  },
+  "Java-based": {
+    "message": "Java 技术栈"
+  },
+  "Native Multi-Tenancy": {
+    "message": "原生多租户"
+  },
+  "Open-Sourced": {
+    "message": "已开源"
+  },
+  "Built-in Storage": {
+    "message": "内置存储引擎"
+  },
+  "Massive Connectivity": {
+    "message": "海量连接"
+  },
+  "Extensibility": {
+    "message": "可扩展"
   }
 }

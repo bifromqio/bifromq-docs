@@ -1,11 +1,23 @@
 import React from 'react';
-import Translate from "@docusaurus/Translate";
+import Typed from "react-typed";
+import Translate, { translate as translateFn } from "@docusaurus/Translate";
+
 import {
   UsersIcon,
   CloudArrowUpIcon,
   BoltIcon,
   ServerIcon,
 } from '@heroicons/react/20/solid'
+
+const textLines = [
+  translateFn({ id: "High-Performance", message: "High-Performance" }),
+  translateFn({ id: "Java-based", message: "Java-based" }),
+  translateFn({ id: "Native Multi-Tenancy", message: "Native Multi-Tenancy" }),
+  translateFn({ id: "Open-Sourced", message: "Open-Sourced" }),
+  translateFn({ id: "Built-in Storage", message: "Built-in Storage" }),
+  translateFn({ id: "Massive Connectivity", message: "Massive Connectivity" }),
+  translateFn({ id: "Extensibility", message: "Extensibility" })
+];
 
 const primaryFeatures = [
   {
@@ -78,11 +90,11 @@ export default function HeroSection() {
         </div>
         <div className="py-32 sm:py-48">
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
-            <div className="mx-auto max-w-4xl text-center">
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-[#F303C8] via-[#03B6F1] to-[#03F7E7] text-transparent bg-clip-text leading-tight">
+            <div className="mx-auto max-w-5xl text-center">
+              <h1 className="lg:text-6xl text-3xl pb-1.5 font-bold bg-gradient-to-r from-[#F303C8] via-[#03B6F1] to-[#03F7E7] text-transparent bg-clip-text leading-tight">
+                BifroMQ
                 <span className="text-gray-300"> ⚡️ </span>
-                BifroMQ 
-                {/* <Translate>OpenSource</Translate> */}
+                <Typed strings={textLines} typeSpeed={120} loop />
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
                 <b>BifroMQ </b><Translate>is a Java-based high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.</Translate>
