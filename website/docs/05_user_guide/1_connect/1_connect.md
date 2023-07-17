@@ -10,12 +10,12 @@ BifroMQ is a standard MQTT messaging middleware, which allows you to connect usi
 
 Use the IP address or domain name corresponding to the launched service. Below are the default ports and their purposes:
 
-| Port         | Purpose          |
-|--------------|------------------|
-| IP or Domain:1883 | TCP Connection |
-| IP or Domain:1884 | TLS Connection |
-| IP or Domain:80   | WS Connection  |
-| IP or Domain:443  | WSS Connection |
+| Port                  | Note           |
+|-----------------------|----------------|
+| IP or Domain:1883     | TCP Connection |
+| IP or Domain:1884     | TLS Connection |
+| IP or Domain:80/mqtt  | WS Connection  |
+| IP or Domain:443/mqtt | WSS Connection |
 
 ## Authentication
 

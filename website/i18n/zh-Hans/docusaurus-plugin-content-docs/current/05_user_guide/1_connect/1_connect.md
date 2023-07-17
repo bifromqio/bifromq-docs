@@ -14,8 +14,8 @@ BifroMQ 是一个标准的 MQTT 消息中间件，你可以使用支持 MQTT 3.1
 ---|---
 IP或域名:1883|TCP连接
 IP或域名:1884|TLS连接
-IP或域名:80|WS连接
-IP或域名:443|WSS连接
+IP或域名:80/mqtt|WS连接
+IP或域名:443/mqtt|WSS连接
 
 ## 鉴权
 
