@@ -1,5 +1,5 @@
 import React from 'react';
-import Typed from "react-typed";
+import Typed from "typed.js";
 import Translate, { translate as translateFn } from "@docusaurus/Translate";
 
 import {
@@ -48,6 +48,22 @@ const stats = [
 ]
 
 export default function HeroSection() {
+  const typedRef = React.useRef(null);
+  React.useEffect(() => {
+    const options = {
+      strings: textLines,
+      typeSpeed: 100,
+      loop: true,
+    };
+    // Initialize Typed.js
+    typedRef.current = new Typed('.typed-text', options);
+
+    return () => {
+      // Destroy Typed.js instance on unmounting
+      typedRef.current.destroy();
+    };
+  }, []);
+
   return (
     <main>
       {/* Hero section */}
@@ -94,7 +110,7 @@ export default function HeroSection() {
               <h1 className="lg:text-6xl text-3xl pb-1.5 font-bold bg-gradient-to-r from-[#F303C8] via-[#03B6F1] to-[#03F7E7] text-transparent bg-clip-text leading-tight">
                 BifroMQ
                 <span className="text-gray-300"> ⚡️ </span>
-                <Typed strings={textLines} typeSpeed={120} loop />
+                <span className="typed-text"></span>
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
                 <b>BifroMQ </b><Translate>is a Java-based high-performance MQTT Broker messaging middleware that utilizes Serverless architecture. Open-sourced by Baidu.</Translate>
