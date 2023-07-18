@@ -14,7 +14,7 @@ const textLines = [
   translateFn({ id: "Java-based", message: "Java-based" }),
   translateFn({ id: "Native Multi-Tenancy", message: "Native Multi-Tenancy" }),
   translateFn({ id: "Open-Sourced", message: "Open-Sourced" }),
-  translateFn({ id: "Built-in Storage", message: "Built-in Storage" }),
+  translateFn({ id: "Built-in Persistence", message: "Built-in Persistence" }),
   translateFn({ id: "Massive Connectivity", message: "Massive Connectivity" }),
   translateFn({ id: "Extensibility", message: "Extensibility" })
 ];
@@ -108,8 +108,9 @@ export default function HeroSection() {
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <div className="mx-auto max-w-5xl text-center">
               <h1 className="lg:text-6xl text-3xl pb-1.5 font-bold bg-gradient-to-r from-[#F303C8] via-[#03B6F1] to-[#03F7E7] text-transparent bg-clip-text leading-tight">
-                BifroMQ
+                <span>BifroMQ</span>
                 <span className="text-gray-300"> ⚡️ </span>
+                <br className='md:hidden block'/>
                 <span className="typed-text"></span>
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">

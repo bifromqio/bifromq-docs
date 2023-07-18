@@ -355,24 +355,24 @@
     "message": "MQTT Broker"
   },
   "High-Performance": {
-    "message": "高性能"
+    "message": "性能强悍"
   },
   "Java-based": {
-    "message": "Java 技术栈"
+    "message": "Java 技术栈实现"
   },
   "Native Multi-Tenancy": {
-    "message": "原生多租户"
+    "message": "原生支持多租户"
   },
   "Open-Sourced": {
-    "message": "已开源"
+    "message": "由百度开源"
   },
-  "Built-in Storage": {
-    "message": "内置存储引擎"
+  "Built-in Persistence": {
+    "message": "内建消息持久化"
   },
   "Massive Connectivity": {
-    "message": "海量连接"
+    "message": "支持海量连接"
   },
   "Extensibility": {
-    "message": "可扩展"
+    "message": "可扩展性强"
   }
 }
