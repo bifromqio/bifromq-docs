@@ -20,7 +20,13 @@ BifroMQ使用[pf4j](https://pf4j.org)管理插件的运行时生命周期。您�
 * `com.google.protobuf.*`
 * `org.slf4j.*`
 
-**注意**：插件内部的一些依赖项，例如 KafkaProducer，可以在其实例化期间使用了Java反射。 这个过程可能会使用Thread.currentThread().getContextClassLoader()来加载目标类，这会导致ClassNotFoundException。 对于这种情况，用户应该显式地将上下文类加载器设置为对应的插件类加载器。
+**注意**：插件内部的一些依赖项，例如 KafkaProducer，可以在其实例化期间使用了Java反射。 这个过程可能会使用Thread.currentThread().getContextClassLoader()来加载目标类，这会导致ClassNotFoundException。 对于这种情况，用户应该显式地将上下文类加载器设置为对应的插件类加载器。例如，在AuthPlugin中：
+```java
+ClassLoader calledLoader = Thread.currentThread().getContextClassLoader());
+Thread.currentThread().setContextClassLoader(yourAuthProviderInstance.getClass().getClassLoader());
+initKafkaProducer();
+Thread.currentThread().setContextClassLoader(calledLoader);
+```
 
 # 性能考量
 

@@ -21,7 +21,13 @@ BifroMQ utilizes [pf4j](https://pf4j.org) for managing the runtime lifecycle of 
 * `org.slf4j.*`
 
 **Note**: Some dependencies inside plugin, e.g. `KafkaProducer`, may use Java Reflection during its instantiation. This process may use `Thread.currentThread().getContextClassLoader()` to load target classes, which will cause `ClassNotFoundException`. 
-For this kind of scenario, user should explicitly set context class loader to corresponding plugin class loader. 
+For this kind of scenario, user should explicitly set context class loader to corresponding plugin class loader. For example, in AuthPlugin:
+```java
+ClassLoader calledLoader = Thread.currentThread().getContextClassLoader());
+Thread.currentThread().setContextClassLoader(yourAuthProviderInstance.getClass().getClassLoader());
+initKafkaProducer();
+Thread.currentThread().setContextClassLoader(calledLoader);
+```
 
 # Performance Considerations
 
