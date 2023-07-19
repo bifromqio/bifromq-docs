@@ -20,6 +20,9 @@ BifroMQ utilizes [pf4j](https://pf4j.org) for managing the runtime lifecycle of 
 * `com.google.protobuf.*`
 * `org.slf4j.*`
 
+**Note**: Some dependencies inside plugin, e.g. `KafkaProducer`, may use Java Reflection during its instantiation. This process may use `Thread.currentThread().getContextClassLoader()` to load target classes, which will cause `ClassNotFoundException`. 
+For this kind of scenario, user should explicitly set context class loader to corresponding plugin class loader. 
+
 # Performance Considerations
 
 As BifroMQ’s plugin interface implementations are called during the connection and message distribution processes, it’s crucial to ensure they are lightweight in order to avoid bottlenecks. Failure to do so may significantly impede connection and message performance.
