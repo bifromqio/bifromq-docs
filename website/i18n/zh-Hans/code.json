@@ -5,7 +5,7 @@
   "Get Started": {
     "message": "现在开始"
   },
-  "is a Java-based high-performance MQTT Broker messaging middleware that utilizes Multi-tenancy architecture. Open-sourced by Baidu.": {
+  "is a Java-based high-performance MQTT Broker messaging middleware that adopts Multi-tenancy architecture. Open-sourced by Baidu.": {
     "message": " 是一个高性能的 MQTT 消息中间件，采用原生多租户架构。由百度开源。"
   },
   "theme.ErrorPageContent.title": {
