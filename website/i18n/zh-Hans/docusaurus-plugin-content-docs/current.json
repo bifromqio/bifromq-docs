@@ -96,7 +96,7 @@
     "description": "The generated-index page description for category Best Practices in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.FAQ": {
-    "message": "FAQ",
+    "message": "常见问题",
     "description": "The label for category FAQ in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.FAQ.link.generated-index.description": {
