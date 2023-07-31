@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-title: "Plugin Practice and Notice"
+title: "BifroMQ Plugin Practice and Notice"
 ---
 # Plugin Practice and Notice in BifroMQ
 BifroMQ is a powerful messaging system that allows seamless communication between itself and customized services. 

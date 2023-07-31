@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-title: "Plugin Practice and Notice"
+title: "BifroMQ插件实践和注意事项"
 ---
 # BifroMQ 中的插件实践和注意事项
 BifroMQ是一个强大的消息传递系统，允许自身与自定义服务之间进行无缝通信。在使用BifroMQ插件时，遵循最佳实践并注意一些考虑事项，以确保顺利集成和调试。
