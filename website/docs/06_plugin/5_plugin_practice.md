@@ -21,7 +21,7 @@ Ensure that the FQN accurately represents the plugin's package and class name.
 ## Fully Utilize Java Remote Debugging with BifroMQ
 Java Remote Debugging allows developers to debug customized plugins remotely from an IDE. 
 BifroMQ supports remote debugging, which can be enabled through environment variable `JVM_DEBUG`. Also, one can specify
-remote debugging port through environment variable `JAVA_DEBUG_PORT`. If it is not specified, the default one is 8008
+remote debugging port through environment variable `JAVA_DEBUG_PORT`. If it is not specified, the default one is 8008.
 Example in Linux Shell:
 ```shell
 export JVM_DEBUG=true
@@ -38,7 +38,7 @@ For example, `KafkaProducer` might depend on some classes that use `ContextClass
 current contextClassLoader points to `AppClassLoader`, it may cause `ClassNotFoundException`.
 BifroMQ has covered some cases during plugin construction phase, but developers should be vigilant in other 
 phases to avoid potential ClassLoading issues.
-## Organize Plugin Directory correctly
+## Organize Plugin Directory Correctly
 When developing plugins, ensure that there are no unrelated jar files in the plugin directory. 
 PF4J (Plugin Framework for Java) recursively checks jar files in the plugin directory, and unrelated jars 
 may cause PF4J validation errors.

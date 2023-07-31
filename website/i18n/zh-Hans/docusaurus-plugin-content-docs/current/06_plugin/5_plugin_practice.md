@@ -27,7 +27,7 @@ export JAVA_DEBUG_PORT=8009
 在开发插件时，Java类加载非常重要，特别是如果插件依赖外部库或模块。确保在插件初始化和其他阶段正确处理类加载器。
 
 例如，`KafkaProducer`可能依赖的类使用了`ContextClassLoader`对其进行初始化。如果当前的`ContextClassLoader`指向`AppClassLoader`，
-可能会导致`ClassNotFoundException`。BifroMQ 在插件类构造阶段涵盖了一些情况，但开发人员在其他阶段应该保持警惕，以避免潜在的类加载问题。
+可能会导致`ClassNotFoundException`。BifroMQ 在插件初始化阶段包含了一些场景，但开发人员在其他阶段应该保持警惕，以避免潜在的类加载问题。
 ## 正确组织插件目录
 在开发插件时，请确保插件目录中没有无关的jar文件。PF4J（用于 Java 的插件框架）会递归检查插件目录中的jar文件，无关的jar可能导致PF4J验证错误。
 
