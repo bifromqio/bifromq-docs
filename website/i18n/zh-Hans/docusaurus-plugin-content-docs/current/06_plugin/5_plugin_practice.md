@@ -35,12 +35,15 @@ export JAVA_DEBUG_PORT=8009
 ```java
 class MyAuthProvider {
     public void method() {
-        ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader targetLoader = this.getClass().getClassLoader();
-        Thread.currentThread().setContextClassLoader(targetLoader);
-        // Initialize dependencies here
-        dependenciesInit();
-        Thread.currentThread().setContextClassLoader(originalLoader);
+        try {
+            ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader targetLoader = this.getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(targetLoader);
+            // Initialize dependencies here
+            dependenciesInit();
+        }finally {
+            Thread.currentThread().setContextClassLoader(originalLoader);
+        }
     }
 }
 ```

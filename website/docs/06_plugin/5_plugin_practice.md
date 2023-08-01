@@ -49,13 +49,16 @@ phases to avoid potential ClassLoading issues. The initialization of dependencie
 be performed as follows:
 ```java
 class MyAuthProvider {  
-    public void method() {  
-        ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();  
-        ClassLoader targetLoader = this.getClass().getClassLoader();  
-        Thread.currentThread().setContextClassLoader(targetLoader);
-        // Initialize dependencies here  
-        dependenciesInit();
-        Thread.currentThread().setContextClassLoader(originalLoader);
+    public void method() {
+        try {
+            ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
+            ClassLoader targetLoader = this.getClass().getClassLoader();
+            Thread.currentThread().setContextClassLoader(targetLoader);
+            // Initialize dependencies here  
+            dependenciesInit();
+        }finally {
+            Thread.currentThread().setContextClassLoader(originalLoader);
+        }
     }  
 }
 ```
