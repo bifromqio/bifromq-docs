@@ -15,3 +15,8 @@ This page lists projects or products that `integrate` with BifroMQ. If your proj
 * [Baidu IoT platform](https://iot.baidu.com/) - Baidu Tiangong IoT platform leverages cloud-edge-device capabilities to offer comprehensive, user-friendly, and industry-specific IoT solutions.
 * [ThingLinks](https://mqttsnet.yuque.com/gt6zkc/thinglinks) - The ThingLinks IoT platform offers diverse and extensive device connectivity capabilities. It helps users collect large amounts of device data and quickly integrate applications to build IoT businesses.
 
+
+### Plugin
+
+* [BifroMQ-plugin-anyAuth](https://github.com/Gujiawei-Edinburgh/bifromq-plugin-anyAuth) - This BifroMQ authentication plugin supports WeChat and Auth0 authentication, and can be extended for other social media accounts. The project uses Access Control Lists (ACLs) to manage authorization. Each action, like publishing and subscribing, has its own custom permission rules based on user settings rather than specific clients.
+
