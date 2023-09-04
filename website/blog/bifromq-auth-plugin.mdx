@@ -1,0 +1,78 @@
+---
+slug: AnyAuth and Integration with BifroMQ
+title: "AnyAuth and Integration with BifroMQ"
+tags: [Auth, Plugin]
+---
+
+import ReactPlayer from 'react-player'
+
+The **AnyAuth** plugin is a powerful extension built upon the BifroMQ `IAuthProvider` interface using PF4J. It is
+designed to provide seamless authentication and authorization capabilities for BifroMQ, enabling users to secure access
+to messages and resources across a wide range of clients.
+
+<!--truncate-->
+
+The versatility of the **AnyAuth** plugin lies in its support for various authentication mechanisms, including
+traditional username/password that is for devices, auth0, and even WeChat integration. This means that users can be
+authenticated by using their preferred social accounts, simplifying access to BifroMQ.
+
+Furthermore, **AnyAuth** seamlessly integrates with BifroMQ, offering Role-Based Access Control (RBAC) through
+Access Control Lists (ACL). This feature empowers administrators to define distinct roles and permissions, which can
+then ensure fine-grained access control.
+
+For more information and technical design, check the [article](https://github.com/Gujiawei-Edinburgh/bifromq-plugin-anyAuth#readme).
+## Setup Steps
+Integrating **AnyAuth** with BifroMQ is straightforward. Follow these steps to get started:
+
+### Prerequisites
+Before proceeding, it's important to note that **AnyAuth** focuses solely on querying users' credentials and corresponding
+ACL rules. Administration tasks, such as user registration and ACL specification, are handled by other services. To
+ensure that **AnyAuth** can retrieve data successfully, users need to complete device registration and specify ACL beforehand.
+
+### Configure AnyAuth Plugin
+
+**AnyAuth**'s flexibility hinges on the correct configuration of authentication parameters. These parameters can vary
+depending on your chosen authentication method (e.g., username/password, auth0 and WeChat). The configuration file can
+be found in the `bifromq-plugin-anyAuth/auth-plugin/src/main/resources` directory and will be packaged into the JAR file
+after compilation. Therefore, it's crucial to configure it first.
+```yaml
+tenantId: ${TENANTID}
+device:
+  authUrl: ${AUTH_SERVICE_AUTH_URL}
+  checkUrl: ${AUTH_SERVICE_CHECK_URL}
+auth0:
+  domain: ${AUTH0_DOMAIN}
+wechat:
+  appId: ${APP_ID}
+  appSecret: ${APP_SECRET}
+  requestUrl: https://api.weixin.qq.com/sns/jscode2session?appid=
+```
+### Setup BifroMQ with Plugin
+Navigate to the **AnyAuth** project directory and execute the following command to generate the required output:
+```mvn
+cd bifromq-plugin-anyAuth && mvn clean package
+```
+This command will generate an `auth-plugin-${VERSION}.jar` and `auth-service-${VERSION}.tar.gz` file in their respective
+target directories.
+
+To ensure BifroMQ correctly loads the **AnyAuth** plugin, place the corresponding JAR file in the plugins directory
+within BifroMQ's target directory, i.e. `bifromq-${VERSION}/plugins`. Additionally, specify the Fully Qualified Name (FQN),
+e.g. `authProviderFQN: bifromq.plugin.auth.AuthProvider`, in BifroMQ's configuration file (`conf/standalone.yml`).
+
+### Setup AnyAuth Service
+The plugin JAR file acts as a client for authentication and authorization, while the **AnyAuth** service handles database
+query operations. Deploy the **AnyAuth** service, specifying MySQL connection parameters for credentials and permission
+rules queries.
+
+For development or testing purposes, **AnyAuth** also supports dummy storage, i.e. set `type: Dummy` in **AnyAuth**
+service configuration file.
+
+## End-to-End Demo
+Once all the setup steps are completed, you can use a WeChat MiniProgram to log in to BifroMQ and a GUI application to
+simulate devices. The following video shows a typical scenario, that a device reports the current temperature via BifroMQ,
+and the MiniProgram receives the message, issuing commands based on the data.
+<div className="video__wrapper">
+    <ReactPlayer className="video__player" controls height="100%"
+    url="https://github.com/Gujiawei-Edinburgh/bifromq-plugin-anyAuth/assets/55412783/df9f9009-e96f-4c97-b25a-aa399196fbd9"
+    width="100%" />
+</div>
