@@ -34,6 +34,8 @@ The architectural design of BifroMQ is based on "first principles," analyzing th
 
 ![Modular architecture of BifroMQ's decentralized cluster](./images/bifromq-architecture-1.png)
 
+<p class="text-gray-400 text-center">Modular architecture of BifroMQ's decentralized cluster</p>
+
 The cluster logic constructed by base-cluster is logically divided into two layers: Underlay Cluster and Overlay Cluster. The Underlay Cluster is called the "Host" Cluster, and each Host in BifroMQ corresponds to a service process (Process) running on the operating system. The Host Cluster uses Gossip-like protocols (SWIM Protocol) to implement Host Membership and provides an abstract Host address for the Overlay Cluster. The Overlay Cluster is called the "Agent" Cluster, which provides an Agent-level address abstraction (Agent Address) based on the Host address. In BifroMQ, the Agent corresponds to a logical service (Service) that implements specific functions. These logical services (unifiedly implemented through the base-rpc framework) include client and server role modules, which use the capabilities of the Agent Cluster to achieve service registration and discovery.
 
 The benefits of this architecture include:
@@ -55,6 +57,9 @@ The collaboration relationship between these modules is shown in the following f
 ![BifroMQ Module Collaboration Relationship 1](./images/bifromq-architecture-2-1.png)
 ![BifroMQ Module Collaboration Relationship 2](./images/bifromq-architecture-2-2.png)
 
+<p class="text-gray-400 text-center">BifroMQ Module Collaboration Relationship</p>
+
+
 It is worth mentioning that the bifromq-dist, bifromq-inbox, and bifromq-retain modules all make full use of the capabilities of base-kv to achieve distributed strong consistency persistence of key loads. In the operation and maintenance scenarios of Serverless cloud services, this is particularly important for ensuring SLA.
 
 ### Neutrality: Standard-Oriented and Scalable Integration
@@ -66,6 +71,8 @@ Therefore, the standard for judging "whether BifroMQ has a certain function or w
 Of course, the integrability of BifroMQ is also reflected in the integration of the middleware itself with various business systems, mainly including three mechanisms: Plugin, API, and Metrics:
 
 ![Typical Scenario Integration Architecture](./images/bifromq-architecture-3.png)
+
+<p class="text-gray-400 text-center">Typical Scenario Integration Architecture</p>
 
 * The Plugin mechanism is the main way to implement business logic integration. bifromq currently defines the following plugin interface modules:
   * bifromq-plugin-auth-provider: Implement client authentication and Pub/Sub authorization logic based on message topics

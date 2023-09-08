@@ -32,6 +32,7 @@ BifroMQ 的架构设计基于 "第一性原理"，从技术角度分析实现设
 **首先**，抛开 MQTT 协议本身的实现逻辑，BifroMQ 的各个功能服务模块构建在一套去中心化的底层集群构建能力（base-cluster）之上，如下图所示：
 
 ![BifroMQ 去中心化集群的模块化架构](./images/bifromq-architecture-1.png)
+<p class="text-gray-400 text-center">去中心化集群的模块化架构</p>
 
 base-cluster 构建的集群逻辑上分为两层：Underlay Cluster 和 Overlay Cluster。Underlay Cluster 被称为 "Host" Cluster，每个 Host 在 BifroMQ 中对应着运行在操作系统上的一个服务进程（Process）。Host Cluster 采用 Gossip 类的协议（SWIM Protocol）实现了 Host 成员服务（Membership），并为 Overlay Cluster 提供了 Host 地址的抽象。Overlay Cluster 被称为 "Agent" Cluster，它在 Host 地址的基础上提供了 Agent 级别的地址抽象（Agent Address）。在 BifroMQ 中，Agent 对应着实现具体功能的逻辑服务（Service）。这些逻辑服务（通过 base-rpc 框架统一实现）包括了客户端和服务端两种角色的模块，利用 Agent Cluster 的能力来实现服务的注册和发现。
 
@@ -57,6 +58,7 @@ base-cluster 构建的集群逻辑上分为两层：Underlay Cluster 和 Overlay
 ![BifroMQ 各模块协作关系 1](./images/bifromq-architecture-2-1.png)
 
 ![BifroMQ 各模块协作关系 2](./images/bifromq-architecture-2-2.png)
+<p class="text-gray-400 text-center">各模块协作关系</p>
 
 值得一提的是，bifromq-dist、bifromq-inbox 和 bifromq-retain 模块都充分利用了 base-kv 的能力，实现了对关键负载的分布式强一致性持久化。在 Serverless 云服务的运维场景中，这点对保证 SLA 尤为重要。
 
@@ -69,6 +71,7 @@ base-cluster 构建的集群逻辑上分为两层：Underlay Cluster 和 Overlay
 当然，BifroMQ 的被集成性还体现在作为中间件本身与各种业务系统的集成上，主要包括三种机制：Plugin、API 和 Metrics：
 
 ![典型场景集成架构](./images/bifromq-architecture-3.png)
+<p class="text-gray-400 text-center">典型场景集成架构</p>
 
 * Plugin 机制是实现业务逻辑集成的主要方式。bifromq 目前定义了以下 plugin 接口模块：
   * bifromq-plugin-auth-provider：实现客户端认证和基于消息主题的 Pub/Sub 鉴权逻辑
@@ -85,6 +88,6 @@ base-cluster 构建的集群逻辑上分为两层：Underlay Cluster 和 Overlay
 
 综上是对 BifroMQ 技术架构的整体介绍。请期待我们将在接下来发布的一系列专题文章中，深入探讨 BifroMQ 的各个组件和设计原则。同时，欢迎您扫码加入 BifroMQ 开发者交流群，向我们反馈关于文章内容的意见和建议。如有 BifroMQ 合作需求，请填写[问卷](https://iwenjuan.baidu.com/?code=5x2ip1)，我们会尽快与您联系。
 
-![BifroMQ 微信群二维码](https://bifromq.io/img/qrcode.png)
+<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="25%"/>
 
 最后，为了帮助大家更好地了解 BifroMQ 的技术架构，我们将于** 9 月 21 日（周四）**举办一场 BifroMQ 线上直播公开课，欢迎各位关注 BifroMQ 开发者交流群内信息，提前锁定直播地址，与广大同行交流学习！
