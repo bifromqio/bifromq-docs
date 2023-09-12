@@ -11,6 +11,21 @@ import ReactPlayer from 'react-player'
 
 <!--truncate-->
 
+## BifroMQ与智能家居
+
+### 背景
+公司A是一家专门从事智能家居行业的公司。他们旨在通过结合IoT（物联网）技术来提高其产品的价值和用户体验，允许远程控制他们的产品。他们选择BifroMQ作为
+他们的MQTT消息中间件，将其集成到他们的IoT平台中，以将他们的智能家居设备连接到互联网。
+
+### 关键参与方
+* 公司A：希望通过IoT技术提高产品价值和用户体验的智能家居设备制造商。
+* 公司B：负责为A公司开发IoT平台和微信小程序的软件开发公司。
+* BifroMQ：提供可靠消息传输服务的MQTT消息中间件，由公司B集成到IoT平台中。
+
+### 终端用户
+作为智能家居设备的用户，我们期望能够远程控制设备，例如空调，调整温度，检查当前室内温度以及通过微信小程序监控空调的运行状态。
+
+### AnyAuth与BifroMQ
 **AnyAuth**插件支持多种身份验证机制，包括服务于设备的用户名/密码，服务于用户的auth0和微信。这意味着用户可以使用其喜欢的社交账户进行身份进行登录，
 简化了对BifroMQ的访问。
 
@@ -18,11 +33,11 @@ import ReactPlayer from 'react-player'
 
 要了解更多信息和技术设计，请查看[文章](https://github.com/Gujiawei-Edinburgh/bifromq-plugin-anyAuth#readme)。
 ## 设置步骤
-将**AnyAuth**集成到BifroMQ中，只需要按照如下步骤即可：
+将**AnyAuth**集成到BifroMQ中，只需要按照如下步骤即可快速地将其集成其中：
 
 ### 前提条件
-需要注意的是**AnyAuth**仅查询设备的credentials和相关的ACL规则。设备注册（确定用户名和密码）和ACL的指定等管理类任务由其他服务处理。因此
-为了避免**AnyAuth**查询不到数据，需要用户先完成设备的注册和ACL的制定。
+需要注意的是**AnyAuth**的主要聚焦于查询用户的凭证和相应的ACL规则。处理诸如用户注册和ACL规范之类的管理任务属于其他服务的范围。
+为确保顺利地进行数据检索，用户必须预先完成设备注册并指定相应的ACL。
 
 ### AnyAuth插件配置信息
 
@@ -52,14 +67,14 @@ BifroMQ配置文件中（`conf/standalone.yml`）还需要指定Fully Qualified 
 例如：`authProviderFQN: bifromq.plugin.auth.AuthProvider`。
 
 ### 设置AnyAuth服务
-插件中的JAR部分在认证鉴权过程中充当了客户端的角色，对于数据库的查询操作则由**AnyAuth**服务来处理。部署**AnyAuth**服务时，用户需要制定其所用的MySQL
-的连接信息。
+插件中的JAR部分在认证鉴权过程中充当了客户端的角色，对于数据库的查询操作则由**AnyAuth**服务来处理。部署**AnyAuth**服务时，用户需要制定其所用的
+MySQL的连接信息。
 
 对于部分测试和开发场景, **AnyAuth**还支持dummy storage的方式，将配置中的`type`设置成`Dummy`即可。
 
 ## 端到端的示例
-在完成了全部的设置之后，用户可以使用微信小程序登录BifroMQ，用图形化程序来模拟设备。例如视频展示了以下的一个典型场景：设备通过BifroMQ上报温度信息，
-小程序收到对应的消息之后，根据上报的温度来下发不同的命令。
+完成所有设置步骤后，我们现在可以开始最后的联调了。通过微信小程序登录到BifroMQ，同时通过用户友好的GUI应用程序来模拟设备。下面的视频展示了一个典型
+场景：一个设备通过BifroMQ报告当前温度，同时一个微信小程序接收到了这个消息，随后根据数据发出指令。
 <div className="video__wrapper">
     <ReactPlayer className="video__player" controls height="100%"
     url="https://github.com/Gujiawei-Edinburgh/bifromq-plugin-anyAuth/assets/55412783/df9f9009-e96f-4c97-b25a-aa399196fbd9"
