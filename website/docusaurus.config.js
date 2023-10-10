@@ -99,12 +99,12 @@ const config = {
             type: 'localeDropdown',
             position: 'right',
           },
-          // {
-          //   type: 'docsVersionDropdown',
-          //   position: 'right',
-          //   dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
-          //   dropdownActiveClassDisabled: true,
-          // },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
+            dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
+            dropdownActiveClassDisabled: true,
+          },
         ],
       },
       prism: {
