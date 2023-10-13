@@ -55,10 +55,15 @@ messages.
 * `tenant_id`: the tenantId for the user.
 * `topic`: the topic of the message.
 * `client_type`: the client type for publisher.
+* `pub_qos`: QoS of the message to be distributed.
 * `retain`: If the message needs to be retained, make it to be true. 
 #### Note
-Unlike normal MQTT publishing, the message QoS (Quality of Service) is always `AT_MOST_ONCE` (QoS = 0) for API service. 
-This may result in a QoS downgrade for receivers.
+During the publishing phase, a parameter called `pub_qos` is used to denote the publisher's desired Quality of Service 
+(QoS). It's important to note that this parameter doesn't dictate the QoS for message delivery between the publisher and 
+BifroMQ since the HTTP protocol lacks native QoS support. If the API service were to forcibly downgrade QoS to 
+`AT_MOST_ONCE`, it could indirectly impact the QoS between BifroMQ and subscribers. Therefore, the API service retains 
+the QoS information. Additionally, it's the responsibility of the user, specifically the publisher, to manage the actual 
+QoS between themselves and BifroMQ.
 ### Kill(`/kill`)
 #### Description
 Sometimes users need to disconnect the other device with the same clientId. Therefore, one can call the API to do the 
@@ -67,4 +72,8 @@ job.
 * `tenant_id`: the tenantId for the user.
 * `user_id`: the user id of the MQTT client connection to be disconnected.
 * `client_type`: the client type for the active kicker.
-### GC
+### Manually Expire Inboxes
+#### Description
+#### Key Parameters
+* `tenant_id`: the tenantId for the user.
+* `expiry_seconds`: the inboxes expiry time.
