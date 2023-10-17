@@ -112,6 +112,13 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+
+  scripts: [
+      'commonHeader.js',
+      {
+         src: './commonHeader.js',
+      },
+  ],
 };
 
 module.exports = config;
