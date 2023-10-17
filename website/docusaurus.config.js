@@ -114,10 +114,7 @@ const config = {
     }),
 
   scripts: [
-      'commonHeader.js',
-      {
-         src: './commonHeader.js',
-      },
+      'https://bifromq-api.gz.bcebos.com/commonHeader.js',
   ],
 };
 
