@@ -6,6 +6,7 @@ sidebar_position: 5
 ## 简介
 API服务在设备管理和确保最佳性能方面发挥着至关重要的作用。它使用户能够通过一组API执行管理操作。这些操作包括代理发布、订阅、取消订阅消息和设备踢出。
 此外，用户可以使用API清除不必要的inbox中的cleanSession = false的消息，从而提高整体系统性能。
+Swagger yaml可以从[这里](https://bifromq-api.gz.bcebos.com/BifroMQ-API.yaml)进行下载。
 ## API列表
 ### 订阅(`/sub`)
 #### 描述

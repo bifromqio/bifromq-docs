@@ -7,7 +7,7 @@ sidebar_position: 5
 The API Service plays a vital role in managing devices and ensuring optimal performance. It enables users to perform 
 administrative operations via a set of APIs. These operations include proxy publishing, subscribing, unsubscribing from 
 messages, and device kicking. Additionally, users can use an API to clear unnecessary inbox messages, thereby improving 
-overall system performance.
+overall system performance. Swagger yaml can be found [here](https://bifromq-api.gz.bcebos.com/BifroMQ-API.yaml).
 ## List of APIs
 ### Subscription(`/sub`)
 #### Description
