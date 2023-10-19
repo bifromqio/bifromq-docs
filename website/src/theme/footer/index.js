@@ -12,6 +12,9 @@ export default function FooterWrapper(props) {
         <Docsly
             publicId="pk_K0A0eAsd2bGPDGSXkoPimJgHRxPTgKIxRCr7BXcfKQ3PcrJh"
             pathname={pathname}
+            appearance={{
+                docslyToolboxStyles: "bg-orange-600 text-orange-50",
+            }}
         />
     </>
   );
