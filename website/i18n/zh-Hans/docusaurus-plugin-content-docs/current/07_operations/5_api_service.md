@@ -51,6 +51,7 @@ Swagger yaml可以从[这里](https://bifromq-api.gz.bcebos.com/BifroMQ-API.yaml
 在消息发布阶段，使用名为`pub_qos`的参数来表示发布者所需的服务质量（QoS）。需要注意的是，由于HTTP协议缺乏原生的QoS支持，因此该参数并不指定发
 布者与BifroMQ之间的消息传递的QoS。如果API服务强制将QoS降级为`AT_MOST_ONCE`，则可能会间接影响BifroMQ和订阅者之间的QoS。因此，API服务保留
 了QoS信息。此外，用户（特别是发布者）需要管理维护自己与BifroMQ之间的实际QoS。
+
 ### 互踢(`/kill`)
 #### 描述
 用户可以使用该API完成相同clientId的设备的互踢。
@@ -58,4 +59,17 @@ Swagger yaml可以从[这里](https://bifromq-api.gz.bcebos.com/BifroMQ-API.yaml
 * `tenant_id`: 用户的tenantId。
 * `user_id`: 将被踢下线的设备的user_id。
 * `client_type`: 主动发起互踢的设备类型。
-### 清理
+### 主动清理离线连接(/expireinbox)
+
+#### 描述
+
+用于清理cleanSession=false连接存储的inbox信息，包含元信息及inbox中存储的MQTT消息，主动减少已过期连接的资源占用。
+
+#### 关键参数
+
+* `tenant_id`: 用户的tenantId。
+* `expiry_seconds`: 过期时间限制，距离上次活跃超过此时间的inbox会被清理掉。
+
+#### 注意点
+
+expiry_seconds置为0会清理掉tenant下所有的inbox，包括还在线的连接会因丢失元信息而断开，需要合理设置此参数。
