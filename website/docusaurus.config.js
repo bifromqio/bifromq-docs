@@ -37,10 +37,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          showLastUpdateTime: true,
+          showLastUpdateTime: false,
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/baidu/bifromq-docs/tree/master/website',
           editLocalizedFiles: true,
@@ -48,8 +46,6 @@ const config = {
         blog: {
           showReadingTime: true,
           blogSidebarCount: 0,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/baidu/bifromq-docs/tree/master/website/',
           editLocalizedFiles: true,
@@ -61,13 +57,23 @@ const config = {
     ],
   ],
 
-  plugins: [tailwindPlugin],
+  plugins: [tailwindPlugin, require.resolve('docusaurus-plugin-image-zoom')],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       colorMode: {
         defaultMode: 'dark',
+      },
+      zoom: {
+        selector: '.markdown :not(em) > img',
+        background: {
+          light: 'rgb(255, 255, 255)',
+          dark: 'rgb(50, 50, 50)'
+        },
+        config: {
+          // options you can specify via https://github.com/francoischalifour/medium-zoom#usage
+        }
       },
       navbar: {
         title: 'BifroMQ',
