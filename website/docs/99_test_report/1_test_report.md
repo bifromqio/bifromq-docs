@@ -2,389 +2,553 @@
 
 ## Test Objectives
 
-To evaluate the performance metrics of BifroMQ Standalone Edition, including response times and resource consumption under different message throughput scenarios.
+BifroMQ Standard mode now supports cluster deployment, with significant performance variations observed across different
+usage scenarios and configurations.
 
-## Test Tools and Environment
+The purpose of this report is to present the performance metrics and results analysis for BifroMQ in the standard
+cluster deployment mode, across various common usage scenarios. This analysis aims to provide users with references for
+cluster deployment, specification evaluation, parameter configuration, and other related aspects.
 
-### Test Tools
+## Test Environment
 
-The test tools were developed based on vertx-mqtt, which provides flexibility in usage and demonstrates excellent performance.
+### Load Testing Tool
 
-### Test Environment
+A testing tool developed based on vertx-mqtt, it offers flexible usage and excellent performance. It will be
+open-sourced in the near future.
 
-- BifroMQ Deployment Machine: CentOS release 7.6, 32 cores, 128GB memory (JVM configured with 40GB memory).
-- Load Generation Machine: CentOS release 7.6, 32 cores, 128GB memory (JVM configured with 32GB memory).
+### Deployment Machine Specifications
 
-## Test Scenarios
+BifroMQ Deployment Machine: CentOS release 7.6, 32 cores, 128GB RAM (JVM allocated memory: 40GB)
+Load Testing Machine: CentOS release 7.6, 16 cores, 128GB RAM (JVM allocated memory: 32GB)
 
-This test report mainly focuses on message throughput testing. The test dimensions include:
+### Cluster Configuration and Setup Steps
 
-* Publisher & Subscriber Ratio: 1 to 1, 1 to many
-* cleanSession Configuration: true | false
-* QoS (Quality of Service): 0 | 1 | 2
-* Payload Size: 32b | 1024b
-* Message Frequency per Connection: Ranging from 1 to 100
-* Shared Subscriptions
+BifroMQ comes with built-in message routing and persistent message storage engine, making it a stateful service.
+Therefore, when building the cluster for the first time, a specific sequence needs to be followed.
 
-Each test scenario is comprised of combinations from the dimensions listed above.
+Below is an example of setting up a three-node cluster.
 
-## Test Results
+node1: 192.168.0.11
 
-The Scenario name is derived from the combination of parameters from the test cases. 
+node2: 192.168.0.12
 
-The name "100_100_qos0_p1024_50mps" represents the following: 
+Node3: 192.168.0.13
 
-* 100 Pub MQTT clients 
-* 100 Sub MQTT clients 
-* Messages use QoS0 
-* Single message payload size is 1024 bytes 
-* A single Pub client sends 50 messages per second to BifroMQ
+Modify the standalone.yml file in the conf folder.
 
-Explanation of Parameters:
+Here is the minimal configuration for node 1:
 
-| Parameter | Description          |
-| --------- | -------------------- |
-| C         | Total number of MQTT connections in test cases. |
-| m/s       | Number of messages sent to BifroMQ per second. |
-| ms        | Message response time from Pub to Sub, measured in milliseconds. |
+```ymal
+bootstrap: true
 
-### Result description
+mqttServerConfig:
+  tcpListener:
+    port: 1883
 
-1. When `cleanSession=true`, the highest message throughput in high-frequency scenarios can reach over 200,000 messages per second, and in low-frequency scenarios it can reach over 100,000 messages per second.
+clusterConfig:
+  env: Test
+  host:
+  port: 8899
+  clusterDomainName:
+  seedEndpoints: 192.168.0.11:8899,192.168.0.12:8899,192.168.0.13:8899
+```
 
-2. When `cleanSession=false`, the highest message throughput in high-frequency scenarios can reach over 15,000 messages per second, and in low-frequency scenarios it can reach over 10,000 messages per second.
+For node 2 and node 3 in the standalone.yml file:
 
-3. The response time from the publishing end to the subscribing end is in the millisecond range, and the CPU load remains low.
+```ymal
+bootstrap: false
 
-4. The system throughput and latency performance are greatly influenced by the QoS (Quality of Service). The difference between QoS0 and QoS1 scenarios is not significant, while QoS2 scenarios are more affected due to the complexity of the protocol itself.
+mqttServerConfig:
+  tcpListener:
+    port: 1883
 
-5. In some test scenarios, the latency data of the first sampling point in the attached images is significantly larger. This is caused by the sudden increase in pressure due to cold-starting the test case without pre-warming. This situation will not occur during smooth operation of the service.
+clusterConfig:
+  env: Test
+  host:
+  port: 8899
+  clusterDomainName:
+  seedEndpoints: 192.168.0.11:8899,192.168.0.12:8899,192.168.0.13:8899
+```
 
-6. There is a significant difference in performance results between `cleanSession=false` and `cleanSession=true` scenarios. This is because the architecture of BifroMQ is designed for building serverless cloud services, and the reliability of offline messages is an important SLA indicator for cloud services. Therefore, BifroMQ chose a disk-based persistence strategy instead of in-memory storage, ensuring that data is not lost during crashes or restarts. The performance of offline message storage in the standalone version is limited by the local disk IO performance of the current testing machine. By using high-performance disks or implementing suitable load balancing strategies in a clustered environment, performance can be effectively improved.
+the cluster nodes (node1, node2, and node3) should be started sequentially in the following order: node1 first, then
+node2, and finally node3.
 
-### High-frequency Scenario with cleanSession=true
+Note: During the entire lifecycle of the cluster, the bootstrap configuration needs to be set to true only during the
+initial startup of the first node. This is necessary for initializing the persistent storage metadata. Subsequent
+configurations and the order of startup do not require attention to this setting.
 
-#### QoS 0 Scenario
+## Test Instructions
 
-| Scenario Combination      | QoS | MPS per Connection | Payload (bytes) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU Usage |
-|---------------------------|-----|------------------------------------|-----------------|---------------------------|---------------------------|---------------------------|------------------------|-----------|
-| 100_100_qos0_p1024_50mps  | 0   | 50                                 | 1024            | 200                       | 5k                        | 0.31                      | 0.43                   | 2.5%      |
-| 1k_1k_qos0_p1024_50mps    | 0   | 50                                 | 1024            | 2k                        | 50k                       | 0.42                      | 1.30                   | 21%       |
-| 2k_2k_qos0_p32_100mps     | 0   | 100                                | 32              | 4k                        | 200k                      | 2.38                      | 15.72                  | 40%       |
-| 4k_4k_qos0_p32_50mps      | 0   | 50                                 | 32              | 8k                        | 200k                      | 6.65                      | 48.23                  | 31%       |
-| 5k_5k_qos0_p32_50mps      | 0   | 50                                 | 32              | 10k                       | 226k                      | 12.51                     | 56.61                  | 30%       |
+### Scene Introduction
 
-##### Graphs for the 4k_4k_qos0_p32_50mps Scenario:
+Introduction to Test Dimensions：
 
-![QPS Graph](./images/true_4k_4k_qos0_p32_50mps/qps.png)
-![Mean Response Time Graph](./images/true_4k_4k_qos0_p32_50mps/mean.png)
-![P99 Response Time Graph](./images/true_4k_4k_qos0_p32_50mps/p99.png)
-![Max Response Time Graph](./images/true_4k_4k_qos0_p32_50mps/max.png)
+* `cleanSession`: true | false, corresponding to the Clean Session flag in the MQTT protocol during connection
+  establishment. When set to false, it indicates support for offline subscriptions and message persistence.
+* `Pub & Sub Ratios`:
+    * `1-to-1`: Signifying that each message sent by a publisher client is received by only one subscribing client.
+    * `Shared Subscriptions`: Indicating that messages from multiple publisher clients are shared among n subscribing
+      clients, with each client receiving 1/n portion of the messages.
+    * `Fan-out Subscriptions`: Signifying that messages from one publisher client are received by a larger number of
+      subscribing clients, akin to broadcasting.
+* `QoS: 0 | 1`:  denoting the Quality of Service level for both publishing messages and subscribing to topics.
+* `Payload Size`: The size of each test message, measured in bytes.
+* `Single Connection Message Frequency`:
+    * Low frequency: Implies one message sent per second by each publishing connection.
+    * High frequency: Indicates 50 to 100 messages sent per second by each publishing connection.
 
-#### QoS 1 Scenario
-| Scenario Combination                     | QoS | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|--------------------------|-----|--------|---------------|------|--------|----------|-----------|-----|
-| 100_100_qos1_p1024_50mps | 1   | 50     | 1024          | 200  | 5k     | 0.27     | 0.42      | 2.6% |
-| 1k_1k_qos1_p1024_50mps   | 1   | 50     | 1024          | 2k   | 50k    | 0.49     | 1.89      | 23% |
-| 2k_2k_qos1_p32_100mps    | 1   | 100    | 32            | 4k   | 182k   | 20.89   | 218.1    | 38% |
-| 4k_4k_qos1_p32_50mps     | 1   | 50     | 32            | 8k   | 179k   | 31.35    | 352.31    | 26% |
-| 5k_5k_qos1_p32_50mps     | 1   | 50     | 32            | 10k  | 189k   | 54.43    | 419.42    | 36% |
+Tests for various scenarios are derived from the combinations of the above dimensions.
 
-##### Graphs for the 2k_2k_qos1_p32_50mps Scenario:
+***Note: By default, the input/output bandwidth for a single connection is limited to 512KB/s. Exceeding this bandwidth
+limit may cause message delays. This restriction primarily serves as a system safeguard rather than a performance
+bottleneck and can be modified using configuration parameters during startup.***
 
-![qps](./images/true_2k_2k_qos1_p32_50mps/qps.png)
-![mean](./images/true_2k_2k_qos1_p32_50mps/mean.png)
-![p99](./images/true_2k_2k_qos1_p32_50mps/p99.png)
-![max](./images/true_2k_2k_qos1_p32_50mps/max.png)
+### cleanSession=true and false
 
-#### QoS 2 Scenario
+BifroMQ provides comprehensive support for the MQTT protocol, particularly concerning session persistence. The server
+persistently stores all client subscription information as well as messages with various QoS levels for clients
+with `cleanSession=false`. Therefore, there are significant differences in how connections and messages are handled
+between `cleanSession=true` and `cleanSession=false`.
 
-| Scenario Combination                     | QoS | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|--------------------------|-----|--------|---------------|------|--------|----------|-----------|-----|
-| 1.2k_1.2k_qos2_p32_50mps   | 2   | 100     | 32          | 2.4k   | 120k    | 7.08     | 41.93      | 40% |
-| 2k_2k_qos2_p32_100mps    | 2   | 100    | 32            | 4k   | 138k   | 38.02   | 201.31    | 40% |
+BifroMQ adopts a persistence strategy based on disk storage rather than memory. This ensures that data is not lost in
+case of crashes or reboots. In cluster mode, the number of replicas for persisting data can be configured based on
+specific requirements, further enhancing data high availability.
 
-##### 2k_1.2k_qos2_p32_50mps Graphs 1for the  Scenario:
+Due to this design, connections with `cleanSession=false` consume more resources compared to `cleanSession=true`, and
+they continue to occupy system resources even when offline. Consequently, the performance metrics achievable under the
+same deployment specifications can vary significantly between `cleanSession=true` and `cleanSession=false`. It is
+essential to choose the appropriate setting based on specific requirements and usage scenarios.
 
-![qps](./images/true_1.2k_1.2k_qos2_p32_50mps/qps.png)
-![mean](./images/true_1.2k_1.2k_qos2_p32_50mps/mean.png)
-![p99](./images/true_1.2k_1.2k_qos2_p32_50mps/p99.png)
-![max](./images/true_1.2k_1.2k_qos2_p32_50mps/max.png)
+***Note: BifroMQ's offline persistence design is intended to ensure service level agreements (SLA) rather than serving
+as a storage engine. Therefore, unconventional usage contrary to the protocol should be avoided. For instance,
+in `cleanSession=false` mode, using different clientIds for each connection not only fails to utilize offline
+persistence effectively but also introduces additional burden to the system due to the presence of dirty data.***
+
+### Factors Affecting Persistent Message Performance
+
+In the clustered deployment of BifroMQ, the storage engine also forms a distributed cluster. BifroMQ's storage engine is
+based on the RAFT protocol's multi-replica architecture, supporting multiple shards.
+
+Within each BifroMQ instance, there are three independent storage engines responsible for storing subscription
+information, messages from connections with `cleanSession=false`, and retained messages. Each storage engine can be
+configured separately. For messages from connections with `cleanSession=false`, the number of shards and replicas
+significantly impact performance.
+
+The number of replicas for the persistent message storage engine can be configured at startup with a system
+variable (`inbox_store_replica_voter_count`, as detailed in the configuration manual), with a default of 1. To maintain
+high availability, the number of replicas should be greater than or equal to 3.
+
+***Note: Increasing the number of replicas will amplify the amount of written data, leading to increased consumption of
+system resources and message latency.***
+
+The multiple shards in the storage engine are implemented based on the Multi-RAFT protocol. Each shard and its replicas
+form a RAFT replication cluster. Until the system resource bottleneck is reached, increasing the number of shards
+appropriately can effectively enhance the storage engine's write and query efficiency.
+
+The persistent message storage engine incorporates a load-based automated sharding strategy. Each shard decides whether
+to split based on the current read-write load and system busyness. Generally, no additional configuration is required.
+For users with an in-depth understanding of BifroMQ's code and sharding principles, optimization can be performed by
+attaching the following system variables at startup:
+
+- `inbox_store_io_nanos_limit`: Storage engine IO latency limit, defaulting to 30,000 nanoseconds. Splitting pauses when
+  internal read-write latency exceeds this value.
+- `inbox_store_max_io_density`: Storage engine IO density threshold. Sharding planning begins when the real-time load
+  statistics of the current shard exceed this limit.
 
-### Low-frequency Scenario with cleanSession=true
+Sharding strategies are loaded and configured through a plugin mechanism. Advanced users can develop sharding strategies
+tailored to their specific scenarios.
+
+## Test Report
+
+### Parameter Description
 
-#### QoS 0 Scenario
-| Scenario Combination                      | QoS | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|---------------------------|-----|--------|---------------|------|--------|------|-------|-----|
-| 50k_50k_qos0_p1024_1mps   | 0   | 1      | 1024          | 100k | 50k    | 0.85 | 4.16  | 23% |
-| 100k_100k_qos0_p1024_1mps | 0   | 1      | 1024          | 200k | 100k   | 13.54     | 209.68      | 40%  |
+The scenario names are derived from the combination of various dimensional parameters in the test cases. For
+example, `30k_30k_qos1_p256_1mps_3n_3v` signifies:
+
+* 30,000 Pub MQTT clients
 
-##### Graphs for the 100k_100k_qos0_p1024_1mps Scenario:
+* 30,000 Sub MQTT clients
 
-![qps](./images/true_100k_100k_qos0_p1024_1mps/qps.png)
-![mean](./images/true_100k_100k_qos0_p1024_1mps/mean.png)
-![p99](./images/true_100k_100k_qos0_p1024_1mps/p99.png)
-![max](./images/true_100k_100k_qos0_p1024_1mps/max.png)
+* Messages and subscriptions use QoS1
 
-#### QoS 1 Scenario
-| Scenario Combination                      | QoS | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|---------------------------|-----|--------|---------------|------|--------|----------|-----|-----|
-| 50k_50k_qos1_p1024_1mps   | 1   | 1      | 1024          | 100k | 50k    | 5.55     | 14.12 | 32% |
-| 100k_100k_qos1_p1024_1mps | 1   | 1      | 1024          | 200k | 100k   | 27.36    | 603.95    | 30% |
+* Individual message payload size of 256 bytes
+
+* Each Pub client sends 1 message per second to BifroMQ, forwarded to Sub clients
+
+* 3n indicates the deployment of three BifroMQ nodes
+
+* 3v represents three copies of data stored in the persistence engine, primarily affecting the `cleanSession=false`
+  scenario
+
+### Results Analysis and Explanation
+
+1. In the high-frequency scenario with `cleanSession=true`, the total throughput of messages (sum of messages sent by
+   pub clients and received by sub clients) can reach over 400,000 messages per second (40W/s) for a single node. In a
+   three-node deployment, the message throughput can even exceed 1,000,000 messages per second (100W/s). In
+   low-frequency scenarios, the message throughput for a single node can reach a maximum of over 200,000 messages per
+   second (20W/s), and in a three-node deployment, it can reach over 600,000 messages per second (60W/s). Throughput can
+   be horizontally scaled by increasing the number of nodes.
+
+*Note: To achieve the predetermined throughput in low-frequency scenarios, a larger number of connections need to be
+maintained, consuming more service resources. Therefore, the achievable upper limit of throughput in low-frequency
+scenarios may be reduced compared to high-frequency sending scenarios.*
 
-##### Graphs for the 100k_100k_qos1_p1024_1mps Scenario:
+2. In the `cleanSession=true` scenario, the shared subscription and fan-out capabilities can be horizontally scaled by
+   increasing the number of nodes.
+
+3. In the high-frequency scenarios with `cleanSession=false`, the message throughput for a single node can reach over
+   30,000 messages per second, and in a three-node deployment with a single replica, the message throughput can reach
+   over 90,000 messages per second. In low-frequency scenarios, the message throughput for a single node can reach over
+   20,000 messages per second, and in a three-node deployment with a single replica, the message throughput can reach
+   over 60,000 messages per second. This achieves basic horizontal scalability.
+4. In the `cleanSession=false` scenario with a three-node, three-replica deployment, both high-frequency and
+   low-frequency message throughputs can reach over 30,000 messages per second, similar to the single-node
+   single-replica deployment scenario. This is because deploying three replicas amplifies the load of persistent message
+   writes threefold, allowing three nodes to handle a threefold load, similar to what a single node with a single
+   replica can support. To extend the message throughput capacity of `cleanSession=false` with multiple replica
+   deployments, calculations based on the above patterns can be made to determine the appropriate number of nodes and
+   replicas for deployment sets.
+5. System throughput and latency metrics are influenced by message and subscription QoS levels. Under the same test
+   load, QoS1 scenarios consume slightly more system resources than QoS0 scenarios and may experience a slight increase
+   in message latency, typically on the millisecond level. This difference is observable only under high throughput and
+   system load conditions.
+6. There is a multiple-fold difference in performance between `cleanSession=false` and `cleanSession=true` scenarios.
+   This is because BifroMQ's architecture is designed to build serverless cloud services, where the reliability of
+   offline messages is a critical indicator of cloud service SLA. Therefore, BifroMQ chose a persistence strategy based
+   on disk storage instead of memory. Data loss will not occur in the event of a crash or restart. The performance of
+   the storage engine is limited by the local disk IO performance of the current test machine. Performance can be
+   improved by replacing high-performance disks or using appropriate load balancing strategies in a cluster environment.
+7. The p99 and max views in the result graphs may have occasional spikes, such as in
+   the [100k_1000_qos0_p256_1mps](#100k_1000_qos0_p256_1mps) scenario. This is related to the implementation of the test
+   pressure end (Java GC).
+8. BifroMQ's internal message links are implemented asynchronously, fully utilizing the multi-core capabilities of the
+   CPU. The testing scenarios listed in this report are stress tests and have a relatively high level of system load.
+   Therefore, message latency metrics may increase. Under no load, BifroMQ can keep message latency to around 1ms.
+   Moreover, in an environment with a higher number of available CPU cores, BifroMQ can achieve higher throughput and
+   lower latency metrics than those reported in this document.
 
-![qps](./images/true_100k_100k_qos1_p1024_1mps/qps.png)
-![mean](./images/true_100k_100k_qos1_p1024_1mps/mean.png)
-![p99](./images/true_100k_100k_qos1_p1024_1mps/p99.png)
-![max](./images/true_100k_100k_qos1_p1024_1mps/max.png)
+### cleanSession=true
 
-#### QoS 2 Scenario
-| Scenario Combination                      | QoS | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|---------------------------|-----|--------|---------------|------|--------|----------|-----------|-----|
-| 50k_50k_qos2_p1024_1mps   | 2   | 1      | 1024          | 100k | 50k    | 25.32    | 184.48    | 25% |
+#### High-frequency Scenarios
 
-##### Graphs for the 50k_50k_qos2_p1024_1mps Scenario:
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+|--------------------------|-----|--------|---------------|------|--------|----------|-----------|-----|--------------------------|
+| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.1 | 22.01 | 80% | 5 ~ 10 |
+| 2k_2k_qos1_p32_100mps_1n | 1 | 100 | 32 | 4k | 200k | 38.92 | 184.54 | 85% | 5 ~ 15 |
+| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 3.38 | 24.11 | 83% | 5 ~ 20 |
+| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 9.62 | 65.0 | 85% | 5 ~ 18 |
 
-![qps](./images/true_50k_50k_qos2_p1024_1mps/qps.png)
-![mean](./images/true_50k_50k_qos2_p1024_1mps/mean.png)
-![p99](./images/true_50k_50k_qos2_p1024_1mps/p99.png)
-![max](./images/true_50k_50k_qos2_p1024_1mps/max.png)
+2k_2k_qos0_p32_100mps_1n scenario charts：
 
-### Shared subscription scenario with cleanSession=true 
+![qps](./images/true_2k_2k_qos0_p32_100mps_1n/qps.png) | ![mean](./images/true_2k_2k_qos0_p32_100mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_2k_2k_qos0_p32_100mps_1n/p99.png) | ![max](./images/true_2k_2k_qos0_p32_100mps_1n/max.png)
+![cpu](./images/true_2k_2k_qos0_p32_100mps_1n/cpu.png) | ![mem](./images/true_2k_2k_qos0_p32_100mps_1n/mem.png)
 
-| Scenario Combination                    | QoS | MPS per Connection | Payload(byte) | Number of Connections (C)   | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|-------------------------|-----|--------|---------------|--------|--------|----------|-----------|-----|
-| 40k_400_qos0_p1024_1mps | 0   | 1      | 1024          | 400.4k | 40k    | 0.32     | 3.40      | 18% |
-| 40k_400_qos1_p1024_1mps | 1   | 1      | 1024          | 400.4k | 40k    | 0.61     | 6.81      | 19% |
-| 40k_400_qos2_p1024_1mps | 2   | 1      | 1024          | 400.4k | 40k    | 0.81   | 7.06    | 23% |
+2k_2k_qos1_p32_100mps_1n scenario charts：
 
-##### Graphs for the 40k_400_qos2_p1024_1mps Scenario:
+![qps](./images/true_2k_2k_qos1_p32_100mps_1n/qps.png) | ![mean](./images/true_2k_2k_qos1_p32_100mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_2k_2k_qos1_p32_100mps_1n/p99.png) | ![max](./images/true_2k_2k_qos1_p32_100mps_1n/max.png)
+![cpu](./images/true_2k_2k_qos1_p32_100mps_1n/cpu.png) | ![mem](./images/true_2k_2k_qos1_p32_100mps_1n/mem.png)
 
-![qps](./images/share_true_40k_400_qos2_p1024_1mps/qps.png)
-![mean](./images/share_true_40k_400_qos2_p1024_1mps/mean.png)
-![p99](./images/share_true_40k_400_qos2_p1024_1mps/p99.png)
-![max](./images/share_true_40k_400_qos2_p1024_1mps/max.png)
+5k_5k_qos0_p32_100mps_3n scenario charts：
 
-### Shared subscription scenario cleanSession=false
+![qps](./images/true_5k_5k_qos0_p32_100mps_3n/qps.png) | ![mean](./images/true_5k_5k_qos0_p32_100mps_3n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_5k_5k_qos0_p32_100mps_3n/p99.png) | ![max](./images/true_5k_5k_qos0_p32_100mps_3n/max.png)
+![cpu](./images/true_5k_5k_qos0_p32_100mps_3n/cpu.png) | ![mem](./images/true_5k_5k_qos0_p32_100mps_3n/mem.png)
 
-| Scenario Combination                  | QoS | MPS per Connection | Payload(byte) | Number of Connections (C)   | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU |
-|-----------------------|-----|--------|---------------|--------|--------|----------|-------|-----|
-| 5k_50_qos0_p1024_1mps | 0   | 1      | 1024          | 5050   | 5k     | 7.22     | 30.38 | 7%  |
-| 5k_50_qos1_p1024_1mps | 1   | 1      | 1024          | 5050 | 5k     | 6.79     | 27.23 | 7%  |
-| 5k_50_qos2_p1024_1mps | 2   | 1      | 1024          | 5050 | 5k     | 16.24     | 56.56      | 7%  |
+4k_4k_qos1_p32_100mps_3n scenario charts：
 
-##### Graphs for the 5k_50_qos2_p1024_1mps Scenario:
+![qps](./images/true_4k_4k_qos1_p32_100mps_3n/qps.png) | ![mean](./images/true_4k_4k_qos1_p32_100mps_3n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_4k_4k_qos1_p32_100mps_3n/p99.png) | ![max](./images/true_4k_4k_qos1_p32_100mps_3n/max.png)
+![cpu](./images/true_4k_4k_qos1_p32_100mps_3n/cpu.png) | ![mem](./images/true_4k_4k_qos1_p32_100mps_3n/mem.png)
 
-![qps](./images/share_false_40k_400_qos2_p1024_1mps/qps.png)
-![mean](./images/share_false_40k_400_qos2_p1024_1mps/mean.png)
-![p99](./images/share_false_40k_400_qos2_p1024_1mps/p99.png)
-![max](./images/share_false_40k_400_qos2_p1024_1mps/max.png)
+#### Low-frequency Scenarios
 
-### fanOut scenario with cleanSession=true 
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+| --------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
+| 100k_100k_qos0_p256_1mps_1n | 0    | 1         | 256      | 200k    | 100k      | 2.24           | 18.87         | 80%  | 6 ~ 12     |
+| 100k_100k_qos1_p256_1mps_1n | 1    | 1         | 256      | 200k    | 100k      | 13.56          | 104.84        | 83%  | 8 ~ 13     |
+| 300k_300k_qos0_p256_1mps_3n | 0    | 1         | 256      | 600k    | 300k      | 17.03          | 113.23        | 83%  | 10 ~ 20    |
+| 200k_200k_qos1_p256_1mps_3n | 1    | 1         | 256      | 400k    | 200k      | 3.86           | 29.34         | 81%  | 7 ~ 12     |
 
-A small number of clients act as Publishers, and a large number of clients subscribe to the same topic as Subscribers, forming a scenario in which each message is broadcast by a massive fanOut.
+100k_100k_qos0_p256_1mps_1n scenario charts：
 
-| Scenario Combination              | QoS  | MPS per Connection | Payload(byte) | PubNumber of Connections (C) | Number of Sub connections | Publish m/s | Subscribe m/s | Average Response Time (ms) | P99 Response Time (ms) | CPU  |
-| --------------------- | ---- | --------- | ------------- | ---------- | --------- | ---------- | ---------- | -------------- | ------------- | ---- |
-| 1_1k_qos1_p32_1mps    | 1    | 1         | 32            | 1          | 1k        | 1          | 1k         | 6              | 18            | 4%   |
+![qps](./images/true_100k_100k_qos0_p256_1mps_1n/qps.png) | ![mean](./images/true_100k_100k_qos0_p256_1mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_100k_100k_qos0_p256_1mps_1n/p99.png) | ![max](./images/true_100k_100k_qos0_p256_1mps_1n/max.png)
+![cpu](./images/true_100k_100k_qos0_p256_1mps_1n/cpu.png) | ![mem](./images/true_100k_100k_qos0_p256_1mps_1n/mem.png)
 
-##### Graphs for the 1_1k_qos1_p32_1mps Scenario:
+100k_100k_qos1_p256_1mps_1n scenario charts：
 
-![qps](./images/true_1_1k_qos1_p32_1mps/qps.png)
-![mean](./images/true_1_1k_qos1_p32_1mps/mean.png)
-![p99](./images/true_1_1k_qos1_p32_1mps/p99.png)
-![max](./images/true_1_1k_qos1_p32_1mps/max.png)
+![qps](./images/true_100k_100k_qos1_p256_1mps_1n/qps.png) | ![mean](./images/true_100k_100k_qos1_p256_1mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_100k_100k_qos1_p256_1mps_1n/p99.png) | ![max](./images/true_100k_100k_qos1_p256_1mps_1n/max.png)
+![cpu](./images/true_100k_100k_qos1_p256_1mps_1n/cpu.png) | ![mem](./images/true_100k_100k_qos1_p256_1mps_1n/mem.png)
 
+300k_300k_qos0_p256_1mps_3n scenario charts：
 
-### Low-frequency Scenario with cleanSession=false 1v1
+![qps](./images/true_300k_300k_qos0_p256_1mps_3n/qps.png) | ![mean](./images/true_300k_300k_qos0_p256_1mps_3n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/true_300k_300k_qos0_p256_1mps_3n/p99.png) | ![max](./images/true_300k_300k_qos0_p256_1mps_3n/max.png)
+![cpu](./images/true_300k_300k_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/true_300k_300k_qos0_p256_1mps_3n/mem.png)
 
+#### Shared Subscriptions Scenario
 
-#### QoS 0 Scenario
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+| --------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
+| 100k_1000_qos0_p256_1mps_1n | 0    | 1         | 256      | 101k    | 100k      | 1.17           | 11.0          | 82%  | 6 ~ 20     |
+| 100k_1000_qos1_p256_1mps_1n | 1    | 1         | 256      | 101k    | 100k      | 1.82           | 14.67         | 78%  | 5 ~ 18     |
+| 300k_3000_qos0_p256_1mps_3n | 0    | 1         | 256      | 303k    | 300k      | 3.17           | 19.91         | 80%  | 10 ~ 20    |
+| 200k_2000_qos1_p256_1mps_3n | 1    | 1         | 256      | 202k    | 200k      | 4.69           | 39.84         | 77%  | 5 ~ 20     |
 
-| Scenario Combination                | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU  |
-| ----------------------- | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | ---- |
-| 1k_1k_qos0_p32_1mps     | 0    | 1         | 32            | 2k      | 1k        | 1.3            | 2.2           | 6%   |
-| 1k_1k_qos0_p1024_1mps   | 0    | 1         | 1024          | 2k      | 1k        | 1.4            | 2.3           | 6%   |
-| 5k_5k_qos0_p32_1mps     | 0    | 1         | 32            | 10k     | 5k        | 2.7            | 5.2           | 18%  |
-| 5k_5k_qos0_p1024_1mps   | 0    | 1         | 1024          | 10k     | 5k        | 3.0            | 6.5           | 18%  |
-| 10k_10k_qos0_p32_1mps   | 0    | 1         | 32            | 20k     | 10k       | 9.6            | 29            | 26%  |
-| 10k_10k_qos0_p1024_1mps | 0    | 1         | 1024          | 20k     | 10k       | 21             | 63            | 26%  |
+<span id="100k_1000_qos0_p256_1mps">100k_1000_qos0_p256_1mps scenario charts：</span>
 
-##### Graphs for the 10k_10k_qos0_p32_1mps Scenario:
+![qps](./images/share_true_100k_1000_qos0_p256_1mps_1n/qps.png) | ![mean](./images/share_true_100k_1000_qos0_p256_1mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/share_true_100k_1000_qos0_p256_1mps_1n/p99.png) | ![max](./images/share_true_100k_1000_qos0_p256_1mps_1n/max.png)
+![cpu](./images/share_true_100k_1000_qos0_p256_1mps_1n/cpu.png) | ![mem](./images/share_true_100k_1000_qos0_p256_1mps_1n/mem.png)
 
-![qps](./images/false_10k_10k_qos0_p32_1mps/qps.png)
-![mean](./images/false_10k_10k_qos0_p32_1mps/mean.png)
-![p99](./images/false_10k_10k_qos0_p32_1mps/p99.png)
-![max](./images/false_10k_10k_qos0_p32_1mps/max.png)
+100k_1000_qos1_p256_1mps scenario charts：
 
-##### Graphs for the 10k_10k_qos0_p1024_1mps Scenario:
+![qps](./images/share_true_100k_1000_qos1_p256_1mps_1n/qps.png) | ![mean](./images/share_true_100k_1000_qos1_p256_1mps_1n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/share_true_100k_1000_qos1_p256_1mps_1n/p99.png) | ![max](./images/share_true_100k_1000_qos1_p256_1mps_1n/max.png)
+![cpu](./images/share_true_100k_1000_qos1_p256_1mps_1n/cpu.png) | ![mem](./images/share_true_100k_1000_qos1_p256_1mps_1n/mem.png)
 
-![qps](./images/false_10k_10k_qos0_p1024_1mps/qps.png)
-![mean](./images/false_10k_10k_qos0_p1024_1mps/mean.png)
-![p99](./images/false_10k_10k_qos0_p1024_1mps/p99.png)
-![max](./images/false_10k_10k_qos0_p1024_1mps/max.png)
+300k_3000_qos0_p256_1mps scenario charts：
 
+![qps](./images/share_true_300k_3000_qos0_p256_1mps_3n/qps.png) | ![mean](./images/share_true_300k_3000_qos0_p256_1mps_3n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/share_true_300k_3000_qos0_p256_1mps_3n/p99.png) | ![max](./images/share_true_300k_3000_qos0_p256_1mps_3n/max.png)
+![cpu](./images/share_true_300k_3000_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/share_true_300k_3000_qos0_p256_1mps_3n/mem.png)
 
+200k_2000_qos1_p256_1mps scenario charts：
 
+![qps](./images/share_true_200k_2000_qos1_p256_1mps_3n/qps.png) | ![mean](./images/share_true_200k_2000_qos1_p256_1mps_3n/mean.png)
+------------------------------------------------------------ | ------------------------------------------------------------
+![p99](./images/share_true_200k_2000_qos1_p256_1mps_3n/p99.png) | ![max](./images/share_true_200k_2000_qos1_p256_1mps_3n/max.png)
+![cpu](./images/share_true_200k_2000_qos1_p256_1mps_3n/cpu.png) | ![mem](./images/share_true_200k_2000_qos1_p256_1mps_3n/mem.png)
 
-#### QoS 1 Scenario
+#### Fan-out Subscriptions Scenario
 
-| Scenario Combination                | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | Resident Memory | CPU  |
-| ----------------------- | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | -------- | ---- |
-| 1k_1k_qos1_p32_1mps     | 1    | 1         | 32            | 2k      | 1k        | 1.4            | 2.3           |          | 8%   |
-| 1k_1k_qos1_p1024_1mps   | 1    | 1         | 1024          | 2k      | 1k        | 1.4            | 2.3           |          | 8%   |
-| 5k_5k_qos1_p32_1mps     | 1    | 1         | 32            | 10k     | 5k        | 3.2            | 7.0           |          | 20%  |
-| 5k_5k_qos1_p1024_1mps   | 1    | 1         | 1024          | 10k     | 5k        | 3.1            | 7.6           |          | 20%  |
-| 10k_10k_qos1_p32_1mps   | 1    | 1         | 32            | 20k     | 10k       | 13             | 30            |          | 30%  |
-| 10k_10k_qos1_p1024_1mps | 1    | 1         | 1024          | 20k     | 10k       | 49             | 117           |          | 30%  |
+Few clients act as Publishers, and a large number of clients subscribe to the same topic as Subscribers, creating a
+scenario where each message is widely fan-out broadcast.
 
-##### Graphs for the 10k_10k_qos1_p32_1mps Scenario:
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+| -------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
+| 1_100000_qos0_p256_1mps_1n | 0    | 1         | 256      | 100k    | 100k      | 282.61         | 465.57        | 15%  | 2 ~ 5      |
+| 1_100000_qos1_p256_1mps_1n | 1    | 1         | 256      | 100k    | 100k      | 312.11         | 515.9         | 20%  | 2 ~ 7      |
+| 1_300000_qos0_p256_1mps_3n | 0    | 1         | 256      | 300k    | 300k      | 593.23         | 889.19        | 20%  | 2 ~ 10     |
+| 1_200000_qos1_p256_1mps_3n | 1    | 1         | 256      | 200k    | 200k      | 395.96         | 595.59        | 12%  | 2~ 8       |
 
-![qps](./images/false_10k_10k_qos1_p32_1mps/qps.png)
-![mean](./images/false_10k_10k_qos1_p32_1mps/mean.png)
-![p99](./images/false_10k_10k_qos1_p32_1mps/p99.png)
-![max](./images/false_10k_10k_qos1_p32_1mps/max.png)
+1_100000_qos0_p256_1mps_1n scenario charts：
 
+| ![qps](./images/fanout_true_1_100000_qos0_p256_1mps_1n/qps.png) | ![mean](./images/fanout_true_1_100000_qos0_p256_1mps_1n/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/fanout_true_1_100000_qos0_p256_1mps_1n/p99.png) | ![max](./images/fanout_true_1_100000_qos0_p256_1mps_1n/max.png) |
+| ![cpu](./images/fanout_true_1_100000_qos0_p256_1mps_1n/cpu.png) | ![mem](./images/fanout_true_1_100000_qos0_p256_1mps_1n/mem.png) |
 
+1_100000_qos1_p256_1mps_1n scenario charts：
 
-##### Graphs for the 10k_10k_qos1_p1024_1mps Scenario:
+| ![qps](./images/fanout_true_1_100000_qos1_p256_1mps_1n/qps.png) | ![mean](./images/fanout_true_1_100000_qos1_p256_1mps_1n/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/fanout_true_1_100000_qos1_p256_1mps_1n/p99.png) | ![max](./images/fanout_true_1_100000_qos1_p256_1mps_1n/max.png) |
+| ![cpu](./images/fanout_true_1_100000_qos1_p256_1mps_1n/cpu.png) | ![mem](./images/fanout_true_1_100000_qos1_p256_1mps_1n/mem.png) |
 
-![qps](./images/false_10k_10k_qos1_p1024_1mps/qps.png)
-![mean](./images/false_10k_10k_qos1_p1024_1mps/mean.png)
-![p99](./images/false_10k_10k_qos1_p1024_1mps/p99.png)
-![max](./images/false_10k_10k_qos1_p1024_1mps/max.png)
+1_300000_qos0_p256_1mps_3n scenario charts：
 
+| ![qps](./images/fanout_true_1_300000_qos0_p256_1mps_3n/qps.png) | ![mean](./images/fanout_true_1_300000_qos0_p256_1mps_3n/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/fanout_true_1_300000_qos0_p256_1mps_3n/p99.png) | ![max](./images/fanout_true_1_300000_qos0_p256_1mps_3n/max.png) |
+| ![cpu](./images/fanout_true_1_300000_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/fanout_true_1_300000_qos0_p256_1mps_3n/mem.png) |
 
+1_200000_qos1_p256_1mps_3n scenario charts：
 
-#### QoS 2 Scenario
+| ![qps](./images/fanout_true_1_200000_qos1_p256_1mps_3n/qps.png) | ![mean](./images/fanout_true_1_200000_qos1_p256_1mps_3n/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/fanout_true_1_200000_qos1_p256_1mps_3n/p99.png) | ![max](./images/fanout_true_1_200000_qos1_p256_1mps_3n/max.png) |
+| ![cpu](./images/fanout_true_1_200000_qos1_p256_1mps_3n/cpu.png) | ![mem](./images/fanout_true_1_200000_qos1_p256_1mps_3n/mem.png) |
 
-| Scenario Combination              | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | CPU  |
-| --------------------- | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | ---- |
-| 1k_1k_qos2_p32_1mps   | 2    | 1         | 32            | 2k      | 1k        | 1.6            | 2.8           | 8%   |
-| 1k_1k_qos2_p1024_1mps | 2    | 1         | 1024          | 2k      | 1k        | 1.7            | 3.0           | 8%   |
-| 5k_5k_qos2_p32_1mps   | 2    | 1         | 32            | 10k     | 5k        | 3.8            | 8.3           | 22%  |
-| 5k_5k_qos2_p1024_1mps | 2    | 1         | 1024          | 10k     | 5k        | 8.2            | 40            | 22%  |
-| 7k_7k_qos2_p32_1mps   | 2    | 1         | 32            | 14k     | 7k        | 9.6            | 28            | 24%  |
-| 7k_7k_qos2_p1024_1mps | 2    | 1         | 1024          | 14k     | 7k        | 15             | 50            | 24%  |
+### cleanSession=false
 
-##### Graphs for the 7k_7k_qos2_p32_1mps Scenario:
+#### Low-frequency Scenarios
 
-![qps](./images/false_7k_7k_qos2_p32_1mps/qps.png)
-![mean](./images/false_7k_7k_qos2_p32_1mps/mean.png)
-![p99](./images/false_7k_7k_qos2_p32_1mps/p99.png)
-![max](./images/false_7k_7k_qos2_p32_1mps/max.png)
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+| ---------------------------- | ---- | --------- | -------------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
+| 15k_15k_qos0_p256_1mps_1n_1v | 0    | 1         | 256            | 20k     | 15k       | 10.24          | 52.4          | 65%  | 5~15       |
+| 15k_15k_qos1_p256_1mps_1n_1v | 1    | 1         | 256            | 20k     | 15k       | 13.64          | 67.08         | 70%  | 5~18       |
+| 30k_30k_qos0_p256_1mps_3n_1v | 0    | 1         | 256            | 60k     | 30k       | 70.34          | 285.18        | 60%  | 5~20       |
+| 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       | 90.2           | 352.29        | 62%  | 7~20       |
+| 15k_15k_qos0_p256_1mps_3n_3v | 0    | 1         | 256            | 30k     | 15k       | 27.32          | 142.54        | 65%  | 5~20       |
+| 15k_15k_qos1_p256_1mps_3n_3v | 1    | 1         | 256            | 30k     | 15k       | 31.01          | 167.71        | 65%  | 5~20       |
 
-##### Graphs for the 7k_7k_qos2_p1024_1mps Scenario:
+15k_15k_qos0_p256_1mps_1n_1v scenario charts：
 
-![qps](./images/false_7k_7k_qos2_p1024_1mps/qps.png)
-![mean](./images/false_7k_7k_qos2_p1024_1mps/mean.png)
-![p99](./images/false_7k_7k_qos2_p1024_1mps/p99.png)
-![max](./images/false_7k_7k_qos2_p1024_1mps/max.png)
+| ![qps](./images/false_15k_15k_qos0_p256_1mps_1n_1v/qps.png) | ![mean](./images/false_15k_15k_qos0_p256_1mps_1n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_15k_15k_qos0_p256_1mps_1n_1v/p99.png) | ![max](./images/false_15k_15k_qos0_p256_1mps_1n_1v/max.png) |
+| ![cpu](./images/false_15k_15k_qos0_p256_1mps_1n_1v/cpu.png) | ![mem](./images/false_15k_15k_qos0_p256_1mps_1n_1v/mem.png) |
 
-### High-frequency Scenario with cleanSession=false 1v1
+15k_15k_qos1_p256_1mps_1n_1v scenario charts：
 
-#### QoS 0 Scenario
+| ![qps](./images/false_15k_15k_qos1_p256_1mps_1n_1v/qps.png) | ![mean](./images/false_15k_15k_qos1_p256_1mps_1n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_15k_15k_qos1_p256_1mps_1n_1v/p99.png) | ![max](./images/false_15k_15k_qos1_p256_1mps_1n_1v/max.png) |
+| ![cpu](./images/false_15k_15k_qos1_p256_1mps_1n_1v/cpu.png) | ![mem](./images/false_15k_15k_qos1_p256_1mps_1n_1v/mem.png) |
 
-| Scenario Combination                 | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | Resident Memory | CPU  |
-| ------------------------ | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | -------- | ---- |
-| 20_20_qos0_p32_50mps     | 0    | 50        | 32            | 40      | 1k        | 11             | 96            |          | 8%   |
-| 20_20_qos0_p1024_50mps   | 0    | 50        | 1024          | 40      | 1k        | 21             | 117           |          | 8%   |
-| 100_100_qos0_p32_50mps   | 0    | 50        | 32            | 200     | 5k        | 23             | 84            |          | 14%  |
-| 100_100_qos0_p1024_50mps | 0    | 50        | 1024          | 200     | 5k        | 28             | 92            |          | 14%  |
-| 200_200_qos0_p32_50mps   | 0    | 50        | 32            | 400     | 10k       | 47             | 113           |          | 18%  |
-| 200_200_qos0_p1024_50mps | 0    | 50        | 1024          | 400     | 10k       | 58             | 130           |          | 18%  |
-| 300_300_qos0_p32_50mps   | 0    | 50        | 32            | 600     | 15k       | 67             | 142           |          | 22%  |
-| 300_300_qos0_p1024_50mps | 0    | 50        | 1024          | 600     | 15k       | 90             | 184           |          | 22%  |
+30k_30k_qos0_p256_1mps_3n_1v scenario charts：
 
-##### Graphs for the 300_300_qos0_p32_50mps Scenario:
+| ![qps](./images/false_30k_30k_qos0_p256_1mps_3n_1v/qps.png) | ![mean](./images/false_30k_30k_qos0_p256_1mps_3n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_30k_30k_qos0_p256_1mps_3n_1v/p99.png) | ![max](./images/false_30k_30k_qos0_p256_1mps_3n_1v/max.png) |
+| ![cpu](./images/false_30k_30k_qos0_p256_1mps_3n_1v/cpu.png) | ![mem](./images/false_30k_30k_qos0_p256_1mps_3n_1v/mem.png) |
 
-![qps](./images/false_300_300_qos0_p32_50mps/qps.png)
-![mean](./images/false_300_300_qos0_p32_50mps/mean.png)
-![p99](./images/false_300_300_qos0_p32_50mps/p99.png)
-![max](./images/false_300_300_qos0_p32_50mps/max.png)
+30k_30k_qos1_p256_1mps_3n_1v scenario charts：
 
-##### Graphs for the 300_300_qos0_p1024_50mps Scenario:
+| ![qps](./images/false_30k_30k_qos1_p256_1mps_3n_1v/qps.png) | ![mean](./images/false_30k_30k_qos1_p256_1mps_3n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_30k_30k_qos1_p256_1mps_3n_1v/p99.png) | ![max](./images/false_30k_30k_qos1_p256_1mps_3n_1v/max.png) |
+| ![cpu](./images/false_30k_30k_qos1_p256_1mps_3n_1v/cpu.png) | ![mem](./images/false_30k_30k_qos1_p256_1mps_3n_1v/mem.png) |
 
-![qps](./images/false_300_300_qos0_p1024_50mps/qps.png)
-![mean](./images/false_300_300_qos0_p1024_50mps/mean.png)
-![p99](./images/false_300_300_qos0_p1024_50mps/p99.png)
-![max](./images/false_300_300_qos0_p1024_50mps/max.png)
+15k_15k_qos0_p256_1mps_3n_3v scenario charts：
 
+| ![qps](./images/false_15k_15k_qos0_p256_1mps_3n_3v/qps.png) | ![mean](./images/false_15k_15k_qos0_p256_1mps_3n_3v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_15k_15k_qos0_p256_1mps_3n_3v/p99.png) | ![max](./images/false_15k_15k_qos0_p256_1mps_3n_3v/max.png) |
+| ![cpu](./images/false_15k_15k_qos0_p256_1mps_3n_3v/cpu.png) | ![mem](./images/false_15k_15k_qos0_p256_1mps_3n_3v/mem.png) |
 
+15k_15k_qos1_p256_1mps_3n_3v scenario charts：
 
-#### QoS 1 Scenario
+| ![qps](./images/false_15k_15k_qos1_p256_1mps_3n_3v/qps.png) | ![mean](./images/false_15k_15k_qos1_p256_1mps_3n_3v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_15k_15k_qos1_p256_1mps_3n_3v/p99.png) | ![max](./images/false_15k_15k_qos1_p256_1mps_3n_3v/max.png) |
+| ![cpu](./images/false_15k_15k_qos1_p256_1mps_3n_3v/cpu.png) | ![mem](./images/false_15k_15k_qos1_p256_1mps_3n_3v/mem.png) |
 
-| Scenario Combination                 | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | Resident Memory | CPU  |
-| ------------------------ | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | -------- | ---- |
-| 20_20_qos1_p32_50mps     | 1    | 50        | 32            | 40      | 1k        | 4.6            | 38            |          | 10%  |
-| 20_20_qos1_p1024_50mps   | 1    | 50        | 1024          | 40      | 1k        | 20             | 117           |          | 10%  |
-| 100_100_qos1_p32_50mps   | 1    | 50        | 32            | 200     | 5k        | 26             | 92            |          | 20%  |
-| 100_100_qos1_p1024_50mps | 1    | 50        | 1024          | 200     | 5k        | 32             | 101           |          | 20%  |
-| 200_200_qos1_p32_50mps   | 1    | 50        | 32            | 400     | 10k       | 58             | 151           |          | 23%  |
-| 200_200_qos1_p1024_50mps | 1    | 50        | 1024          | 400     | 10k       | 72             | 210           |          | 23%  |
-| 300_300_qos1_p32_50mps   | 1    | 50        | 32            | 600     | 15k       | 81             | 210           |          | 28%  |
-| 300_300_qos1_p1024_50mps | 1    | 50        | 1024          | 600     | 15k       | 107            | 260           |          | 28%  |
+#### High-frequency Scenarios
 
-##### Graphs for the 300_300_qos1_p32_50mps Scenario:
+| Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
+| ---------------------------- | ---- | --------- | -------------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
+| 300_300_qos0_p32_50mps_1n_1v | 0    | 50        | 32             | 0.6k    | 15k       | 14.38          | 50.27         | 70%  | 3~15       |
+| 300_300_qos1_p32_50mps_1n_1v | 1    | 50        | 32             | 0.6k    | 15k       | 16.5           | 52.4          | 75%  | 5~15       |
+| 900_900_qos0_p32_50mps_3n_1v | 0    | 50        | 32             | 1.8k    | 45k       | 82.36          | 243.2         | 55%  | 5~18       |
+| 900_900_qos1_p32_50mps_3n_1v | 1    | 50        | 32             | 1.8k    | 45k       | 95.74          | 369.03        | 65%  | 5~20       |
+| 300_300_qos0_p32_50mps_3n_3v | 0    | 50        | 32             | 0.6k    | 15k       | 22.91          | 75.43         | 70%  | 5~15       |
+| 300_300_qos1_p32_50mps_3n_3v | 1    | 50        | 32             | 0.6k    | 15k       | 26.96          | 88.01         | 70%  | 5~15       |
 
-![qps](./images/false_300_300_qos1_p32_50mps/qps.png)
-![mean](./images/false_300_300_qos1_p32_50mps/mean.png)
-![p99](./images/false_300_300_qos1_p32_50mps/p99.png)
-![max](./images/false_300_300_qos1_p32_50mps/max.png)
+300_300_qos0_p32_50mps_1n_1v scenario charts：
 
-##### Graphs for the 300_300_qos1_p1024_50mps Scenario:
+| ![qps](./images/false_300_300_qos0_p32_50mps_1n_1v/qps.png) | ![mean](./images/false_300_300_qos0_p32_50mps_1n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_300_300_qos0_p32_50mps_1n_1v/p99.png) | ![max](./images/false_300_300_qos0_p32_50mps_1n_1v/max.png) |
+| ![cpu](./images/false_300_300_qos0_p32_50mps_1n_1v/cpu.png) | ![mem](./images/false_300_300_qos0_p32_50mps_1n_1v/mem.png) |
 
-![qps](./images/false_300_300_qos1_p1024_50mps/qps.png)
-![mean](./images/false_300_300_qos1_p1024_50mps/mean.png)
-![p99](./images/false_300_300_qos1_p1024_50mps/p99.png)
-![max](./images/false_300_300_qos1_p1024_50mps/max.png)
+300_300_qos1_p32_50mps_1n_1v scenario charts：
 
-#### QoS 2 Scenario
+| ![qps](./images/false_300_300_qos1_p32_50mps_1n_1v/qps.png) | ![mean](./images/false_300_300_qos1_p32_50mps_1n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_300_300_qos1_p32_50mps_1n_1v/p99.png) | ![max](./images/false_300_300_qos1_p32_50mps_1n_1v/max.png) |
+| ![cpu](./images/false_300_300_qos1_p32_50mps_1n_1v/cpu.png) | ![mem](./images/false_300_300_qos1_p32_50mps_1n_1v/mem.png) |
 
-| Scenario Combination                 | QoS  | MPS per Connection | Payload(byte) | Number of Connections (C) | Total Messages per Second | Average Response Time (ms) | P99 Response Time (ms) | Resident Memory | CPU  |
-| ------------------------ | ---- | --------- | ------------- | ------- | --------- | -------------- | ------------- | -------- | ---- |
-| 20_20_qos2_p32_50mps     | 0    | 50        | 32            | 40      | 1k        | 16             | 75            |          | 10%  |
-| 20_20_qos2_p1024_50mps   | 0    | 50        | 1024          | 40      | 1k        | 19             | 92            |          | 10%  |
-| 100_100_qos2_p32_50mps   | 0    | 50        | 32            | 200     | 5k        | 37             | 92            |          | 15%  |
-| 100_100_qos2_p1024_50mps | 0    | 50        | 1024          | 200     | 5k        | 44             | 109           |          | 15%  |
+900_900_qos0_p32_50mps_3n_1v scenario charts：
 
-##### Graphs for the 100_100_qos2_p32_50mps Scenario:
+| ![qps](./images/false_900_900_qos0_p32_50mps_3n_1v/qps.png) | ![mean](./images/false_900_900_qos0_p32_50mps_3n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_900_900_qos0_p32_50mps_3n_1v/p99.png) | ![max](./images/false_900_900_qos0_p32_50mps_3n_1v/max.png) |
+| ![cpu](./images/false_900_900_qos0_p32_50mps_3n_1v/cpu.png) | ![mem](./images/false_900_900_qos0_p32_50mps_3n_1v/mem.png) |
 
-![qps](./images/false_100_100_qos2_p32_50mps/qps.png)
-![mean](./images/false_100_100_qos2_p32_50mps/mean.png)
-![p99](./images/false_100_100_qos2_p32_50mps/p99.png)
-![max](./images/false_100_100_qos2_p32_50mps/max.png)
+900_900_qos1_p32_50mps_3n_1v scenario charts：
 
-##### Graphs for the 100_100_qos2_p1024_50mps Scenario:
+| ![qps](./images/false_900_900_qos1_p32_50mps_3n_1v/qps.png) | ![mean](./images/false_900_900_qos1_p32_50mps_3n_1v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_900_900_qos1_p32_50mps_3n_1v/p99.png) | ![max](./images/false_900_900_qos1_p32_50mps_3n_1v/max.png) |
+| ![cpu](./images/false_900_900_qos1_p32_50mps_3n_1v/cpu.png) | ![mem](./images/false_900_900_qos1_p32_50mps_3n_1v/mem.png) |
 
-![qps](./images/false_100_100_qos2_p1024_50mps/qps.png)
-![mean](./images/false_100_100_qos2_p1024_50mps/mean.png)
-![p99](./images/false_100_100_qos2_p1024_50mps/p99.png)
-![max](./images/false_100_100_qos2_p1024_50mps/max.png)
+300_300_qos0_p32_50mps_3n_3v scenario charts：
 
+| ![qps](./images/false_300_300_qos0_p32_50mps_3n_3v/qps.png) | ![mean](./images/false_300_300_qos0_p32_50mps_3n_3v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_300_300_qos0_p32_50mps_3n_3v/p99.png) | ![max](./images/false_300_300_qos0_p32_50mps_3n_3v/max.png) |
+| ![cpu](./images/false_300_300_qos0_p32_50mps_3n_3v/cpu.png) | ![mem](./images/false_300_300_qos0_p32_50mps_3n_3v/mem.png) |
+
+300_300_qos1_p32_50mps_3n_3v scenario charts：
+
+| ![qps](./images/false_300_300_qos1_p32_50mps_3n_3v/qps.png) | ![mean](./images/false_300_300_qos1_p32_50mps_3n_3v/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_300_300_qos1_p32_50mps_3n_3v/p99.png) | ![max](./images/false_300_300_qos1_p32_50mps_3n_3v/max.png) |
+| ![cpu](./images/false_300_300_qos1_p32_50mps_3n_3v/cpu.png) | ![mem](./images/false_300_300_qos1_p32_50mps_3n_3v/mem.png) |
+
+#### Cold start scenario
+
+Cold start refers to initiating tests with a heavy load on cleanSession=false immediately after the cluster starts. At
+this point, the internal storage engine within the cluster begins sharding in response to the pressure. Once an
+appropriate number of shards is achieved, it stabilizes and operates steadily.
+
+| Scenario combinations                     | QoS  | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) |
+| ---------------------------- | ---- | --------- | -------------- | ------- | --------- |
+| 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       |
+
+冷启动 scenario charts：
+
+| ![qps](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/qps.png) | ![mean](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mean.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![p99](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/p99.png) | ![max](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/max.png) |
+| ![cpu](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/cpu.png) | ![mem](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mem.png) |
+
+### million connections
+
+This scenario is designed to test BifroMQ's resource consumption when handling a large number of connections.
+
+| Scenario combinations                | cleanSession | Connection number | Connection establishment rate | cpu  | Memory(GB) |
+| ----------------------- | ------------ | ------ | ------------ | ---- | ---------- |
+| conn-tcp-1M-5K_1n_true  | true         | 1M     | 5k           | 30%  | 7.2G       |
+| conn-tcp-1M-5K_1n_false | false        | 1M     | 5k           | 40% | 13G        |
+
+conn-tcp-1M-5K_1n_true scenario charts：
+
+![conn](./images/conn-tcp-1M-5K_1n_true/conn.png)
+
+![mem](./images/conn-tcp-1M-5K_1n_true/mem.png)
+
+![cpu](./images/conn-tcp-1M-5K_1n_true/cpu.png)
+
+conn-tcp-1M-5K_1n_false scenario charts：
+
+![conn](./images/conn-tcp-1M-5K_1n_false/conn.png)
+
+![mem](./images/conn-tcp-1M-5K_1n_false/mem.png)
+
+![cpu](./images/conn-tcp-1M-5K_1n_false/cpu.png)
 
 ## System Parameter Optimization
 
-The following Kernel parameters can affect the maximum number of connections that the machine hosting BifroMQ can accept.
+The following Kernel parameters can affect the maximum number of connections that the machine hosting BifroMQ can
+accept.
 
 ### Memory
 
-* vm.max_map_count: Limits the number of VMAs (Virtual Memory Areas) that a process can have. It can be increased to 221184.
+* vm.max_map_count: Limits the number of VMAs (Virtual Memory Areas) that a process can have. It can be increased to
+  221184.
 
 ### Maximum Open Files
 
 * nofile: Specifies the maximum number of files that a single process can open.
-* nr_open: Specifies the maximum number of files that can be allocated per process, usually defaulting to 1024 * 1024 = 1048576.
+* nr_open: Specifies the maximum number of files that can be allocated per process, usually defaulting to 1024 * 1024 =
+  1048576.
 * file-max: Specifies the maximum number of files that the system kernel can open, with a default value of 185745.
 
 ### NetFilter Tuning
 
-Use `sysctl -a | grep conntrack` to view the current parameters. The following parameters determine the maximum number of connections:
+Use `sysctl -a | grep conntrack` to view the current parameters. The following parameters determine the maximum number
+of connections:
 
 * net.netfilter.nf_conntrack_buckets: The size of the hashtable buckets that record connection entries.
     * Modification command: `echo 262144 > /sys/module/nf_conntrack/parameters/hashsize`
-* net.netfilter.nf_conntrack_max: The maximum number of entries in the hashtable, generally equal to nf_conntrack_buckets * 4.
+* net.netfilter.nf_conntrack_max: The maximum number of entries in the hashtable, generally equal to
+  nf_conntrack_buckets * 4.
 * net.nf_conntrack_max: Same as net.netfilter.nf_conntrack_max.
 * net.netfilter.nf_conntrack_tcp_timeout_fin_wait: Default 120s -> Recommended 30s.
 * net.netfilter.nf_conntrack_tcp_timeout_time_wait: Default 120s -> Recommended 30s.
@@ -398,21 +562,22 @@ The following sysctl parameters can affect the performance of TCP channels under
 It is recommended to use the CentOS 7 environment for deployment and stress testing.
 
 For CentOS 6, system parameter tuning is required:
+
 * net.core.wmem_max: Maximum TCP data send window size (bytes).
-  * Modification command: `echo 'net.core.wmem_max=16777216' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.core.wmem_max=16777216' >> /etc/sysctl.conf`
 * net.core.wmem_default: Default TCP data send window size (bytes).
-  * Modification command: `echo 'net.core.wmem_default=262144' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.core.wmem_default=262144' >> /etc/sysctl.conf`
 * net.core.rmem_max: Maximum TCP data receive window size (bytes).
-  * Modification command: `echo 'net.core.rmem_max=16777216' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.core.rmem_max=16777216' >> /etc/sysctl.conf`
 * net.core.rmem_default: Default TCP data receive window size (bytes).
-  * Modification command: `echo 'net.core.rmem_default=262144' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.core.rmem_default=262144' >> /etc/sysctl.conf`
 * net.ipv4.tcp_rmem: Memory usage of the socket receive buffer - minimum, warning, maximum.
-  * Modification command: `echo 'net.ipv4.tcp_rmem= 1024 4096 16777216' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.ipv4.tcp_rmem= 1024 4096 16777216' >> /etc/sysctl.conf`
 * net.ipv4.tcp_wmem: Memory usage of the socket send buffer - minimum, warning, maximum.
-  * Modification command: `echo 'net.ipv4.tcp_wmem= 1024 4096 16777216' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.ipv4.tcp_wmem= 1024 4096 16777216' >> /etc/sysctl.conf`
 * net.core.optmem_max: The maximum buffer size (in bytes) allowed for each socket.
-  * Modification command: `echo 'net.core.optmem_max = 16777216' >> /etc/sysctl.conf`
+    * Modification command: `echo 'net.core.optmem_max = 16777216' >> /etc/sysctl.conf`
 * net.core.netdev_max_backlog: The length of the queue into which network device places requests.
-  * Modification command:`echo 'net.core.netdev_max_backlog = 16384' >> /etc/sysctl.conf`
+    * Modification command:`echo 'net.core.netdev_max_backlog = 16384' >> /etc/sysctl.conf`
 
 After making the modifications, use `sysctl -p` and restart the server for them to take effect.
