@@ -32,7 +32,7 @@ The architectural design of BifroMQ is based on "first principles," analyzing th
 
 **Firstly**, apart from the implementation logic of the MQTT protocol itself, the various functional service modules of BifroMQ are built on a set of decentralized underlying cluster construction capabilities (base-cluster), as shown in the following figure:
 
-![Modular architecture of BifroMQ's decentralized cluster](./images/bifromq-architecture-1.png)
+![Modular architecture of BifroMQ's decentralized cluster](images/2023-09-06-bifromq-architecture-overview/bifromq-architecture-1.png)
 
 <p class="text-gray-400 text-center">Modular architecture of BifroMQ's decentralized cluster</p>
 
@@ -54,8 +54,8 @@ The benefits of this architecture include:
 
 The collaboration relationship between these modules is shown in the following figures:
 
-![BifroMQ Module Collaboration Relationship 1](./images/bifromq-architecture-2-1.png)
-![BifroMQ Module Collaboration Relationship 2](./images/bifromq-architecture-2-2.png)
+![BifroMQ Module Collaboration Relationship 1](images/2023-09-06-bifromq-architecture-overview/bifromq-architecture-2-1.png)
+![BifroMQ Module Collaboration Relationship 2](images/2023-09-06-bifromq-architecture-overview/bifromq-architecture-2-2.png)
 
 <p class="text-gray-400 text-center">BifroMQ Module Collaboration Relationship</p>
 
@@ -70,7 +70,7 @@ Therefore, the standard for judging "whether BifroMQ has a certain function or w
 
 Of course, the integrability of BifroMQ is also reflected in the integration of the middleware itself with various business systems, mainly including three mechanisms: Plugin, API, and Metrics:
 
-![Typical Scenario Integration Architecture](./images/bifromq-architecture-3.png)
+![Typical Scenario Integration Architecture](images/2023-09-06-bifromq-architecture-overview/bifromq-architecture-3.png)
 
 <p class="text-gray-400 text-center">Typical Scenario Integration Architecture</p>
 

@@ -24,7 +24,7 @@ mqttServerConfig:
 clusterConfig:
   # 集群环境, 集群成员在相同环境下可以互通
   env: "Test"
-  # 集群内部节点的主机地址，如果未填写，则会获取该节点的地址。
+  # 集群间通讯使用的主机地址，如果未填写，则会尝试获取该节点的Site-Local地址。
   host:
   # 用于集群内部节点信息的发送的端口号。如果未填写，则系统会找到一个未占用的端口号进行使用。
   # 对于种子节点，推荐指定端口号来简化构建集群的过程
@@ -39,7 +39,7 @@ clusterConfig.seedEndpoints: N1:${PORT},N2:${PORT},N3:${PORT}`。有关详细的
 ## 设置Leader节点
 运行脚本`./bin/standalone.sh start`来启动leader节点。
 ## 设置Follower节点
-* 对于跟随者，将`bootstrap`配置设置为`fals`。
+* 对于跟随者，将`bootstrap`配置设置为`false`。
 * 运行脚本`./bin/standalone.sh start`来启动follower节点。
 ## 检查集群部署
 运行完follower的启动脚本后，节点将形成一个集群，并在各自的机器上生成以下日志：`AgentHost joined seedEndpoint: ${seedEndpoints}`。

@@ -18,6 +18,7 @@
   "dependencies": {
     "@docsly/react": "^1.9.1",
     "@docusaurus/core": "2.4.1",
+    "@docusaurus/plugin-ideal-image": "^2.4.3",
     "@docusaurus/preset-classic": "2.4.1",
     "@docusaurus/theme-common": "2.4.1",
     "@heroicons/react": "^2.0.18",
