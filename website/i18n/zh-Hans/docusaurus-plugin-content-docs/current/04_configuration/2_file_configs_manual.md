@@ -5,410 +5,350 @@ sidebar_position: 2
 # 配置文件手册
 
 ## 简介
+本文描述了BifroMQ的配置参数。
 
-BifroMQ 配置文件参数介绍。
-
-### host
-
-- 类型：String
-
-- 默认值：0.0.0.0
-
-- 描述：mqtt-server绑定的地址，用于对外提供mqtt接入点。
-
-### tcpPort
-
-- 类型：int
-
-- 默认值：1883
-
-- 描述：mqtt-server绑定的端口，用于对外暴露mqtt tcp接入端口。
-
-### tlsPort
-
-- 类型：int
-
-- 默认值：1884
-
-- 描述：mqtt-server绑定的端口，用于对外暴露mqtt tls接入端口。
-
-### wsPort
-
-- 类型：int
-
-- 默认值：80
-
-- 描述：mqtt-server绑定的端口，用于对外暴露mqtt websocket接入端口。
-
-### wssPort
-
-- 类型：int
-
-- 默认值：1883
-
-- 描述：mqtt-server绑定的端口，用于对外暴露mqtt websocket security接入端口。
-
-### wsPath
-
-- 类型：String
-
-- 默认值：/mqtt
-
-- 描述：mqtt-server中ws及wss接入路径。
-
-### tcpEnabled
-
+### bootstrap
 - 类型：Boolean
-
-- 默认值：true
-
-- 描述：是否在mqtt-server中构建tcp接入能力。
-
-### tlsEnabled
-
-- 类型：Boolean
-
 - 默认值：false
-
-- 描述：是否在mqtt-server中构建tls接入能力。
-
-### wsEnabled
-
-- 类型：Boolean
-
-- 默认值：false
-
-- 描述：是否在mqtt-server中构建ws接入能力。
-
-### wssEnabled
-
-- 类型：Boolean
-
-- 默认值：false
-
-- 描述：是否在mqtt-server中构建wss接入能力。
-
-### connTimeoutSec
-
-- 类型：Integer
-
-- 默认值：20
-
-- 描述：从TCP连接建立，到Connect动作完成，能够容忍的超时时间。超过限制后，服务端会主动断开此次连接。
-
-### maxConnPerSec
-
-- 类型：Integer
-
-- 默认值：1000
-
-- 描述：每秒接受的最大Connect频率，通过令牌桶进行限制，超限的连接会在后续进行断开。
-
-### maxDisconnPerSec
-
-- 类型：Integer
-
-- 默认值：1000
-
-- 描述：每秒接受的最大DisConnect频率，通过令牌桶进行限制。
-
-### maxMsgByteSize
-
-- 类型：Integer
-
-- 默认值：256 * 1024
-
-- 描述：允许的最大mqtt packet大小。
-
-### maxResendTimes
-
-- 类型：Integer
-
-- 默认值：5
-
-- 描述：QoS1及QoS2消息的最大重发次数，超过后会丢弃。
-
-### maxConnBandwidth
-
-- 类型：Integer
-
-- 默认值：512 * 1024
-
-- 描述：单个MQTT连接允许的最大带宽，入向和出向独立计算。
-
-### defaultKeepAliveSec
-
-- 类型：Integer
-
-- 默认值：300
-
-- 描述：默认的MQTT连接keepAlive时长，client未主动设置时采用此值。
-
-### qos2ConfirmWindowSec
-
-- 类型：Integer
-
-- 默认值：5
-
-- 描述：内部为QoS2消息缓存messageId的过期时间。
+- 描述：如果节点负责集群引导，则该值应设置为true。否则，应设置为false。注意：在集群部署中，必须存在**仅一个**引导节点。
 
 ### authProviderFQN
-
 - 类型：String
-
-- 默认值：Null
-
-- 描述：通过Pf4j加载生效的authProvider的名称，如果未配置，采用内置DefaultAuthProvider。
+- 默认值：null
+- 描述：指定要通过Pf4j加载的authProvider的名称。如果未配置，则将使用内置的DefaultAuthProvider。
 
 ### settingProviderFQN
-
 - 类型：String
+- 默认值：null
+- 描述：指定要通过Pf4j加载的settingProvider的名称。如果未配置，则将使用内置的DefaultSettingProvider。
 
-- 默认值：Null
+### clusterConfig
+#### env
+- 类型：String
+- 默认值：null
+- 描述：集群环境。注意：具有不同环境的集群彼此之间相互依赖。此外，集群环境不能为null或空字符串。
 
-- 描述：通过Pf4j加载生效的settingProviderFQN的名称，如果未配置，采用内置DefaultSettingProvider。
+#### host
+- 类型：String
+- 默认值：null
+- 描述：主机地址
 
-### eventCollectorReportBufferSize
-
+#### port
 - 类型：Integer
+- 默认值：0
+- 描述：主机端口号。
 
-- 默认值：8192
+#### seedEndpoints
+- 类型：String
+- 默认值：null
+- 描述：用于消息扩散的种子节点（ip:port的形式）
 
-- 描述：内部EventCollectorManager中Disruptor的ringBufferSize。
+#### clusterDomainName
+- 类型：String
+- 默认值：null
+- 描述：代理主机集群的域名。
 
-### settingProviderProvideBufferSize
-
+### mqttServerConfig
+#### connTimeoutSec
 - 类型：Integer
+- 默认值：20
+- 描述：从建立TCP连接到完成连接操作的可容忍超时持续时间。如果超出此限制，服务器将主动断开连接。
 
-- 默认值：2048
+#### maxConnPerSec
+- 类型：Integer
+- 默认值：2000
+- 描述：每秒接受的Connect操作的最大频率。超出此限制的连接将通过令牌桶受限，并随后将断开连接。
 
-- 描述：内部SettingProviderManager中Disruptor的ringBufferSize。
+#### maxDisconnPerSec
+- 类型：Integer
+- 默认值：1000
+- 描述：每秒接受的Disconnect操作的最大频率，通过令牌桶控制。
 
-### brokerSSLCtxConfig.type
+#### maxMsgByteSize
+- 类型：Integer
+- 默认值：256 * 1024
+- 描述：数据包的最大允许大小。
 
+#### maxResendTimes
+- 类型：Integer
+- 默认值：5
+- 描述：具有QoS1和QoS2的消息的最大重发次数。超过此限制后，消息将被丢弃。
+
+#### maxConnBandwidth
+- 类型：Integer
+- 默认值：512 * 1024
+- 描述：单个连接允许的最大带宽，分别计算入站和出站流量。
+
+#### defaultKeepAliveSec
+- 类型：Integer
+- 默认值：300
+- 描述：连接的默认保持活动持续时间。当客户端未主动设置时，使用此值。
+
+#### qos2ConfirmWindowSec
+- 类型：Integer
+- 默认值：5
+- 描述：用于QoS2消息内部缓存messageId的过期时间。
+
+#### bossELGThreads
+- 类型：Integer
+- 默认值：1
+- 描述：Netty中处理连接的线程数。
+
+#### workerELGThreads
+- 类型：Integer
+- 默认值：可用处理器数量的1/2，最小值为2。
+- 描述：处理通道的消息处理线程数。
+
+### tcpListener
+#### enable
+- 类型：Boolean
+- 默认值：true
+- 描述：是否在mqtt-server内建立TCP访问能力。
+
+#### host
 - 类型：String
+- 默认值：0.0.0.0
+- 描述：mqtt-server绑定的地址。用于提供外部mqtt访问点。
 
-- 默认值：server
+#### port
+- 类型：Integer
+- 默认值：1883
+- 描述：mqtt-server绑定的端口，用于向外部公开mqtt TCP访问端口。
 
-- 描述：固定值，无需修改。
+### tlsListener
+#### enable
+- 类型：Boolean
+- 默认值：false
+- 描述：是否在mqtt-server内建立TLS访问能力。
 
-### brokerSSLCtxConfig.clientAuth
-
+#### host
 - 类型：String
+- 默认值：0.0.0.0
+- 描述：mqtt-server绑定的地址，用于提供外部mqtt访问点。
 
+#### port
+- 类型：Integer
+- 默认值：1884
+- 描述：mqtt-server绑定的端口，用于向外部公开mqtt TLS访问端口。
+
+#### sslConfig
+##### certFile
+- 类型：String
+- 默认值：null
+- 描述：指定服务器在mqtt-server模块提供TLS和WSS功能时所使用的公钥证书文件名。它将尝试从“CONF_DIR”系统参数指定的目录加载，或者从当前classpath加载。
+
+##### keyFile
+- 类型：String
+- 默认值：null
+- 描述：指定服务器在mqtt-server模块提供TLS和WSS功能时所使用的私钥证书文件名。它将尝试从“CONF_DIR”系统参数指定的目录加载，或者从当前classpath加载。
+
+##### trustCertsFile
+- 类型：String
+- 默认值：null
+- 描述：指定服务器在mqtt-server模块提供TLS和WSS功能时所使用的根证书文件名。它将尝试从“CONF_DIR”系统参数指定的目录加载，或者从当前classpath加载。
+
+##### clientAuth
+- 类型：String
 - 默认值：OPTIONAL
+- 描述：指定在mqtt-server与客户端建立SSL连接时是否需要客户端身份验证。可能的值包括：
+* NONE：不需要验证
+* OPTIONAL：服务器请求客户端验证，但如果客户端不提供证书，则不会失败。
+* REQUIRE：服务器需要客户端验证，如果客户端不提供证书则会失败。
 
-- 描述：用于设定在mqtt-server与client建立ssl连接时，是否需要验证客户端身份。可选值如下：
+### wsListener
+#### enable
+- 类型：Boolean
+- 默认值：true
+- 描述：是否在mqtt-server内建立WebSocket访问能力。
 
-* NONE：无需验证
-* OPTIONAL：服务端会请求验证客户端身份，如果客户端不提供证书也不会失败。
-* REQUIRE：服务端要求验证客户端身份，如果客户端不提供会失败。
-
-### brokerSSLCtxConfig.certFile
-
+#### host
 - 类型：String
+- 默认值：0.0.0.0
+- 描述：mqtt-server绑定的地址，用于提供外部mqtt访问点。
 
-- 默认值：Null
-
-- 描述：mqtt-server模块在对外提供tls及wss接入能力时，服务端所用证书公钥文件名称。会尝试从系统参数“CONF_DIR”指定的目录下加载，或者从当前classpath下加载。
-
-### brokerSSLCtxConfig.keyFile
-
-- 类型：String
-
-- 默认值：Null
-
-- 描述：mqtt-server模块在对外提供tls及wss接入能力时，服务端所用证书私钥文件名称。会尝试从系统参数“CONF_DIR”指定的目录下加载，或者从当前classpath下加载。
-
-### brokerSSLCtxConfig.trustCertsFile
-
-- 类型：String
-
-- 默认值：Null
-
-- 描述：mqtt-server模块在对外提供tls及wss接入能力时，服务端所用根证书文件名称。会尝试从系统参数“CONF_DIR”指定的目录下加载，或者从当前classpath下加载。
-
-### distWorkerConfig.dataEngineConfig.type
-
-- 类型：String
-
-- 默认值：Null
-
-- 描述：dist-worker模块中的BaseKV存储使用的dataEngine类型，可选：
-
-* rocksDB：具有持久化能力，重启后可恢复状态。
-* memory：无持久化能力，重启数据丢失。
-
-### distWorkerConfig.dataEngineConfig.gcIntervalInSec
-
+#### port
 - 类型：Integer
+- 默认值：8080
+- 描述：mqtt-server绑定的端口，用于向外部公开WebSocket访问端口。
 
+#### wsPath
+- 类型：String
+- 默认值：/mqtt
+- 描述：mqtt-server中WebSocket和WSS的访问路径。
+
+### wssListener
+#### enable
+- 类型：Boolean
+- 默认值：false
+- 描述：是否在mqtt-server内建立WebSocket Secure (WSS)访问能力。
+
+#### host
+- 类型：String
+- 默认值：0.0.0.0
+- 描述：mqtt-server绑定的地址，用于提供外部mqtt访问点。
+
+#### port
+- 类型：Integer
+- 默认值：8443
+- 描述：mqtt-server绑定的端口，用于向外部公开WebSocket Secure (WSS)访问端口。
+
+#### wsPath
+- 类型：String
+- 默认值：/mqtt
+- 描述：mqtt-server中WebSocket和WSS的访问路径。
+
+#### sslConfig
+- 描述：与tlsListener.sslConfig相同。
+
+## rpcClientConfig
+### workerThreads
+- 类型：Integer
+- 默认值：可用处理器核心数的1/8，最小值为2。
+- 描述：RPC客户端中线程的数量。
+
+### sslConfig
+#### certFile
+- 类型：String
+- 默认值：null
+- 描述：指定用于RPC客户端的公钥证书文件名。
+
+#### keyFile
+- 类型：String
+- 默认值：null
+- 描述：指定用于RPC客户端的私钥证书文件名。
+
+#### trustCertsFile
+- 类型：String
+- 默认值：null
+- 描述：指定用于RPC客户端的根证书文件名。
+
+## rpcServerConfig
+### host
+- 类型：String
+- 默认值：与mqtt-server主机地址相同。
+- 描述：rpc-server的主机地址。
+### port
+- 类型：Integer
+- 默认值：0
+- 描述：rpc-server的端口。
+### workerThreads
+- 类型：Integer
+- 默认值：可用处理器核心数的1/4，最小值为2。
+- 描述：rpc-server中线程的数量。
+### sslConfig
+- 描述：与`tlsListener.sslConfig`具有相同的字段和含义。
+## baseKVRpcServerConfig
+- 描述：与`rpcServerConfig`具有相同的字段和含义。
+## stateStoreConfig
+### queryThreads
+- 类型：Integer
+- 默认值：可用处理器的1/3，最小值为2。
+- 描述：用于执行BaseKV存储的dist-worker、inbox-store和retain-store模块中的查询类型请求的核心线程和最大线程数。
+### tickerThreads
+- 类型：Integer
+- 默认值：可用处理器的1/20，最小值为1。
+- 描述：用于执行dist-worker、inbox-store和retain-store模块中的BaseKV存储周期性tick操作的核心线程和最大线程数。
+### bgWorkerThreads
+- 类型：Integer
+- 默认值：可用处理器的1/4，最小值为1。
+- 描述：用于执行后台操作的核心线程和最大线程数。
+### distWorkerConfig
+#### queryPipelinePerStore
+- 类型：Integer
+- 默认值：1000
+- 描述：每个`BaseKV store`中queryPipeline的数量。
+#### compactWALThreshold
+- 类型：Integer
+- 默认值：2000
+- 描述：在执行压缩操作之前的最大日志数。
+#### dataEngineConfig
+##### type
+- 类型：String
+- 默认值：rocksdb
+- 描述：指定在 dist-worker模块的BaseKV存储中使用的数据引擎类型。选项包括：
+* rocksDB：提供持久性功能，可以在重新启动后恢复状态。
+* memory：无持久性，重新启动后数据将丢失。
+##### gcIntervalInSec
+- 类型：Integer
 - 默认值：300
-
-- 描述：dist-worker模块中的BaseKV使用的dataEngine进行GC的间隔。
-
-### distWorkerConfig.dataEngineConfig.dataPathRoot
-
+- 描述：指定dist-worker模块中BaseKV的数据引擎执行垃圾回收的间隔（以秒为单位）。
+##### dataPathRoot
 - 类型：String
-
-- 默认值：Null
-
-- 描述：type指定rocksDB时生效。dist-worker模块中dataEngine存储数据文件的目录，若配置为绝对路径则直接加载，若为相对路径则会依次尝试在系统参数“DATA_DIR”及“user.dir”对应的目录下加载。
-
-### distWorkerConfig.dataEngineConfig.compactMinTombstoneKeys
-
-- 类型：Integer
-
-- 默认值：50,000
-
-- 描述：type指定rocksDB时生效。
-
-### distWorkerConfig.dataEngineConfig.compactTombstonePercent
-
+- 默认值：null
+- 描述：当类型设置为`rocksDB`时有效。指定dist-worker模块的dataEngine存储数据文件的目录。如果配置为绝对路径，将直接加载；如果配置为相对路径，将尝试从由`DATA_DIR`和`user.dir`系统参数指定的目录加载。
+##### compactMinTombstoneKeys
+- 类型：String
+- 默认值：200,000
+- 描述：当`type`设置为`rocksDB`时有效。
+##### compactTombstonePercent
 - 类型：Double
-
 - 默认值：0.3
-
-- 描述：type指定rocksDB时生效。当dataEngine所用的rocksDB中某个Range删除超过compactMinTombstoneKeys数量的keys，并且已删除的keys数量占总数的比例超过compactTombstonePercent时，对这个Range空间执行compact操作。
-
-### distWorkerConfig.walEngineConfig.type
-
+- 描述：当`type`设置为`rocksDB`时有效。当数据引擎使用的rocksDB中特定范围内已删除的密钥数超过`compactMinTombstoneKeys`，并且已删除密钥占总数的比例超过`compactTombstonePercent`时，将对此范围执行压缩操作。
+##### asyncWALFlush
+- 类型：Boolean
+- 默认值：false
+- 描述：仅适用于WAL引擎，日志将以异步方式刷新。
+##### fsyncWAL
+- 类型：Boolean
+- 默认值：false
+- 描述：仅适用于WAL引擎。如果此标志为 true，写入速度会较慢。如果此标志为false，且机器崩溃，某些最近的写入可能会丢失。
+#### walEngineConfig
+- 描述：类似于数据引擎。对于rocksdb配置，`compactMinTombstoneKeys`的默认值为 10,000。
+#### balanceConfig
+##### scheduleIntervalInMs
+- 类型：Long
+- 默认值：5,000
+- 描述：BaseKV 范围平衡器的调度间隔。
+##### balancers
+- 类型：List of String
+- 默认值：com.baidu.bifromq.dist.worker.balance.ReplicaCntBalancerFactory
+- 描述：BaseKV Range Balancers的FQNs。
+### inboxStoreConfig
+#### purgeDelaySeconds
+- 类型：Integer
+- 默认值：180
+- 描述：为过期的inbox提供一些延迟。
+#### queryPipelinePerStore
+- 类型：Integer
+- 默认值：100
+- 描述：每个`BaseKV store`中queryPipeline的数量。
+#### 其他字段
+- 描述：其他字段具有与dist workers相同的含义。
+### retainStoreConfig
+- 描述：字段与dist workers具有相同的含义。
+## apiServerConfig
+### enable
+- 类型：Boolean
+- 默认值：true
+- 描述：是否在api-service中构建HTTP访问功能。
+### host
 - 类型：String
-
-- 默认值：Null
-
-- 描述：dist-worker模块中的BaseKV存储使用的walEngine类型，可选：
-
-* rocksDB：具有持久化能力，重启后可恢复状态。
-* memory：无持久化能力，重启数据丢失。
-
-### distWorkerConfig.walEngineConfig.gcIntervalInSec
-
+- 默认值：与mqtt-server主机地址相同。
+- 描述：api-service的主机地址。
+### httpPort
+- 类型：整数
+- 默认值：8091
+- 描述：api-service的HTTP端口。
+### apiBossThreads
 - 类型：Integer
-
-- 默认值：300
-
-- 描述：dist-worker模块中的BaseKV使用的walEngine进行GC的间隔。
-
-### distWorkerConfig.walEngineConfig.dataPathRoot
-
+- 默认值：1
+- 描述：Netty中处理连接的线程数。
+### apiWorkerThreads
+- 类型：Integer
+- 默认值：2
+- 描述：处理消息处理通道的线程数。
+### httpsListenerConfig
+#### enable
+- 类型：Boolean
+- 默认值：false
+- 描述：是否在api-service中构建HTTPS访问功能。
+#### host
 - 类型：String
-
-- 默认值：Null
-
-- 描述：type指定rocksDB时生效。dist-worker模块中walEngine存储数据文件的目录，若配置为绝对路径则直接加载，若为相对路径则会依次尝试在系统参数“DATA_DIR”及“user.dir”对应的目录下加载。
-
-### distWorkerConfig.walEngineConfig.compactMinTombstoneKeys
-
+- 默认值：与mqtt-server主机地址相同。
+- 描述：api-service的主机地址。
+#### port
 - 类型：Integer
-
-- 默认值：50,000
-
-- 描述：type指定rocksDB时生效。
-
-### distWorkerConfig.walEngineConfig.compactTombstonePercent
-
-- 类型：Double
-
-- 默认值：0.3
-
-- 描述：type指定rocksDB时生效。当walEngine所用的rocksDB中某个Range删除超过compactMinTombstoneKeys数量的keys，并且已删除的keys数量占总数的比例超过compactTombstonePercent时，对这个Range空间执行compact操作。
-
-### distWorkerConfig.distWorkerClientConfig.execPipelinePerServer
-
-- 类型：Integer
-
-- 默认值：5
-
-- 描述：dist-server跟dist-worker之间，预先建立好的exec请求pipeline的数量。
-
-### distWorkerConfig.distWorkerClientConfig.queryPipelinePerServer
-
-- 类型：Integer
-
-- 默认值：5
-
-- 描述：dist-server跟dist-worker之间，预先建立好的query请求pipeline的数量。
-
-### inboxStoreConfig.dataEngineConfig.*
-
-描述：结构同distWorkerConfig.dataEngineConfig，不再赘述。
-
-### inboxStoreConfig.walEngineConfig.*
-
-描述：结构同distWorkerConfig.walEngineConfig，不再赘述。
-
-### inboxStoreConfig.inboxStoreClientConfig.*
-
-描述：结构同distWorkerConfig.distWorkerClientConfig，不再赘述。
-
-### retainStoreConfig.dataEngineConfig.*
-
-描述：结构同distWorkerConfig.dataEngineConfig，不再赘述。
-
-### retainStoreConfig.walEngineConfig.*
-
-描述：结构同distWorkerConfig.walEngineConfig，不再赘述。
-
-### retainStoreConfig.inboxStoreClientConfig.*
-
-描述：结构同distWorkerConfig.distWorkerClientConfig，不再赘述。
-
-### executorConfig.mqttWorkerThreads
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数
-
-- 描述：mqtt-server中构建netty server时的workerGroup的大小。
-
-### executorConfig.ioClientParallelism
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数 / 3，最小为2
-
-- 描述：请求dist-worker、inbox-store、retain-store中BaseKV存储中的数据时，请求端的执行线程池核心线程数和最大线程数。
-
-### executorConfig.ioServerParallelism
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数 / 3，最小为2
-
-- 描述：内部dist-server、inbox-server、retain-server模块中服务端执行线程池的核心线程数和最大线程数。
-
-### executorConfig.queryThreads
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数 / 4，最小为2
-
-- 描述：dist-worker、inbox-store、retain-store中的BaseKV存储执行query类型请求所用线程池的核心线程数和最大线程数。
-
-### executorConfig.mutationThreads
-
-- 类型：Integer
-
-- 默认值：3
-
-- 描述：dist-worker、inbox-store、retain-store中的BaseKV存储内部所用的异步回调线程池的核心线程数和最大线程数。
-
-### executorConfig.tickerThreads
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数 / 20，最小为1
-
-- 描述：dist-worker、inbox-store、retain-store中的BaseKV存储内部执行定时tick动作所用线程池的核心线程数和最大线程数。
-
-### executorConfig.bgWorkerThreads
-
-- 类型：Integer
-
-- 默认值：当前CPU可用核数 / 20，最小为1
-
-- 描述：dist-worker、inbox-store、retain-store中的BaseKV存储内部执行background动作所用线程池的核心线程数和最大线程数。
-
-
-
+- 默认值：8090
+- 描述：api-service的HTTPS端口。
+#### sslConfig
+- 描述：与 `tlsListener.sslConfig` 具有相同的字段和含义。
