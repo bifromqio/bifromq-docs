@@ -23,9 +23,6 @@ const config = {
   onBrokenMarkdownLinks: 'warn',
 
   trailingSlash: true,
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'zh-Hans'],
@@ -33,25 +30,30 @@ const config = {
 
   presets: [
     [
-      'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
+      "docusaurus-preset-openapi",
+      /** @type {import('docusaurus-preset-openapi').Options} */
       ({
         docs: {
-          showLastUpdateTime: false,
-          sidebarPath: require.resolve('./sidebars.js'),
+          sidebarPath: require.resolve("./sidebars.js"),
+          // Please change this to your repo.
           editUrl:
-            'https://github.com/baidu/bifromq-docs/tree/master/website',
-          editLocalizedFiles: true,
+              "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '2.0.0',
+              path: '2.0.0',
+            },
+          },
         },
         blog: {
           showReadingTime: true,
-          blogSidebarCount: 0,
+          // Please change this to your repo.
           editUrl:
-            'https://github.com/baidu/bifromq-docs/tree/master/website/',
-          editLocalizedFiles: true,
+              "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve("./src/css/custom.css"),
         },
       }),
     ],
@@ -91,6 +93,7 @@ const config = {
             position: 'right',
             label: 'Docs',
           },
+          { to: "/api", label: "OpenAPI", position: "right" },
           {
             to: '/blog',
             label: 'Blog',
