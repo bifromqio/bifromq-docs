@@ -16,13 +16,13 @@ Since the first release of BifroMQ, it has gained wide attention from the commun
 <!--truncate-->
 
 ## TLDR:
-* Installation package [link](https://github.com/baidu/bifromq/releases/tag/v2.0.0) and installation [instructions](/docs/2.0.0/deploy/cluster/)
+* Installation [package](https://github.com/baidu/bifromq/releases/tag/v2.0.0) and Deployment [instructions](/docs/2.0.0/deploy/cluster/)
 * Test [report](/docs/2.0.0/test_report/test_report/)
 * API [documentation](/docs/2.0.0/user_guide/API/api/)
 
 ## Overall Structure of the Standard Cluster
 In a previous architecture overview [article](2023-09-06-bifromq-architecture-overview.md), we mentioned that BifroMQ logically divides MQTT functionalities into several sub-services, each corresponding to a critical workload:
-* bifromq-mqtt: Responsible for the MQTT protocol connection workloads.
+* bifromq-mqtt: Responsible for MQTT protocol connection workloads.
 * bifromq-dist: Manages subscription and message routing distribution workloads.
 * bifromq-inbox: Handles offline message queues within persistent sessions.
 * bifromq-retain: Manages the storage and retrieval of Retain messages.
@@ -34,7 +34,7 @@ From a deployment perspective, BifroMQ StandardCluster encapsulates these indepe
 *Note: In all illustrations in this article, the text within brackets, "bifromq-xxx," corresponds to the module names in the code.*
 
 ## Horizontal Scaling of Message Distribution Capability
-In the Standard Cluster mode, the Dist Service module within each node process forms a logically partitioned subset cluster of workloads (Dist-SubCluster). Dist Service stores subscription information in a built-in persistence engine and synchronizes routing information between nodes using the persistence engine's distributed capabilities. In Standard Cluster mode, horizontal scaling of message distribution capability can be achieved by adding nodes, especially when CleanSession is set to True (see [test report](/docs/2.0.0/test_report/test_report/)).
+In the Standard Cluster mode, the Dist Service module within each node process forms a logically partitioned subset cluster of workloads (Dist-SubCluster). Dist Service stores subscription information in a built-in persistence engine and synchronizes routing information between nodes using the persistence engine's distributed capabilities. In Standard Cluster mode, horizontal scaling of message distribution capability can be achieved by adding nodes, especially when CleanSession is set to True (see [test report](/zh-Hans/docs/next/test_report/test_report/)).
 
 <img src={DistSubCluster} style={{width: 700}} />
 
@@ -53,7 +53,7 @@ As previously mentioned, in a Standard Cluster deployment, the Inbox Service wit
 <img src={LoadBasedSplitter} style={{width: 400}} />
 
 ## HTTP API Module
-BifroMQ StandardCluster introduces the HTTP API feature. Each cluster node can open an API access port through configuration. BifroMQ HTTP API is a stateless global interface designed to support the integration of management control logic at the business level. Accessing the API of any node allows operations on the entire cluster. For more details, please refer to [this link](/docs/2.0.0/user_guide/API/api/).
+BifroMQ StandardCluster introduces the HTTP API feature. Each cluster node can open an API access port through configuration. BifroMQ HTTP API is a stateless global interface designed to support the integration of management control logic at the business level. Accessing the API of any node allows operations on the entire cluster. For more details, please refer to [this link](/zh-Hans/docs/next/user_guide/API/api/).
 
 <img src={APIService} style={{width: 700}} />
 
@@ -64,7 +64,7 @@ In a Standard Cluster deployment, a single node possesses complete MQTT protocol
    For cases where workloads are complex and generated centrally in terms of time, we recommend that users perform load testing to determine the optimal resource configuration and parameter settings for a single BifroMQ Standard Cluster cluster or consider using multiple BifroMQ Standard Clusters to handle different types of business workloads. Additionally, you can reach out to us for support with BifroMQ Independent-Workload Cluster in the BifroMQ commercial version.
 
 ## Deployment and Operations
-In a previous BifroMQ technical architecture article, we mentioned that BifroMQ clusters are built on a decentralized technology (base-cluster), eliminating the need for external node registration and discovery services. As a result, the deployment process for building a BifroMQ Standard Cluster is straightforward (for detailed instructions, please refer to [this link](/docs/2.0.0/deploy/cluster/)). It only requires designating any node in a cluster as a seed node to enable the addition of new nodes. Furthermore, BifroMQ includes self-healing capabilities in the event of cluster partitioning, greatly simplifying operational tasks during network partition and other failures.
+In a previous BifroMQ technical architecture article, we mentioned that BifroMQ clusters are built on a decentralized technology (base-cluster), eliminating the need for external node registration and discovery services. As a result, the deployment process for building a BifroMQ Standard Cluster is straightforward (for detailed instructions, please refer to [this link](/zh-Hans/docs/next/deploy/cluster/)). It only requires designating any node in a cluster as a seed node to enable the addition of new nodes. Furthermore, BifroMQ includes self-healing capabilities in the event of cluster partitioning, greatly simplifying operational tasks during network partition and other failures.
 
 ## Future Outlook
 The BifroMQ team adheres to a neutral technology philosophy, dedicated to the large-scale implementation of the MQTT protocol, as well as improving reliability and maintainability. We look forward to more community participation and in-depth user feedback to collectively advance this technology. Additionally, you can join the developer community by scanning the QR code below
