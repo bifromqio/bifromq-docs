@@ -27,6 +27,7 @@ import QRCode from '../../../static/img/qrcode.png';
 * bifromq-dist：负责订阅和消息路由分发负载
 * bifromq-inbox：负责持久会话中的离线消息队列负载
 * bifromq-retain：负责 Retain 消息存取负载
+
 从部署的角度看，BifroMQ StandardCluster是将这些独立负载的服务模块"封装"到一个节点服务进程的集群模式，从逻辑上来说，这是对 Standalone 运行模式的抽象（BifroMQ Standalone 可以看作是单个节点的 BifroMQ StandardCluster）。与其他支持集群的 MQTT Broker 不同，BifroMQ 内置了分布式持久化功能，因此单个 BifroMQ 节点是"有状态的"（Stateful）。
 
 <img src={StandardCluster} style={{width: 700}} />
