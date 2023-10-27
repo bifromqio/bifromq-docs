@@ -31,10 +31,11 @@ import QRCode from '../../../static/img/qrcode.png';
 从部署的角度看，BifroMQ StandardCluster是将这些独立负载的服务模块"封装"到一个节点服务进程的集群模式，从逻辑上来说，这是对 Standalone 运行模式的抽象（BifroMQ Standalone 可以看作是单个节点的 BifroMQ StandardCluster）。与其他支持集群的 MQTT Broker 不同，BifroMQ 内置了分布式持久化功能，因此单个 BifroMQ 节点是"有状态的"（Stateful）。
 
 <img src={StandardCluster} style={{width: 700}} />
+
 *注：本文所有插图中括号内的`bifromq-xxx`，即为代码中对应的模块名称*
 
 ## 消息分发能力的水平扩展
-在 StandardCluster 集群模式下，每个节点进程内的 Dist Service 模块构成了逻辑上的负载子集群（Dist-SubCluster）。Dist Service 将订阅信息存储在内置的持久化引擎中，并通过持久化引擎的分布式功能在节点之间同步路由信息。在 StandardCluster 模式下，通过增加节点的方式，可以实现消息分发能力的水平扩展，特别是在 CleanSession 为 True 的情况下，这一点非常明显（详见：[测试报告](/zh-Hans/docs/next/test_report/test_report/)）。
+在 StandardCluster 集群模式下，每个节点进程内的 Dist Service 模块构成了逻辑上的负载子集群（Dist-SubCluster）。Dist Service 将订阅信息存储在内置的持久化引擎中，并通过持久化引擎的分布式功能在节点之间同步路由信息。在 StandardCluster 模式下，通过增加节点的方式，可以实现消息分发能力的水平扩展，特别是在 CleanSession 为 True 的情况下，这一点非常明显（详见：[测试报告](/zh-Hans/docs/2.0.0/test_report/test_report/)）。
 
 <img src={DistSubCluster} style={{width: 700}} />
 
@@ -53,7 +54,7 @@ import QRCode from '../../../static/img/qrcode.png';
 <img src={LoadBasedSplitter} style={{width: 400}} />
 
 ## HTTP API模块
-BifroMQ StandardCluster 版本同时引入了 HTTP API 功能。每个集群节点都可以通过配置开放 API 访问端口。BifroMQ HTTP API 是无状态的全局接口，旨在支持业务层面的管理控制逻辑的集成。访问任何一个节点的 API 都可以实现对整个集群的操作。详细信息可以参见[此链接](/zh-Hans/docs/next/user_guide/API/api/)。
+BifroMQ StandardCluster 版本同时引入了 HTTP API 功能。每个集群节点都可以通过配置开放 API 访问端口。BifroMQ HTTP API 是无状态的全局接口，旨在支持业务层面的管理控制逻辑的集成。访问任何一个节点的 API 都可以实现对整个集群的操作。详细信息可以参见[此链接](/zh-Hans/docs/2.0.0/user_guide/API/api/)。
 
 <img src={APIService} style={{width: 700}} />
 
@@ -64,7 +65,7 @@ BifroMQ StandardCluster 版本同时引入了 HTTP API 功能。每个集群节�
 对于负载形式复杂且在时间维度上有集中产生的情况，我们建议用户通过模拟负载测试来获得单个 BifroMQ StandardCluster 集群下的最佳资源配置和参数设置，或者考虑使用多个 BifroMQ StandardCluster 来承载不同类型的业务负载。另外，您还可以与我们联系，获取 BifroMQ 商业版本的独立负载集群（Independent Workload Cluster）支持。
 
 ## 部署过程和运维
-在之前的 BifroMQ 技术架构文章中，我们提到 BifroMQ 集群建立在一套内置的去中心化技术之上（base-cluster），无需依赖外部节点注册和发现服务。因此，构建 BifroMQ StandardCluster 的部署过程非常简单（详细过程请参考[此链接](/zh-Hans/docs/next/deploy/cluster/)），只需指定任何一个集群中的节点作为种子节点，即可完成新节点的加入。此外，BifroMQ 还内置了集群分裂后的自愈能力，可以极大地简化出现网络分区（Network Partition）等故障时的运维操作。
+在之前的 BifroMQ 技术架构文章中，我们提到 BifroMQ 集群建立在一套内置的去中心化技术之上（base-cluster），无需依赖外部节点注册和发现服务。因此，构建 BifroMQ StandardCluster 的部署过程非常简单（详细过程请参考[此链接](/zh-Hans/docs/2.0.0/deploy/cluster/)），只需指定任何一个集群中的节点作为种子节点，即可完成新节点的加入。此外，BifroMQ 还内置了集群分裂后的自愈能力，可以极大地简化出现网络分区（Network Partition）等故障时的运维操作。
 
 ## 未来展望
 BifroMQ 团队一直秉持技术中立理念，致力于大规模实现 MQTT 协议、提高可靠性和可维护性等方面。我们期待更多社区参与和深入使用反馈，共同推动这一技术的成熟。此外，您还可以通过扫描下方二维码加入开发者交流社区，与广大同行进行交流学习。
