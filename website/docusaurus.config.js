@@ -30,8 +30,8 @@ const config = {
 
   presets: [
     [
-      "docusaurus-preset-openapi",
-      /** @type {import('docusaurus-preset-openapi').Options} */
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
@@ -92,7 +92,6 @@ const config = {
             position: 'right',
             label: 'Docs',
           },
-          { to: "/api", label: "OpenAPI", position: "right" },
           {
             to: '/blog',
             label: 'Blog',
