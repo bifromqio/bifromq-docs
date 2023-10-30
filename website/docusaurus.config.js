@@ -10,15 +10,10 @@ const config = {
   title: ' BifroMQ.io - Multi-tenancy MQTT Broker',
   tagline: 'BifroMQ is a Java-based high-performance MQTT Broker messaging middleware that adopts Multi-tenancy architecture. Open-sourced by Baidu.',
   favicon: 'img/favicon.ico',
-  // Set the production url of your site here
   url: 'https://bifromq.io/',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'baidu', // Usually your GitHub org/user name.
-  projectName: 'bifromq', // Usually your repo name.
+  organizationName: 'baidu',
+  projectName: 'bifromq',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
