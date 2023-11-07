@@ -16,7 +16,7 @@
 
 cd website
 rm -rf node_modules
-npm install
+npm install --force
 echo "finish install"
 npm run clear
 echo "finish clear"
