@@ -218,8 +218,7 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
    on disk storage instead of memory. Data loss will not occur in the event of a crash or restart. The performance of
    the storage engine is limited by the local disk IO performance of the current test machine. Performance can be
    improved by replacing high-performance disks or using appropriate load balancing strategies in a cluster environment.
-7. The p99 and max views in the result graphs may have occasional spikes, such as in
-   the [100k_1000_qos0_p256_1mps](#100k_1000_qos0_p256_1mps) scenario. This is related to the implementation of the test
+7. The p99 and max views in the result graphs may have occasional spikes, this is related to the implementation of the test
    pressure end (Java GC).
 8. BifroMQ's internal message links are implemented asynchronously, fully utilizing the multi-core capabilities of the
    CPU. The testing scenarios listed in this report are stress tests and have a relatively high level of system load.
@@ -232,11 +231,11 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 #### High-frequency Scenarios
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
-|--------------------------|-----|--------|---------------|------|--------|----------|-----------|-----|--------------------------|
-| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.1 | 22.01 | 80% | 5 ~ 10 |
-| 2k_2k_qos1_p32_100mps_1n | 1 | 100 | 32 | 4k | 200k | 38.92 | 184.54 | 85% | 5 ~ 15 |
-| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 3.38 | 24.11 | 83% | 5 ~ 20 |
-| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 9.62 | 65.0 | 85% | 5 ~ 18 |
+|--------------------------|-----|--------|---------------|------|--------|---------------------------|-----------------------|-----|--------------------------|
+| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.22                      | 24.11                 | 80% | 5 ~ 10 |
+| 2k_2k_qos1_p32_100mps_1n | 1 | 100 | 32 | 4k | 200k | 38.92                     | 184.54                | 85% | 5 ~ 15 |
+| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 3.38                      | 24.11                 | 83% | 5 ~ 20 |
+| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 9.62                      | 65.0                  | 85% | 5 ~ 18 |
 
 2k_2k_qos0_p32_100mps_1n scenario charts：
 
@@ -269,11 +268,11 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 #### Low-frequency Scenarios
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
-| --------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
-| 100k_100k_qos0_p256_1mps_1n | 0    | 1         | 256      | 200k    | 100k      | 2.24           | 18.87         | 80%  | 6 ~ 12     |
-| 100k_100k_qos1_p256_1mps_1n | 1    | 1         | 256      | 200k    | 100k      | 13.56          | 104.84        | 83%  | 8 ~ 13     |
-| 300k_300k_qos0_p256_1mps_3n | 0    | 1         | 256      | 600k    | 300k      | 17.03          | 113.23        | 83%  | 10 ~ 20    |
-| 200k_200k_qos1_p256_1mps_3n | 1    | 1         | 256      | 400k    | 200k      | 3.86           | 29.34         | 81%  | 7 ~ 12     |
+| --------------------------- | ---- | --------- | -------- | ------- | --------- |---------------------------| ------------- | ---- | ---------- |
+| 100k_100k_qos0_p256_1mps_1n | 0    | 1         | 256      | 200k    | 100k      | 2.14                      | 17.82       | 80%  | 6 ~ 12     |
+| 100k_100k_qos1_p256_1mps_1n | 1    | 1         | 256      | 200k    | 100k      | 13.56                     | 104.84        | 83%  | 8 ~ 13     |
+| 300k_300k_qos0_p256_1mps_3n | 0    | 1         | 256      | 600k    | 300k      | 17.03                     | 113.23        | 83%  | 10 ~ 20    |
+| 200k_200k_qos1_p256_1mps_3n | 1    | 1         | 256      | 400k    | 200k      | 3.86                      | 29.34         | 81%  | 7 ~ 12     |
 
 100k_100k_qos0_p256_1mps_1n scenario charts：
 
@@ -303,30 +302,30 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 | 100k_1000_qos0_p256_1mps_1n | 0    | 1         | 256      | 101k    | 100k      | 1.17           | 11.0          | 82%  | 6 ~ 20     |
 | 100k_1000_qos1_p256_1mps_1n | 1    | 1         | 256      | 101k    | 100k      | 1.82           | 14.67         | 78%  | 5 ~ 18     |
 | 300k_3000_qos0_p256_1mps_3n | 0    | 1         | 256      | 303k    | 300k      | 3.17           | 19.91         | 80%  | 10 ~ 20    |
-| 200k_2000_qos1_p256_1mps_3n | 1    | 1         | 256      | 202k    | 200k      | 4.69           | 39.84         | 77%  | 5 ~ 20     |
+| 200k_2000_qos1_p256_1mps_3n | 1    | 1         | 256      | 202k    | 200k      | 5.9         | 44.84       | 77%  | 5 ~ 20     |
 
-<span id="100k_1000_qos0_p256_1mps">100k_1000_qos0_p256_1mps scenario charts：</span>
+100k_1000_qos0_p256_1mps_1n scenario charts：
 
 ![qps](./images/share_true_100k_1000_qos0_p256_1mps_1n/qps.png) | ![mean](./images/share_true_100k_1000_qos0_p256_1mps_1n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
 ![p99](./images/share_true_100k_1000_qos0_p256_1mps_1n/p99.png) | ![max](./images/share_true_100k_1000_qos0_p256_1mps_1n/max.png)
 ![cpu](./images/share_true_100k_1000_qos0_p256_1mps_1n/cpu.png) | ![mem](./images/share_true_100k_1000_qos0_p256_1mps_1n/mem.png)
 
-100k_1000_qos1_p256_1mps scenario charts：
+100k_1000_qos1_p256_1mps_1n scenario charts：
 
 ![qps](./images/share_true_100k_1000_qos1_p256_1mps_1n/qps.png) | ![mean](./images/share_true_100k_1000_qos1_p256_1mps_1n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
 ![p99](./images/share_true_100k_1000_qos1_p256_1mps_1n/p99.png) | ![max](./images/share_true_100k_1000_qos1_p256_1mps_1n/max.png)
 ![cpu](./images/share_true_100k_1000_qos1_p256_1mps_1n/cpu.png) | ![mem](./images/share_true_100k_1000_qos1_p256_1mps_1n/mem.png)
 
-300k_3000_qos0_p256_1mps scenario charts：
+300k_3000_qos0_p256_1mps_3n scenario charts：
 
 ![qps](./images/share_true_300k_3000_qos0_p256_1mps_3n/qps.png) | ![mean](./images/share_true_300k_3000_qos0_p256_1mps_3n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
 ![p99](./images/share_true_300k_3000_qos0_p256_1mps_3n/p99.png) | ![max](./images/share_true_300k_3000_qos0_p256_1mps_3n/max.png)
 ![cpu](./images/share_true_300k_3000_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/share_true_300k_3000_qos0_p256_1mps_3n/mem.png)
 
-200k_2000_qos1_p256_1mps scenario charts：
+200k_2000_qos1_p256_1mps_3n scenario charts：
 
 ![qps](./images/share_true_200k_2000_qos1_p256_1mps_3n/qps.png) | ![mean](./images/share_true_200k_2000_qos1_p256_1mps_3n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
@@ -491,14 +490,14 @@ appropriate number of shards is achieved, it stabilizes and operates steadily.
 | ---------------------------- | ---- | --------- | -------------- | ------- | --------- |
 | 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       |
 
-冷启动 scenario charts：
+cold start scenario charts：
 
 | ![qps](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/qps.png) | ![mean](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mean.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![p99](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/p99.png) | ![max](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/max.png) |
 | ![cpu](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/cpu.png) | ![mem](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mem.png) |
 
-### million connections
+### Million Connections Scenarios
 
 This scenario is designed to test BifroMQ's resource consumption when handling a large number of connections.
 
@@ -531,13 +530,13 @@ accept.
 ### Memory
 
 * vm.max_map_count: Limits the number of VMAs (Virtual Memory Areas) that a process can have. It can be increased to
-  221184.
+    221184.
 
 ### Maximum Open Files
 
 * nofile: Specifies the maximum number of files that a single process can open.
 * nr_open: Specifies the maximum number of files that can be allocated per process, usually defaulting to 1024 * 1024 =
-  1048576.
+    1048576.
 * file-max: Specifies the maximum number of files that the system kernel can open, with a default value of 185745.
 
 ### NetFilter Tuning

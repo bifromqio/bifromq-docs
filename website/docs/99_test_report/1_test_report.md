@@ -490,14 +490,14 @@ appropriate number of shards is achieved, it stabilizes and operates steadily.
 | ---------------------------- | ---- | --------- | -------------- | ------- | --------- |
 | 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       |
 
-冷启动 scenario charts：
+cold start scenario charts：
 
 | ![qps](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/qps.png) | ![mean](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mean.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![p99](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/p99.png) | ![max](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/max.png) |
 | ![cpu](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/cpu.png) | ![mem](./images/false_30k_30k_qos1_p256_1mps_3n_1v_cold/mem.png) |
 
-### million connections
+### Million Connections Scenarios
 
 This scenario is designed to test BifroMQ's resource consumption when handling a large number of connections.
 
