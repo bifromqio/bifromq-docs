@@ -30,12 +30,17 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl:
-              "https://github.com/baidu/bifromq-docs/tree/master/website/",
+          editUrl: ({locale, versionDocsDirPath, docPath}) => {
+            if (locale !== config.i18n.defaultLocale) {
+              return `https://github.com/baidu/bifromq-docs/tree/master/website/i18n/zh-Hans/docusaurus-plugin-content-docs/`;
+            }
+            // Link to GitHub for English docs
+            return `https://github.com/baidu/bifromq-docs/tree/master/website/${versionDocsDirPath}/${docPath}`;
+          },
           lastVersion: 'current',
           versions: {
             current: {
-              label: 'current',
+              label: '2.0.0',
               path: '2.0.0',
             },
           },
@@ -43,8 +48,12 @@ const config = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-              "https://github.com/baidu/bifromq-docs/tree/master/website/",
+          editUrl: ({locale}) => {
+            if (locale !== config.i18n.defaultLocale) {
+              return "https://github.com/baidu/bifromq-docs/blob/master/website/i18n/zh-Hans/docusaurus-plugin-content-blog";
+            }
+            return "https://github.com/baidu/bifromq-docs/tree/master/website/blog";
+          },
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -104,7 +113,6 @@ const config = {
           {
             type: 'docsVersionDropdown',
             position: 'right',
-            dropdownItemsAfter: [{to: '/versions'}],
             dropdownActiveClassDisabled: true,
           },
         ],
