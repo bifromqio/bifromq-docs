@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 #
 
+set -e
 
 cd website
 rm -rf node_modules
@@ -31,4 +32,5 @@ echo 'Sk = '${BOS_SECRET_ACCESS_KEY} >>./conf/credentials
 echo 'Sts = ' >>./conf/credentials
 echo '' >>./conf/credentials
 ./bcecmd --conf-path ./conf/ bos sync ../website/build bos:/${BOS_BUCKET}/. --delete --yes
+echo "bos sync succeed!"
 rm -rf ./conf/credentials
