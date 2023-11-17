@@ -5,17 +5,11 @@ import "@docsly/react/styles.css";
 import {useLocation} from "@docusaurus/router";
 
 export default function FooterWrapper(props) {
-    const { pathname } = useLocation();
+  const { pathname } = useLocation();
   return (
     <>
       <Footer {...props} />
-        <Docsly
-            publicId="pk_K0A0eAsd2bGPDGSXkoPimJgHRxPTgKIxRCr7BXcfKQ3PcrJh"
-            pathname={pathname}
-            appearance={{
-                docslyToolboxStyles: "bg-orange-600 text-orange-50",
-            }}
-        />
+      <Docsly publicId="pk_K0A0eAsd2bGPDGSXkoPimJgHRxPTgKIxRCr7BXcfKQ3PcrJh" pathname={pathname} />
     </>
   );
 }
