@@ -1,8 +1,6 @@
 name: Dev
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -21,3 +19,4 @@ jobs:
           BOS_ACCESS_KEY_ID: ${{ secrets.BOS_ACCESS_KEY_ID }}
           BOS_SECRET_ACCESS_KEY: ${{ secrets.BOS_SECRET_ACCESS_KEY }}
           BOS_BUCKET: ${{ secrets.BOS_DEV_BUCKET }}
+          BOS_BACKUP_BUCKET: ${{ secrets.BOS_DEV_BACKUP_BUCKET }}
