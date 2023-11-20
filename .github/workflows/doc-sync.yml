@@ -20,3 +20,4 @@ jobs:
           BOS_ACCESS_KEY_ID: ${{ secrets.BOS_ACCESS_KEY_ID }}
           BOS_SECRET_ACCESS_KEY: ${{ secrets.BOS_SECRET_ACCESS_KEY }}
           BOS_BUCKET: ${{ secrets.BOS_PROD_BUCKET }}
+          BOS_BACKUP_BUCKET: ${{ secrets.BOS_PROD_BACKUP_BUCKET }}
