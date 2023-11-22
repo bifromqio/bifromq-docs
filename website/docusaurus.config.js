@@ -124,7 +124,7 @@ const config = {
     }),
 
   scripts: [
-      'https://bifromq-api.gz.bcebos.com/commonHeader.js',
+      '/js/baiduHM.js',
   ],
 };
 

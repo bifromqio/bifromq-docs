@@ -21,3 +21,4 @@ jobs:
           BOS_SECRET_ACCESS_KEY: ${{ secrets.BOS_SECRET_ACCESS_KEY }}
           BOS_BUCKET: ${{ secrets.BOS_PROD_BUCKET }}
           BOS_BACKUP_BUCKET: ${{ secrets.BOS_PROD_BACKUP_BUCKET }}
+          BAIDU_HM_JS: ${{ secrets.BAIDU_HM_PROD_JS }}

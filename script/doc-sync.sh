@@ -21,6 +21,10 @@ npm install
 echo "finish install"
 npm run clear
 echo "finish clear"
+
+mkdir -p static/js
+echo ${BAIDU_HM_JS} > static/js/baiduHM.js
+
 npm run build
 echo "finish build"
 
