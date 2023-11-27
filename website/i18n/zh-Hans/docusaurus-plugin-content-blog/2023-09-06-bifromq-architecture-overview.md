@@ -1,6 +1,7 @@
 ---
 slug: bifromq-tech-architecture 
 title: "BifroMQ 技术架构概览"
+authors: Haoyu
 tags: [BifroMQ,Open Source,MQTT,Serverless,Multi-Tenancy,Technical Architecture]
 ---
 
