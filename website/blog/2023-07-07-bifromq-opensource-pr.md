@@ -1,6 +1,7 @@
 ---
 slug: news-bifromq-opensource
 title: "BifroMQ officially open source : high-performance multi-tenant MQTT Broker"
+authors: Haoyu
 tags: [BifroMQ,Open Source,MQTT,Serverless,Multi-Tenancy]
 ---
 #  BifroMQ officially open source : high-performance multi-tenant MQTT Broker
