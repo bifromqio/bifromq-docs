@@ -1,5 +1,5 @@
 ---
-slug: bifromq-tech-architecture 
+slug: bifromq-high-availibility
 title: "BifroMQ 高可用技术介绍"
 tags: [BifroMQ,Open Source,MQTT,High Availability,Technical Architecture]
 ---
