@@ -1,10 +1,15 @@
 Jiawei:
-  name: Gu Jiawei
+  name: 顾嘉伟
   title: 后端开发工程师
   url: https://github.com/Gujiawei-Edinburgh
   image_url: https://github.com/Gujiawei-Edinburgh.png
 Haoyu:
-  name: Hao Yu
+  name: 郝郁
   title: 百度后端开发工程师
   url: https://github.com/popduke
   image_url: https://github.com/popduke.png
+MaFei:
+  name: 马飞
+  title: 百度后端开发工程师
+  url: https://github.com/mafei6827
+  image_url: https://github.com/mafei6827.png

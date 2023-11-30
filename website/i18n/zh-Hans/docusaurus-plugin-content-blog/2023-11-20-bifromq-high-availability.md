@@ -1,6 +1,7 @@
 ---
 slug: bifromq-high-availibility
 title: "BifroMQ 高可用技术介绍"
+authors: MaFei
 tags: [BifroMQ,Open Source,MQTT,High Availability,Technical Architecture]
 ---
 
