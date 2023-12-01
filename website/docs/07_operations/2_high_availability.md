@@ -39,11 +39,11 @@ BifroMQ's internal storage is divided into three parts: MQTT subscription routes
 
 The configuration for the number of replicas in base-kv is passed through system variables. To achieve high availability, the following system variables need to be modified:
 
-| System Variable Name           | Default Value | Recommended Value   |
-| ------------------------------ | ------------- | ------------------- |
-| dist_worker_range_voter_count  | 3             | 至少为3，最好奇数值 |
-| inbox_store_range_voter_count  | 1             | 至少为3，最好奇数值 |
-| retain_store_range_voter_count | 3             | 至少为3，最好奇数值 |
+| System Variable Name           | Default Value | Recommended Value                     |
+| ------------------------------ | ------------- | ------------------------------------- |
+| dist_worker_range_voter_count  | 3             | At least 3, preferably an odd number. |
+| inbox_store_range_voter_count  | 1             | At least 3, preferably an odd number. |
+| retain_store_range_voter_count | 3             | At least 3, preferably an odd number. |
 
 
 
