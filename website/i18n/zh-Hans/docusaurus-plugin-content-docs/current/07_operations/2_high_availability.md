@@ -8,39 +8,48 @@ sidebar_position: 2
 
 ## 简介
 
-BifroMQ Standard各独立节点可以无需额外服务注册发现组件来构建集群，得益于其内置的基于Gossip类协议的去中心化集群构建能力（base-cluster），
+得益于我们提供的的基于Gossip类协议的去中心化集群构建能力（base-cluster），BifroMQ Standard节点无需额外的服务发现组件来构建集群，
 消除了单点故障的运维风险，集群规模能够自由伸缩，保障了集群整体的高可用。
 
-BifroMQ内部将工作负载进行了拆分，使得每种负载都能以独立子集群的形式存在，其中存储相关的模块基于Raft算法保证一致性及高可用。
+从实现上来说，BifroMQ内部将工作负载进行了拆分，每种负载在逻辑上形成独立子集群，其中存储相关的模块基于Raft算法保证一致性及高可用。
 
 
 
-## 开启集群高可用
+## 如何开启集群高可用
 
-目前BifroMQ Standard是所有负载all in one的模式，因此保障集群整体的高可用性，需要满足各负载集群的最低高可用要求，即Raft协议对于可用性的要求。
-
-开启BifroMQ集群高可用，需要满足以下两点。
+目前BifroMQ StandardCluster采用了将所有负载封装至一个进程的部署模式，各子集群对高可用的要求存在一定的差异性，因此开启BifroMQ集群高可用，需要满足以下几点。
 
 
 
-### 大于2节点部署
+### 集群节点数
 
-对于Raft协议来说，集群中超过半数以上节点存活才能保证服务可用，如果BifroMQ是2节点部署且内部的RAFT子集群Voter数量大于1，那在一个节点宕机后是无法提供服务的，因此**集群节点数必须>=3**。
+对于有状态的分布式存储base-kv来说，集群中超过半数以上节点存活才能保证服务可用，因此**集群部署节点数必须>=3**。
 
 
 
-### RAFT协议Voter数量
+### base-cluster配置
 
-BifroMQ内部的存储分为三部分，分别是MQTT订阅路由、cleanSession=false连接的MQTT消息、retain保留消息，对应BifroMQ中的模块名为：dist-worker、inbox-store、retain-store，各模块分别组成独立的Raft子集群。
+base-cluster相关配置集中在配置文件的clusterConfig部分：
 
-由于每部分存储的使用场景不同，对读写性能有不同的要求，因此三个Raft集群内置的动态Voter扩缩容策略不尽相同：
+| 参数名称      | 默认值   | 建议值                                                       |
+| ------------- | -------- | ------------------------------------------------------------ |
+| host          | 空       | 传入集群内可互通的ip地址                                     |
+| ip            | 空       | 传入集群内可互通的port                                       |
+| seedEndpoints | 不能为空 | 新节点加入集群的请求入口，建议传入集群中所有节点的endpoint列表，或者所有节点的统一proxy地址 |
 
-* n为BifroMQ部署节点的数量。
 
-* dist-worker & retain-store：单分片，默认Raft Voter数量上限为3，可配置Voter数量上限，在达到上限前Raft Voter数量随节点数的变化动态调整保持一致。
-* inbox-store：多分片，默认Raft Voter数量上限为1，可配置Voter数量上限，在达到上限前Raft Voter数量随节点数的变化动态调整保持一致。
 
-由上分析，默认配置下，inbox-store的Raft Voter数量上限只有一个，无法达到真正的高可用性。可以通过启动时附带系统变量：**inbox_store_range_voter_count**进行更改，达到高可用，**每个Raft集群内的Voter数量上限需要大于等于3**。
+### base-kv副本数配置
+
+BifroMQ内部的存储分为三部分，分别是MQTT订阅路由、cleanSession=false连接的MQTT消息、retain保留消息，对应BifroMQ中的模块名为：dist-worker、inbox-store、retain-store，各模块分别组成独立的base-kv子集群。
+
+base-kv副本数配置由系统变量传入，达到高可用需要修改如下系统变量：
+
+| 系统变量名称                   | 默认值 | 建议值              |
+| ------------------------------ | ------ | ------------------- |
+| dist_worker_range_voter_count  | 3      | 至少为3，最好奇数值 |
+| inbox_store_range_voter_count  | 1      | 至少为3，最好奇数值 |
+| retain_store_range_voter_count | 3      | 至少为3，最好奇数值 |
 
 
 

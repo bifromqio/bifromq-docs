@@ -1,0 +1,198 @@
+---
+slug: bifromq-high-availibility
+title: "BifroMQ：构建高效可用集群的技术揭秘"
+authors: [HaoYu, MaFei]
+tags: [BifroMQ,Open Source,MQTT,High Availability,Technical Architecture,Cluster,Distributed Key-Value,Load Balancing]
+---
+
+
+import AutoEviction from './images/2023-12-01-bifromq-high-availability/BifroMQ-AutoEviction.png';
+import BrainSplit from './images/2023-12-01-bifromq-high-availability/BifroMQ-BrainSplit.png';
+import Domain from './images/2023-12-01-bifromq-high-availability/BifroMQ-Domain.png';
+import DynamicConfig from './images/2023-12-01-bifromq-high-availability/BifroMQ-DynamicConfig.png';
+import IndependentWorkload from './images/2023-12-01-bifromq-high-availability/BifroMQ-IndependentWorkload.png';
+import Join from './images/2023-12-01-bifromq-high-availability/BifroMQ-Join.png';
+import LeaderBalance from './images/2023-12-01-bifromq-high-availability/BifroMQ-LeaderBalance.png';
+import RangeBalancer from './images/2023-12-01-bifromq-high-availability/BifroMQ-RangeBalancer.png';
+import RangeLeaderBalancer from './images/2023-12-01-bifromq-high-availability/BifroMQ-RangeLeaderBalancer.png';
+import RangeSplit from './images/2023-12-01-bifromq-high-availability/BifroMQ-RangeSplit.png';
+import RangeSplitBalancer from './images/2023-12-01-bifromq-high-availability/BifroMQ-RangeSplitBalancer.png';
+import RecoveryBalancer from './images/2023-12-01-bifromq-high-availability/BifroMQ-RecoveryBalancer.png';
+import ReplicaCntBalancer from './images/2023-12-01-bifromq-high-availability/BifroMQ-ReplicaCntBalancer.png';
+import RPCCluster from './images/2023-12-01-bifromq-high-availability/BifroMQ-RPCCluster.png';
+
+
+
+# BifroMQ：构建高效可用集群的技术揭秘
+
+
+
+## 引言
+
+BifroMQ的集群版本已顺利推向社区，满足了用户在集群部署上对处理能力水平扩展与高可用性的核心需求。我们在之前关于[BifroMQ StandardCluster](2023-10-24-bifromq-standardcluster.mdx)的介绍中已详细阐述了其在性能水平扩展方面的能力。本篇文章，我们将专注于深入解析BifroMQ在确保高可用性方面所采用的技术特性。
+
+
+
+## 去中心化集群
+
+在BifroMQ的架构中，我们精心设计了MQTT协议工作负载的拆分方案。这一策略使得每类工作负载都能在独立的子集群中运作。这些功能性子集群均构建于一套精巧的去中心化底层集群构建框架（base-cluster）上。BifroMQ的集群框架包含两个逻辑层级：Underlay Cluster和Overlay Cluster，这样的构建使得架构变得清晰和解耦。有关这一设计的更多细节，请参见[《BifroMQ技术架构概览》](2023-09-06-bifromq-architecture-overview.md)。
+
+
+
+### Underlay Cluster
+
+Underlay Cluster是BifroMQ集群体系的核心，该层的成员代表一个运行中的BifroMQ进程，成员之间可以直接利用进程绑定的主机网络地址(HostAddress)进行通信。我们采用Gossip类的Membership协议（[SWIM Protocol](https://ieeexplore.ieee.org/document/1028914)）实现集群成员的失败检测（FailureDetection），并且对Membership信息的同步机制做了进一步优化，使得整体上具有的以下技术特性：
+
+* 集群构建无需依赖传统的注册中心或命名服务，有效消除了单点故障的运维风险，显著提升了集群的高可用性。
+* 通过采用SWIM协议，Underlay Cluster能够确保节点间探活机制的准确性，保障集群拓扑的最终一致性。
+* 使用CRDT技术实现集群Membership信息在节点间同步，可以同时做到极低的带宽占用和同步时效。
+
+
+
+#### 集群构建过程
+
+在去中心化的集群架构中，每个集群成员的地位是平等的，不存在专门负责管理集群拓扑信息的管控角色节点。从更高的视角来观察，运行BifroMQ StandardCluster服务进程的任何节点，实际上都可以视为一个拥有“单个节点”的独立集群。因此，集群的构建实质上是各独立集群的融合过程。为了实现这一过程，base-cluster框架提供了“join”操作，以便于这些独立集群的有效合并。
+
+<img src={Join} style={{width: 700}} />
+
+正如上图所示，集群的join操作可以由任一节点向目标集群的任一节点发起。为了简化讨论，我们将作为join操作目标的节点称为“seeds”。在部署过程中，这些seed节点的地址通常会被配置在新加入集群节点的配置文件（[seedEndpoints](/zh-Hans/docs/configuration/file_configs_manual/)）中。集群成功合并后，BifroMQ集群中的每个节点都能在本地获取到完整的集群Membership信息。
+
+细心的读者可能已经注意到，在节点配置中直接指定seed地址的方式，在容器化环境下可能存在一定的局限性。为了解决这一问题，base-cluster框架内置了DNS解析功能。在容器环境中，我们可以通过将所有节点纳入一个固定的网络Domain（例如External DNS或Kubernetes Service），简化集群的部署过程。这样，新加入的节点可以使用由该Domain解析出的任意Remote地址作为seed，以完成join过程。
+
+<img src={Domain} style={{width: 700}} />
+
+
+#### 失败检测与自动驱逐
+
+在BifroMQ中，当节点正常退出时，它会主动清理自身在集群中的注册身份，并与集群中的其他节点同步此变化。此外，每个节点持续进行对其他进行节点失败检测（Failure Detection）。一旦检测到异常，它会立即将该节点的相关信息从本地的集群Membership中移除，并迅速完成集群间Membership的同步，防止这些不再活跃的节点对集群的正常功能产生影响。
+
+<img src={AutoEviction} style={{width: 500}} />
+
+与自动驱逐机制相配合的是BifroMQ的自愈机制，它有效防止了因为网络抖动或误判导致健康节点的注册信息被错误地移除。每个节点会在观察到集群信息发生变化时，重新检查自身的注册信息。如果发现信息缺失，节点将主动进行补充，从而确保集群信息的完整性和最终一致性。
+
+
+
+#### 脑裂恢复
+
+对于去中心化的集群服务来说，网络分区(Network Partition)导致的导致集群脑裂是个不能避免的问题，即单个集群分裂成了多个互相隔离的集群。
+
+base-cluster对于可能出现的脑裂故障做了保障，进一步提高了集群部署的高可用性，具体过程如下：当网络发生分区时，分裂被隔离的集群彼此都会检测到对方节点的失败，这些失败被移除的节点会加入至本地的"愈合列表"，列表中的成员会被定时尝试join，直到超过部署时设定的 MTTR（[Mean Time To Repair](https://en.wikipedia.org/wiki/Mean_time_to_repair)）。不难发现，脑裂恢复的过程实际上与上文提到的集群构建过程是一致的。
+
+<img src={BrainSplit} style={{width: 500}} />
+
+
+### Overlay Cluster
+
+Overlay Cluster又称为Agent Cluster，构建于Underlay Cluster之上，利用Underlay Cluster的能力实现Membership管理和成员间通信，主要用于实现由不同逻辑服务单元组成的代理集群。借助Underlay Cluster的高效构建机制，Agent Cluster能够自动实现集群的构建，大幅简化了部署和运维过程。
+
+在 BifroMQ 中，由Agent Cluster实现的子服务集群，可被分类为无状态集群和有状态集群两类：无状态集群以RPC服务为主；有状态集群通常基于base-kv构建内置分布式KV存储引擎。
+
+
+
+#### RPC服务集群
+
+RPC服务集群成员通常被定义为客户端和服务端两种角色。利用Agent Cluster的特性，RPC的客户端与服务端无需依赖外部注册中心，即可实现高效的服务端发现与多样化的客户端请求路由逻辑。
+
+<img src={RPCCluster} style={{width: 700}} />
+
+#### BifroMQ的有状态子服务集群与分布式KV存储引擎
+
+在BifroMQ的有状态子服务集群中，内置了强一致性的分布式KV存储引擎（base-kv）。这个引擎具备基于Multi-Raft的sharding功能，是BifroMQ高度可靠性的关键组成部分。集群的Membership信息由Agent Cluster维护，而每个Range分片内的副本则通过Raft协议来实现强一致性同步。因此，要确保有状态服务的高可靠性，就必须充分利用并符合Raft协议的特性要求。
+
+
+
+##### KVRange Balancer
+
+base-kv使用内置的Range Balancer框架实现高效的Range副本管理。该框架综合考虑当前集群的拓扑结构和实时负载数据，生成用于均衡Range副本集的指令。这些指令包括Leader转移（LeaderTransfer）、成员配置变更（ConfigChange）、Range拆分（Split）和Range合并（Merge）。通过这一系列操作，base-kv能够有效地实现集群负载的平衡，优化吞吐性能，同时达成高可用性的目标。
+值得一提的是，Range Balancer同样采用了去中心化的设计理念。在base-kv的每个节点中，Balancer只负责管理本地的Leader Range。这样的设计使得多个节点上的Balancer能够并行运作，最终达成全局一致的均衡目标。
+
+<img src={RangeBalancer} style={{width: 600}} />
+
+为了确保用户能享受到即插即用的便利性，BifroMQ已预先内置了一系列常用的均衡策略实现。然而，对于那些有特定需求的高级用户，BifroMQ还提供了定制化均衡策略的能力（Balancer SPI），以便根据特定的应用场景进行优化。以下是我们提供的内置均衡策略的简要介绍。用户可以根据自己的需求，通过配置来启用这些策略。
+
+**ReplicaCntBalancer**
+
+ReplicaCntBalancer的主要作用是调节和平衡Range的副本数量。一旦启用，这个功能将允许Range的副本数根据BifroMQ StandardCluster集群中部署节点的数量灵活调整。这意味着，ReplicaCntBalancer能够根据集群当前的规模，自动优化并实现最佳的可用性配置，从而确保集群的高效运行。
+
+<img src={ReplicaCntBalancer} style={{width: 700}} />
+
+如图所示，工作过程如下：
+
+* **集群扩容情况**：假设最初BifroMQ集群中有3个节点，此时KVRange的副本数也是3，使得集群能够容忍1个节点的故障。当集群新增2个节点后，ReplicaCntBalancer自动将这些新节点纳入副本配置，并通过数据同步将副本数增加至5。这样，集群就能容忍2个节点的不可用状态，从而提升了集群的容错能力。
+* **集群缩容情况**：在另一种场景中，当BifroMQ集群包含5个节点且KVRange副本数同样为5时，若发生两个节点的宕机，依照Raft算法，集群仍能保持正常运作。然而，如果副本配置不变，再有一个节点宕机将导致整个Raft集群无法运作。此时，ReplicaCntBalancer会调整副本配置，调整VoterSet仅包含剩余的3个可用节点。这样的调整使得集群在容忍1个节点不可用的情况下依然保持高可用性。
+
+**RangeSplitBalancer**
+
+在BifroMQ中，单个Range的副本集是通过Raft协议管理的，其负载能力受到WAL复制机制的限制，因此存在一定的性能上限。特别是当业务工作负载高度集中于单个Range时，这种限制会变得尤为明显。在这种情况下，将一个Range拆分成多个部分是提升系统并行任务处理能力的有效手段，从而显著提高整个系统的整体性能。
+
+RangeSplitBalancer正是base-kv内置的用于实现这一功能的负载策略。它通过分析实际业务负载情况，及时生成Range拆分的指令，从而优化系统处理能力并提高性能表现。
+
+<img src={RangeSplitBalancer} style={{width: 600}} />
+
+**RangeLeaderBalancer**
+
+在Raft协议中，Leader节点承担了所有写请求和部分读请求的工作负载。因此，当多个Range的Leader副本集中在同一节点上时，很容易产生负载热点，影响系统性能。为了解决这一问题，base-kv集群在发生多个Range分裂的情况下，可以开启RangeLeaderBalancer。
+
+RangeLeaderBalancer专门负责监控和调整Range副本在各节点上的分布。它通过在节点间迁移Range，确保每个base-kv节点上的Leader副本数量均衡，避免了过度集中的负载热点。这种均衡不仅提高了整体负载处理的效率，还降低了单个节点出现故障时对集群瞬时可用性的影响。
+
+<img src={RangeLeaderBalancer} style={{width: 600}} />
+
+**RecoveryBalancer**
+
+在Non-Byzantine容错的强一致性协议中，正常工作的节点数量 n 必须满足 n≥2f+1 的条件，其中 f 代表可容忍的失败节点数。基于这一原则，任何Range副本都必须位于超过半数的正常集群节点中，才能保证正常运作。然而，在实际部署中，当集群中Range的数量较多，且单个base-kv节点可能承载多个不同Range的副本时，多个base-kv节点的同时故障可能导致n < 2f+1 的情况发生，这被称为Lost Majority。在Lost Majority的情况下，受影响的Range将无法正常工作。
+
+为应对这种情况，RecoveryBalancer提供了一项关键能力。它允许节点检测自身是否处于Lost Majority的状态，并在必要时主动缩减副本列表配置，以确保至少有半数的节点处于存活状态，从而使Range能够继续正常运作。然而，需要特别注意的是，在使用RecoveryBalancer自动恢复处于Lost Majority状态的Range时，如果原先失败的节点未经人工干预重新加入集群，可能会引起数据丢失和不一致问题。这种情况下，用户需要慎重考虑并结合实际的运维策略来决定是否启用RecoveryBalancer功能。
+
+<img src={RecoveryBalancer} style={{width: 700}} />
+
+### 应用场景
+
+BifroMQ的有状态子服务有三种：MQTT订阅路由、离线消息队列、Retain消息分。分别由对应的模块：dist-worker、inbox-store和retain-store来实现。每一模块部署后都构成了一个独立的base-kv集群。
+
+为了适应不同的使用场景和负载需求，BifroMQ允许每个独立集群根据其特定情况选择并启动相应的Balancer策略。这种策略的灵活配置使得每个集群都能在保持高可用性的同时，实现最优的数据处理吞吐性能。
+
+#### dist-worker
+
+在BifroMQ的架构中，dist-worker模块承担着管理订阅信息(Sub)和消息分发(Pub)的职责。在正常的使用场景下，这通常是一个以读操作为主、写操作较少的场景。
+
+考虑到这一使用场景和base-kv的负载处理能力，dist-worker采用了以下默认Balancer策略：
+
+* **启用ReplicaCntBalancer**：这一策略确保KVRange副本数与集群节点数保持一致，最大化查询吞吐效率。
+* **控制Voter副本数**：在保证高可用性的同时，将Raft Voter的数量限制在最多3个，其他副本则作为Learner角色，以此降低写操作的响应延迟。
+
+在大多数常见的使用场景中，一条Publish消息匹配到的订阅者数量通常并不多，且匹配过程也较为迅速。鉴于此，dist-worker模块在其默认配置下并没有激活Range拆分策略。这是因为在标准的操作环境中，当前的设置已能满足大部分性能要求。
+
+然而，当面对大规模Fanout场景，特别是那些对低延迟有更高需求的情况时，单个Range的查询效率可能会变成制约整体性能的瓶颈。为了应对这类挑战，我们计划在未来版本的BifroMQ中增强这一方面的处理能力，以优化大规模Fanout场景下的性能表现。
+
+#### retain-store
+
+Retain消息的工作负载与订阅信息和消息发送的处理相似，正常使用下主要表现为读操作多于写操作。基于这一特点，retain-store的默认Balancer策略被设置为与dist-worker模块一致，在此不做重复说明。
+
+#### inbox-store
+
+在BifroMQ中，inbox-store模块承担着管理每个`cleanSession=false`连接的离线消息的角色。对于这类连接，inbox-store会创建一个专属的持久化离线消息队列。归属于这些连接的Publish消息首先被写入这些队列中。当连接恢复在线状态时，消息将从队列中取出进行推送并随即删除。这构成了一个典型的高频读写场景，其中工作负载主要集中在Leader Range副本上，且KV存储操作的IO时延对整个系统的消息处理能力有着不可忽视的影响。
+
+考虑到这种特定的使用场景和base-kv的负载处理特性，inbox-store采取了以下默认的Balancer策略：
+
+* 默认限制Voter为1：由于副本数量越多可能导致写入响应时延增长，因此默认设置中将Range副本数限制为1，以优先保障消息的快速处理，但会有一定的可靠性损失，用户可以根据情况增加副本数量。
+* 启用RangeSplitBalancer和RangeLeaderBalancer：这一策略使得inbox-store能够随着工作负载的增长动态进行分片扩容，最终实现更加均衡的负载分布，提升系统整体性能。
+
+
+
+## StandardCluster的部署策略与灵活性评估
+
+BifroMQ StandardCluster采纳了一种集成所有功能模块于单一进程的部署策略。这种策略使得配置和部署过程相对简化，类似于业界普遍采用的"SharedNothing"集群架构。尽管如此，因为多个模块共享同一进程内的系统资源，这就限制了基于实际业务需求的动态配置能力。所有模块需统一进行扩缩容，这在某些情况下可能导致灵活性不足。这一点在云业务场景中尤为明显，因为不同类别的负载波动与时间相关，需要更加细致和灵活的资源管理。
+
+
+
+## IndependentWorkload Cluster的实施与过渡
+BifroMQ的独特架构设计使其能够轻松实现"单个模块独立进程"的部署模式，我们称之为IndependentWorkload Cluster(未来版本中推出)。这种模式不仅提供了更高的灵活性和精细的资源管理能力，还能够帮助用户根据业务的发展逐步从StandardCluster模式过渡到IndependentWorkload Cluster模式。这种渐进式的部署变化可在保持业务连续性的同时，优化资源配置和应对业务需求的波动。
+
+<img src={IndependentWorkload} style={{width: 700}} />
+
+## 总结
+
+以上内容为对BifroMQ高可用技术的全面介绍。BifroMQ通过实施多种机制确保了集群的整体高可用性。敬请关注我们即将发布的一系列专题文章，我们将在这些文章中继续深入剖析BifroMQ的各个组件及其设计原则，为您提供更多深度的技术见解。
+
+
+
