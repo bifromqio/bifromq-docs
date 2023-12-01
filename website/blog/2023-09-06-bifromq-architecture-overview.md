@@ -1,7 +1,7 @@
 ---
 slug: bifromq-tech-architecture 
 title: "BifroMQ Technical Architecture Overview"
-authors: Haoyu
+authors: HaoYu
 tags: [BifroMQ,MQTT Broker,Serverless,Multi-Tenancy,Architecture]
 ---
 

@@ -1,7 +1,7 @@
 ---
 slug: news-bifromq-opensource
 title: BifroMQ 正式开源：高性能多租户 MQTT 消息中间件
-authors: Haoyu
+authors: HaoYu
 tags: [BifroMQ,Open Source,MQTT,Serverless,Multi-Tenancy]
 ---
 
