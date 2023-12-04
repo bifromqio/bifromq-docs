@@ -1,0 +1,102 @@
+---
+slug: bifromq-topic-subscription
+title: "BifroMQ的Topic订阅机制"
+authors: [HaoYu]
+tags: [BifroMQ,MQTT,Topic,TopicFilter,Subscription,Serverless,Multi-Tenant]
+---
+
+import MQTTTopicAndTopicFilter from './images/2023-12-03-bifromq-topic-subscription-mechanism/MQTT_Topic_TopicFilter.png';
+import TopicExpansionSet from './images/2023-12-03-bifromq-topic-subscription-mechanism/TopicExpansionSet.png';
+import OnePass from './images/2023-12-03-bifromq-topic-subscription-mechanism/OnePass.png';
+import DistService from './images/2023-12-03-bifromq-topic-subscription-mechanism/DistService.png';
+
+# BifroMQ的Topic订阅机制
+
+## 引言
+自从BifroMQ开源以来，我们频繁地收到有关其Topic订阅匹配实现技术的咨询。在MQTT的Pub/Sub机制中，Topic订阅匹配无疑是核心功能之一。在BifroMQ系统中，订阅信息的管理和消息Topic的匹配过程是由专门的Dist Service负责的。鉴于BifroMQ旨在支持构建大规模、多租户的Serverless系统，这一关键环节在实现时面临着诸多复杂挑战，尤其是订阅信息（TopicFilter）的分布式处理和相关的Topic匹配算法。本文将深入讲解BifroMQ Topic订阅匹配方案的设计思路，以及如何在Dist Service中实现。
+
+<!--truncate-->
+
+## MQTT的Topic和TopicFilter
+我们先简要回顾MQTT中关于Topic订阅和匹配的两个基本概念：*Topic*和*TopicFilter*。在MQTT的发布（Pub）过程中，Topic用于标识消息所属的具体主题，而在订阅（Sub）过程中，TopicFilter则用于表示对一系列主题的订阅意向。在本文中，我们将明确区分这两个概念：*Topic*和*TopicFilter*。
+
+*Topic*和*TopicFilter*都是类似于文件目录路径的UTF-8字符串，如“`/a/b/c`”、“`/a/b/c/`”、“`/+/b/c`”和“`+/b/#`”。在这些字符串中，“`/`”用作各级“目录”（或称*TopicLevel*）的分隔符。*TopicFilter*与*Topic*的主要区别在于*TopicLevel*的字符集：*TopicFilter*允许使用通配符“`+`”和“`#`”作为独立的`TopicLevel`。这些通配符用于表示对一系列主题的匹配逻辑。其中，“`+`”是单级通配符（Single-level Wildcard Character），可以出现在任何位置（例如：“`+`”、“`/+`”、“`+/+`”），用于匹配该级别上的所有*TopicLevel*；而“`#`”是多级通配符（Multi-level Wildcard Character），只能作为最后一级*TopicLevel*出现（例如：“`#`”、“`/#`”、“`+/+/#`”、“`+/#`”），用于匹配该级别及其所有下级的*TopicLevel*。
+
+*TopicFilter*按照从左至右的顺序对*Topic*进行匹配。以下是MQTT规范中的一些例子来说明这一点：
+首先，来看单级通配符“`+`”的应用。假设一个客户端订阅了“`sport/+/player1`”，它将接收到以下`Topic`名称发布的消息：
+* “`sport/tennis/player1`”
+* “`sport/badminton/player1`”
+* “`sport/golf/player1`”
+但它不会接收到“`sport/tennis/player2`”或“`sport/tennis/player1/ranking`”的消息。
+
+同样，如果客户端订阅了“`+/tennis/player1`”，它会接收到：
+* “`sport/tennis/player1`”
+* “`world/tennis/player1`”
+但不会接收到“`sport/tennis/player2`”或“`sport/badminton/player1`”。
+
+接下来，考虑多级通配符“`#`”。例如，如果客户端订阅了“`sport/tennis/player1/#`”，那么它将接收到以下*Topic*名称发布的消息：
+* “`sport/tennis/player1`”
+* “`sport/tennis/player1/ranking`”
+* “`sport/tennis/player1/score/wimbledon`”
+
+在使用“`#`”时，也有一些重要的点需要注意：
+* “`sport/#`”也能匹配单一的“`sport`”，因为“`#`”包括了父级别。
+* 单独订阅“`#`”将匹配所有`Topic`，接收所有主题的消息。
+* “`sport/tennis/#`”是有效的，而“`sport/tennis#`”和“`sport/tennis/#/ranking`”是无效的。
+
+这些例子清晰地展示了如何通过*TopicFilter*在MQTT中精确和灵活地匹配特定范围或类型的消息。
+不难发现，实现*TopicFilter*对*Topic*的匹配过程，逻辑上可以将*TopicFilter*组织成Trie(或Tree)的数据结构，匹配过程通过在*TopicFilter* Trie中逐级查找来完成。在遇到“`+`”和“`#`”这类特殊通配符时，采取相应的处理规则。以下是这一过程的简要说明：
+<img src={MQTTTopicAndTopicFilter} style={{width: '100%'}} />
+注：
+* *TopicFilter* Trie中的每个节点代表一个*TopicLevel*的字符串，这与传统String Prefix ['Trie'](https://en.wikipedia.org/wiki/Trie)中每个节点表示一个字符的做法有所不同
+* 当*TopicFilter*不包含通配符时，其匹配范围局限于具体的消息主题。在这种情况下，可以使用简单的Map结构来实现订阅匹配
+* 根据MQTT协议，以“`$`”开头的*Topic*被视为系统预留的特殊主题。这些主题不被通配符匹配，并在查找过程中会被特别忽略
+
+## BifroMQ面对的场景
+在这一章节中，我们将探讨BifroMQ在处理*TopicFilter* Trie时面临的特定场景及其挑战。
+
+通常的实现中，*TopicFilter* Trie在物理上被组织成内存中的Trie结构(或Tree)。在分布式环境下，每个MQTT Broker节点都本地存储有*TopicFilter* Trie的完整副本，并通过集群间通信确保各节点的Trie副本保持一致。鉴于对*TopicFilter* Trie的读请求（即匹配操作）的频率通常远高于写请求（更新操作），经典实现允许*Topic*匹配过程完全在本地进行，从而节省了远程访问的往返时间。然而，这种方法存在两个潜在的问题：
+1. *TopicFilter* Trie的大小受限于单个节点的存储资源。
+2. 当新增节点时，需要从其他节点全量同步*TopicFilter* Trie，其启动过程的准备时间与Trie的大小成正比。
+
+对于大多数企业级应用场景而言，这些潜在问题通常不会显现，因为订阅的规模很难达到单个节点资源的上限。但在云服务环境下，尤其是BifroMQ旨在实现的多租户Serverless服务场景中，这种传统方案显得不再适用。主要原因包括：
+1. 在多租户场景中，常见的问题之一是*TopicFilter* Trie的体积过大，以至于超出单个节点的资源上限。这种情况尤其普遍于那些拥有大量IoT设备的M2M场景，如智能家居，或者由于不恰当的订阅行为和测试活动所引起的情形。
+2. 当TopicFilter Trie体积庞大时，通常意味着业务处于高峰期。这时需要快速扩容，以便新增节点能尽快投入工作。但全量同步Trie会占用启动过程的准备时间。
+
+因此，BifroMQ需要探索与经典模式不同的解决方案，以更好地适应构建多租户Serverless服务的需求。该方案的核心挑战包括：
+1. 如何实现*TopicFilter* Trie的分布式化。
+2. 在分布式环境中如何高效执行匹配操作。
+
+解决这些挑战涉及到*TopicFilter* Trie的存储模式及相应的算法的全新设计，我们将这种新的方法称为“**OnePass**”。
+
+## The "OnePass" Solution
+在深入分析MQTT的topic匹配规则时，我们注意到一个重要的特点：对于任意确定的*Topic*，能够匹配该*Topic*的所有可能的*TopicFilter*构成了一个特定的集合。我们称这个集合为针对特定Topic的TopicFilter展开集（ExpansionSet）。下图像展示了这一概念：
+<img src={TopicExpansionSet} style={{width: '100%'}} />
+
+*TopicFilter*的展开集可以采用Trie结构来表示。在这个结构中，处于同一级的节点按照字节序进行排序。对展开集的Trie进行中序遍历，我们可以得到按字典序（Lexicographical Order）排列的所有可能的TopicFilter字符串。值得注意的是，在比较过程中，分隔符“`/`”不参与比较，或者可以用Unicode空字符（"`\u0000`"）来代替。展开集的大小（即可能的TopicFilter数量）与Topic的级数有关，可以通过公式`F(x) = 6*2^x - 1`来确定，其空间复杂度为O(2^x)，随着级数的增加呈几何级数趋势上涨。
+
+然而，对于一个具体的*Topic*，实际发生的订阅仅是其展开集的一个很小的子集。因此，我们可以将系统内实际发生的订阅，以*TopicFilter*作为Key前缀的方式存储在有序的KV存储引擎中。在BifroMQ系统中，这一存储引擎由base-kv实现。订阅构成的*TopicFilter* Trie的存储模式可以简化为以下形式：
+* key: `<TenantId><0x00><TopicFilter><SessionId>`
+* value: `<MetadataAboutTheSubscription>`
+
+利用有序的KV存储，可以轻松实现逻辑上由实际订阅构成的*TopicFilter* Trie的分布式化。在BifroMQ中我们借助base-kv的分片能力实现这一目标：根据Topic订阅匹配的负载特性，按照一定的均衡策略进行Range分割和节点间分布。在系统扩容时，新增节点只需同步部分分片副本，无需同步全部订阅数据，从而也满足了快速扩容的需求。
+
+将订阅数据组织成有序KV形式后，下一个问题是如何实现MQTT的topic匹配逻辑。具体而言，当接收到一条MQTT Pub消息时，如何通过KV存储的读操作找到所有匹配该消息*Topic*的订阅记录。这个过程可以转化成一个集合问题：求得该*Topic*的展开集与当前系统实际发生的订阅的*TopicFilter*构成的集合的交集。这点很容易实现！
+<img src={OnePass} style={{width: '100%'}} />
+如图所示，左侧展示了*Topic* "`a/b/c`"的字节序展开集，而右侧是当前系统中存在的订阅关系，以有序KV存储的形式呈现。
+
+匹配算法的核心工作流程是从上至下依次扫描右侧的订阅关系KV，并在左侧的展开集中定位当前订阅的*TopicFilter*所在的位置。若左侧展开集中存在该*TopicFilter*，则认为找到了一个匹配。如果不存在，假设左侧展开集中下一个可能匹配的*TopicFilter*为T，则可以在右侧的订阅关系有序KV中跳过所有字节序小于T的部分，然后继续扫描。
+
+该算法在左右两个集合上均以单向方式执行，因此任何一个集合扫描完毕即标志着算法的结束。从空间复杂度的角度来看，左侧的展开集实际上充当了一种“索引”的角色，并不需要在内存中真实地展开。它只需根据字节序的展开规则确定下一个可能在右侧集合中出现的*TopicFilter*，因此左侧集合的空间开销可以被忽略。右侧集合代表的是当前系统中实际存在的订阅关系，其空间复杂度为`O(N)`，其中N是订阅的数量。算法的时间复杂度与实际存在的订阅关系数量有关，上限近似为`O(N*log(X))`，其中X是*Topic*的级数。当然最坏情况是右侧集合出现了所有*Topic*所有可能的订阅。
+
+由于算法执行过程中只需对订阅关系KV存储数据进行一次高效的扫描，因此我们将这个方法命名为“**OnePass**”。
+
+## The Dist Service
+Dist Service（bifromq-dist）是BifroMQ中处理订阅和消息路由分发的关键子服务，而“OnePass”方案则构成了其子服务架构的核心。Dist Service由两个服务端模块组成：DistServer和DistWorker。DistServer是一个无持久化状态的RPC服务模块，负责处理请求调度；而DistWorker则是一个具有持久化状态的模块，内嵌了KV存储引擎（base-kv），在其中实现了订阅关系的分布式存储。
+
+为了降低消息路由分发过程中内部通信所带来的时延开销，Dist Service被设计为数据与计算紧密耦合的形式。这里的“数据”有两重含义：一方面指的是MQTT Pub的消息本身，另一方面则是指订阅关系数据。而“计算”则指的是订阅匹配和分发过程。DistWorker将消息的topic匹配和分发过程封装成了base-kv的Range CoProcessor，确保了消息的匹配与分发过程在订阅信息存储的本地发生。这样的设计有效避免了额外数据传输对消息在BifroMQ系统内部时延的影响。
+<img src={DistService} style={{width: '100%'}} />
+上图展示了DistService在处理MQTT Pub/Sub时扮演的角色，为了提高订阅匹配的效率，Dist Worker对“OnePass”方案进行了进一步的优化，特别是通过引入缓存机制。在这种机制下，对于同一个*Topic*连续发布的消息，只需执行一次“OnePass”算法流程。匹配的结果会被缓存，供后续相似请求使用。这种引入缓存的策略不仅提升了处理速度，还减少了重复计算和本地IO的开销。值得注意的是，缓存带来的失效和更新策略是复杂的，但这些内容超出了本文的讨论范围，因此不再本文做详细展开。
+
+## 总结
+Topic订阅匹配构成了MQTT协议的核心功能，其灵活性也是MQTT能够广泛应用的关键因素。然而，多年来社区和行业累积的实现方案，在处理多租户Serverless服务业务场景时显示出了一定的局限性。BifroMQ的“OnePass”方案是基于第一性原理，从架构层面出发，对解决该问题的一次尝试。我们希望这一方案能够为社区带来新的启发，推动技术的发展与创新。

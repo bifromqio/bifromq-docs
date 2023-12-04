@@ -26,6 +26,8 @@ import RPCCluster from './images/2023-12-01-bifromq-high-availability/BifroMQ-RP
 ## Introduction
 The cluster version of BifroMQ has been launched in the community lately, meeting the core demands of users for horizontal scaling and high availability in cluster deployment. We have previously detailed the capabilities of [BifroMQ StandardCluster](2023-10-24-bifromq-standardcluster.mdx) in terms of performance scaling. In this article, we will focus on a deep analysis of the technical features adopted by BifroMQ to ensure high availability.
 
+<!--truncate-->
+
 ## Decentralized Clusters
 In the architecture of BifroMQ, we have meticulously designed a scheme for partitioning the MQTT protocol workload. This strategy allows each type of workload to operate in its own independent sub-cluster. These functional sub-clusters are all built upon a sophisticated decentralized base-cluster framework. The cluster framework of BifroMQ consists of two logical layers: the Underlay Cluster and the Overlay Cluster. Such a construction makes the architecture clear and decoupled. For more details about this design, please refer to the ['BifroMQ Technical Architecture Overview'](2023-09-06-bifromq-architecture-overview.md).
 
