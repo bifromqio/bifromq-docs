@@ -1,0 +1,8 @@
+{
+  "label": "Install & Deploy",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Install And Deploy BifroMQ."
+  }
+}
