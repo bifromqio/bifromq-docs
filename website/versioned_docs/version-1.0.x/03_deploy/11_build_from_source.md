@@ -12,7 +12,7 @@ Clone the repository to local workspace
 
 ```
 cd <YOUR_WORKSPACE>
-git clone https://github.com/baidu/bifromq bifromq
+git clone https://github.com/bifromqio/bifromq bifromq
 ```
 
 Change directory to project root folder and execute following commands to build the whole project

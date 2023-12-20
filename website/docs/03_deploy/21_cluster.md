@@ -7,7 +7,7 @@ sidebar_position: 21
 ## Prerequisites
 
 * Ensure you have a JDK 17+ environment installed.
-* Obtain the latest version of BifroMQ from [GitHub](https://github.com/baidu/bifromq).
+* Obtain the latest version of BifroMQ from [GitHub](https://github.com/bifromqio/bifromq).
 
 ## Installation Steps
 In this section, we'll illustrate the deployment of a 3-node cluster. Being Similar with [deploying in Linux](2_deploy_on_linux_mac.md), 

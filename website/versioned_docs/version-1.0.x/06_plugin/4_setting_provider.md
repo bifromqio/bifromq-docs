@@ -4,7 +4,7 @@ title: "Setting Provider"
 ---
 # Setting Provider Plugin
 
-BifroMQ defines a category of settings ([Setting](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java)) that can be modified at runtime, allowing for dynamic adjustment of BifroMQ's service behavior per tenant. The purpose of the Setting Provider Plugin is to supply custom values for these settings at runtime. The Plugin's interface is defined in the following Maven module:
+BifroMQ defines a category of settings ([Setting](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java)) that can be modified at runtime, allowing for dynamic adjustment of BifroMQ's service behavior per tenant. The purpose of the Setting Provider Plugin is to supply custom values for these settings at runtime. The Plugin's interface is defined in the following Maven module:
 ```
 <dependency>
     <groupId>com.baidu.bifromq</groupId>

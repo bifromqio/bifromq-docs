@@ -24,8 +24,8 @@ CompletableFuture<MQTT3AuthResult> auth(MQTT3AuthData authData);
 ```
 
 Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting the connection performance of BifroMQ.
-[MQTT3AuthData](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
-and [MQTT3AuthResult](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto) are Protobuf objects, defined as follows:
+[MQTT3AuthData](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
+and [MQTT3AuthResult](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto) are Protobuf objects, defined as follows:
 
 #### MQTT3AuthData
 
@@ -94,8 +94,8 @@ CompletableFuture<Boolean> check(ClientInfo client,MQTTAction action);
 ```
 
 Implementers should ensure that the interface implementation is lightweight and non-blocking to avoid negatively affecting BifroMQ’s messaging performance.
-[ClientInfo](https://github.com/baidu/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
-and [MQTTAction](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto) are Protobuf objects, defined as follows:
+[ClientInfo](https://github.com/bifromqio/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
+and [MQTTAction](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto) are Protobuf objects, defined as follows:
 
 #### ClientInfo
 
@@ -155,7 +155,7 @@ setting `ByPassPermissionCheck`. By default, this setting is true, which means t
 ## DevOnly Mode
 
 For ease of development and testing, when an AuthPlugin implementation type is not specified, BifroMQ uses the
-default [DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java). This default implementation does not authenticate the client or
+default [DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java). This default implementation does not authenticate the client or
 check permissions.
 
 Note that the DevOnly Mode is only recommended for development and testing environments. It should never be used in a production environment, as it lacks security measures.

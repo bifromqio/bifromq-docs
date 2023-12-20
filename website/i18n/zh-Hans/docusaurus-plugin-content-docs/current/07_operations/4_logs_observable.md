@@ -34,7 +34,7 @@ Event类型大致分为：
 
 Event写出的目的地，为启动时通过pf4j加载的IEventCollector扩展点的实现。
 
-您可参考[DemoEventLogger](https://github.com/baidu/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/EventLogger.java) 来实现自己的EventCollector，用来获取BifroMQ提供的丰富的运行时事件。
+您可参考[DemoEventLogger](https://github.com/bifromqio/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/EventLogger.java) 来实现自己的EventCollector，用来获取BifroMQ提供的丰富的运行时事件。
 
 
 
@@ -50,4 +50,4 @@ BifroMQ本身没有默认内置Micrometer向Prometheus输出的组件，您可�
 
 您下载的压缩包解压得到的./plugins/demo-plugin-1.0.0-SNAPSHOT.jar已经提供了Endpoint供Prometheus进行Metrics的拉取：`http://127.0.0.1:9090/metrics`
 
-也可以参考[DemoPlugin](https://github.com/baidu/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/DemoPlugin.java) 来实现自己的Plugin。
+也可以参考[DemoPlugin](https://github.com/bifromqio/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/DemoPlugin.java) 来实现自己的Plugin。

@@ -16,8 +16,8 @@ Event Collector Plugin 用于收集BifroMQ运行中产生的各类事件，您�
 
 ## Event类型
 
-BifroMQ运行时产生的事件对象的类型都继承自[Event](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-event-collector/src/main/java/com/baidu/bifromq/plugin/eventcollector/Event.java)类。
-每个具体事件类都对应一个[EventType](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-event-collector/src/main/java/com/baidu/bifromq/plugin/eventcollector/EventType.java)枚举，可以通过对象上的`type()`获取，方便实现事件过滤逻辑。通过`hlc()`方法可以获取Event对象的时间戳，BifroMQ的时间戳是偏序的，可以反映事件发生的先后顺序。这对于BifroMQ在分布式部署时的事件处理逻辑十分有用。
+BifroMQ运行时产生的事件对象的类型都继承自[Event](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-event-collector/src/main/java/com/baidu/bifromq/plugin/eventcollector/Event.java)类。
+每个具体事件类都对应一个[EventType](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-event-collector/src/main/java/com/baidu/bifromq/plugin/eventcollector/EventType.java)枚举，可以通过对象上的`type()`获取，方便实现事件过滤逻辑。通过`hlc()`方法可以获取Event对象的时间戳，BifroMQ的时间戳是偏序的，可以反映事件发生的先后顺序。这对于BifroMQ在分布式部署时的事件处理逻辑十分有用。
 
 ## Report方法
 当事件发生时BifroMQ会回调Plugin的`report()`方法，该方法签名如下：

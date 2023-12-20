@@ -15,7 +15,7 @@ sidebar_position: 11
 
 ```
 cd <YOUR_WORKSPACE>
-git clone https://github.com/baidu/bifromq bifromq
+git clone https://github.com/bifromqio/bifromq bifromq
 ```
 
 执行以下命令，进入项目根目录，构建整个项目

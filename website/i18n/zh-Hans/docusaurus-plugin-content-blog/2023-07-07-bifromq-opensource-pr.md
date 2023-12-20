@@ -41,7 +41,7 @@ BifroMQ 可以广泛应用于各种物联网场景，包括但不限于智能家
 
 BifroMQ 在百度受到高度重视，也将得到百度的全力支持和广泛的资源投入。未来，BifroMQ 将继续完善对 MQTT 5 的支持，加强性能优化，丰富功能，并不断拓展在物联网领域的应用。同时，我们将继续秉持技术中立理念，进一步强化 BifroMQ 的「被集成」能力，使其能够更加轻松地与各种系统和应用协同工作。此外，BifroMQ 未来将会与更多的开源项目和标准化组织合作，共同推动物联网技术的发展，为全球物联网产业的升级迭代贡献力量。
 
-最后，作为一个开源项目，BifroMQ 非常欢迎各位开发者和企业深度参与项目开发和改进。为此，我们在BifroMQ官网（[https://bifromq.io/](https://bifromq.io/)）和GitHub社区平台（[https://github.com/baidu/bifromq](https://github.com/baidu/bifromq)）， **为开发者提供了丰富的文档、教程、问题解答和代码贡献** 等资源。同时，大家也可通过扫描下方二维码加入开发者交流社区，与广大同行交流学习。
+最后，作为一个开源项目，BifroMQ 非常欢迎各位开发者和企业深度参与项目开发和改进。为此，我们在BifroMQ官网（[https://bifromq.io/](https://bifromq.io/)）和GitHub社区平台（[https://github.com/bifromqio/bifromq](https://github.com/bifromqio/bifromq)）， **为开发者提供了丰富的文档、教程、问题解答和代码贡献** 等资源。同时，大家也可通过扫描下方二维码加入开发者交流社区，与广大同行交流学习。
 
 <img src="https://bifromq.io/img/qrcode.png" width="30%" />
 

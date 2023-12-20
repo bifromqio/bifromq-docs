@@ -25,7 +25,7 @@ const footerNavigation = {
     },
     {
       name: 'GitHub',
-      href: 'https://github.com/baidu/bifromq',
+      href: 'https://github.com/bifromqio/bifromq',
       icon: (props) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path

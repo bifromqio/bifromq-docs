@@ -33,7 +33,7 @@ The types of Events can be broadly divided into:
 
 The destination for writing out Events is the implementation of the IEventCollector extension point, loaded at startup through pf4j.
 
-You can refer to [DemoEventLogger](https://github.com/baidu/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/EventLogger.java) to implement your own EventCollector to collect the rich runtime events provided by BifroMQ.
+You can refer to [DemoEventLogger](https://github.com/bifromqio/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/EventLogger.java) to implement your own EventCollector to collect the rich runtime events provided by BifroMQ.
 
 
 
@@ -49,4 +49,4 @@ BifroMQ does not include a built-in component for Micrometer to output to Promet
 
 The archive you downloaded and unzipped comes with ./plugins/demo-plugin-1.0.0-SNAPSHOT.jar, which provides an Endpoint for Prometheus to pull Metrics: `http://127.0.0.1:9090/metrics`.
 
-You can also refer to [DemoPlugin](https://github.com/baidu/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/DemoPlugin.java) to implement your own Plugin.
+You can also refer to [DemoPlugin](https://github.com/bifromqio/bifromq/blob/main/build/build-plugin-demo/src/main/java/com/baidu/demo/plugin/DemoPlugin.java) to implement your own Plugin.

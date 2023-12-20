@@ -32,10 +32,10 @@ const config = {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: ({locale, versionDocsDirPath, docPath}) => {
             if (locale !== config.i18n.defaultLocale) {
-              return `https://github.com/baidu/bifromq-docs/tree/master/website/i18n/zh-Hans/docusaurus-plugin-content-docs/`;
+              return `https://github.com/bifromqio/bifromq-docs/tree/master/website/i18n/zh-Hans/docusaurus-plugin-content-docs/`;
             }
             // Link to GitHub for English docs
-            return `https://github.com/baidu/bifromq-docs/tree/master/website/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/bifromqio/bifromq-docs/tree/master/website/${versionDocsDirPath}/${docPath}`;
           },
           lastVersion: 'current',
           versions: {
@@ -50,9 +50,9 @@ const config = {
           // Please change this to your repo.
           editUrl: ({locale}) => {
             if (locale !== config.i18n.defaultLocale) {
-              return "https://github.com/baidu/bifromq-docs/blob/master/website/i18n/zh-Hans/docusaurus-plugin-content-blog";
+              return "https://github.com/bifromqio/bifromq-docs/blob/master/website/i18n/zh-Hans/docusaurus-plugin-content-blog";
             }
-            return "https://github.com/baidu/bifromq-docs/tree/master/website/blog";
+            return "https://github.com/bifromqio/bifromq-docs/tree/master/website/blog";
           },
         },
         theme: {
@@ -102,7 +102,7 @@ const config = {
             position: 'right'
           },
           {
-            to: 'https://github.com/baidu/bifromq',
+            to: 'https://github.com/bifromqio/bifromq',
             label: 'GitHub',
             position: 'right',
           },

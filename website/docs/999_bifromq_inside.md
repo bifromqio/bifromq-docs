@@ -4,7 +4,7 @@ sidebar_position: 999
 
 # BifroMQ Inside
 
-This page lists projects or products that `integrate` with BifroMQ. If your project integrates with BifroMQ, you can [submit it here](https://github.com/baidu/bifromq-docs/issues/new?assignees=visoar&labels=BifroMQ+Inside&projects=&template=bifromq-inside.md&title=%5BBifroMQ+Inside%5D+Your+Project%2FProduct+Name).
+This page lists projects or products that `integrate` with BifroMQ. If your project integrates with BifroMQ, you can [submit it here](https://github.com/bifromqio/bifromq-docs/issues/new?assignees=visoar&labels=BifroMQ+Inside&projects=&template=bifromq-inside.md&title=%5BBifroMQ+Inside%5D+Your+Project%2FProduct+Name).
 
 ### Cloud
 

@@ -23,8 +23,8 @@ CompletableFuture<MQTT3AuthResult> auth(MQTT3AuthData authData);
 ```
 
 实施者应该确保接口的实现是轻量级和非阻塞的，以避免对BifroMQ的连接性能产生负面影响。
-[MQTT3AuthData](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
-和[MQTT3AuthResult](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)是Protobuf对象，定义如下：
+[MQTT3AuthData](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
+和[MQTT3AuthResult](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)是Protobuf对象，定义如下：
 
 #### MQTT3AuthData
 
@@ -96,9 +96,9 @@ CompletableFuture<Boolean> check(ClientInfo client,MQTTAction action);
 ```
 实施者应确保接口实现轻量且非阻塞，以避免对BifroMQ的消息性能产生负面影响。
 
-[ClientInfo](https://github.com/baidu/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
+[ClientInfo](https://github.com/bifromqio/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
 
-与[MQTTAction](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto)是Protobuf对象，定义如下：
+与[MQTTAction](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto)是Protobuf对象，定义如下：
 
 #### ClientInfo
 
@@ -156,6 +156,6 @@ check方法以异步方式返回一个布尔值；true表示授予权限，false
 
 ## DevOnly Mode
 
-为了方便开发和测试，当未指定AuthPlugin实现类型时，BifroMQ使用默认的[DevOnlyAuthProvider](https://github.com/baidu/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)。该默认实现不对客户端进行身份验证或权限检查。
+为了方便开发和测试，当未指定AuthPlugin实现类型时，BifroMQ使用默认的[DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)。该默认实现不对客户端进行身份验证或权限检查。
 
 请注意，仅建议在开发和测试环境中使用DevOnly模式。在生产环境中绝不能使用它，因为它缺乏安全措施。

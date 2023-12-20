@@ -5,7 +5,7 @@ title: "Setting Provider"
 
 # Setting Provider Plugin
 
-BifroMQ定义了一类可以运行时变更的设置项([Setting](https://github.com/baidu/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java))
+BifroMQ定义了一类可以运行时变更的设置项([Setting](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-setting-provider/src/main/java/com/baidu/bifromq/plugin/settingprovider/ISettingProvider.java))
 ，可以用于在租户级别动态调整BifroMQ的运行时行为。Setting Provider Plugin的作用即是为这些设置项提供运行时的自定义的值。Plugin的接口定义在以下Maven模块：
 ```
 <dependency>

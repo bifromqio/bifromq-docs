@@ -6,7 +6,7 @@ sidebar_position: 21
 
 ## 前提条件
 * 确保您已安装 JDK 17+ 环境。
-* 从[GitHub](https://github.com/baidu/bifromq)获取BifroMQ的最新版本。
+* 从[GitHub](https://github.com/bifromqio/bifromq)获取BifroMQ的最新版本。
 
 ## 安装步骤
 在本节中，我们将演示部署3节点的BifroMQ集群。与在[Linux](2_deploy_on_linux_mac.md)中部署类似，您可以首先解压已下载的tar文件。

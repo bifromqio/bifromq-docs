@@ -7,7 +7,7 @@ sidebar_position: 1
 ## 前提条件
 
 * 安装 JDK 17+ 环境
-* 在 [bifromq_release](https://github.com/baidu/bifromq/releases) 获取 BifroMQ 的最新版本
+* 在 [bifromq_release](https://github.com/bifromqio/bifromq/releases) 获取 BifroMQ 的最新版本
 
 ## Linux或者macOS
 

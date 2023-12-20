@@ -4,7 +4,7 @@ sidebar_position: 999
 
 # BifroMQ Inside
 
-本页记录了 `集成` 了 BifroMQ 的项目或产品。如果你的项目集成了 BifroMQ 或为 BifroMQ 开发（如插件、控制台），可在[这里提交](https://github.com/baidu/bifromq-docs/issues/new?assignees=visoar&labels=BifroMQ+Inside&projects=&template=bifromq-inside.md&title=%5BBifroMQ+Inside%5D+Your+Project%2FProduct+Name)。
+本页记录了 `集成` 了 BifroMQ 的项目或产品。如果你的项目集成了 BifroMQ 或为 BifroMQ 开发（如插件、控制台），可在[这里提交](https://github.com/bifromqio/bifromq-docs/issues/new?assignees=visoar&labels=BifroMQ+Inside&projects=&template=bifromq-inside.md&title=%5BBifroMQ+Inside%5D+Your+Project%2FProduct+Name)。
 
 ### Cloud
 
