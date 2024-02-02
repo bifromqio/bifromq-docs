@@ -46,7 +46,7 @@ message MQTT3AuthData{
 
 ```protobuf
 message Ok{
-  string trafficId = 1;
+  string tenantId = 1;
   string userId = 2;
 }
 
@@ -70,7 +70,7 @@ message MQTT3AuthResult {
 
 When the client is authenticated successfully, BifroMQ expects the interface to return an Ok structure, with the following fields:
 
-* trafficId: Tenant identifier to which the client's identity belongs
+* tenantId: Tenant identifier to which the client's identity belongs
 * userId: Identifier representing the client
 
 A Reject return value indicates that the authentication failed. There are currently three supported reasons:
@@ -113,7 +113,7 @@ message SysClientInfo{
 }
 
 message ClientInfo{
-  string trafficId = 1; // consistent with the trafficId in the Ok structure returned by the auth method
+  string tenantId = 1; // consistent with the tenantId in the Ok structure returned by the auth method
   string userId = 2; // consistent with the userId in the Ok structure returned by the auth method
   oneof client_type{
     SysClientInfo sysClientInfo = 3;

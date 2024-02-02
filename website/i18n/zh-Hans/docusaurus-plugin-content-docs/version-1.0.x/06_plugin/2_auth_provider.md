@@ -45,7 +45,7 @@ message MQTT3AuthData{
 
 ```protobuf
 message Ok{
-  string trafficId = 1;
+  string tenantId = 1;
   string userId = 2;
 }
 
@@ -69,7 +69,7 @@ message MQTT3AuthResult {
 
 当客户端成功通过身份验证时，BifroMQ期望接口返回一个Ok结构体，包含以下字段：
 
-* trafficId：表示客户端身份所属的租户标识符
+* tenantId：表示客户端身份所属的租户标识符
 
 * userId：表示客户端的标识符
 
@@ -116,7 +116,7 @@ message SysClientInfo{
 }
 
 message ClientInfo{
-    string trafficId = 1; // 与auth方法返回Ok结构中的trafficId一致
+    string tenantId = 1; // 与auth方法返回Ok结构中的tenantId一致
     string userId = 2; // 与auth方法返回Ok结构中的userId一致
     oneof client_type{
     SysClientInfo sysClientInfo = 3;
