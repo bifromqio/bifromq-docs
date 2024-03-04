@@ -21,6 +21,14 @@ const config = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'zh-Hans'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+      },
+      'zh-Hans': {
+        label: '简体中文',
+      },
+    },
   },
 
   presets: [
@@ -40,7 +48,7 @@ const config = {
           lastVersion: 'current',
           versions: {
             current: {
-              label: '2.1.x',
+              label: '3.0.x',
               path: '',
             },
           },

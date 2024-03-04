@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@docsly/react": "^1.9.1",
-    "@docusaurus/core": "3.0.0",
-    "@docusaurus/preset-classic": "3.0.0",
-    "@docusaurus/theme-common": "3.0.0",
+    "@docusaurus/core": "latest",
+    "@docusaurus/preset-classic": "latest",
+    "@docusaurus/theme-common": "latest",
     "@heroicons/react": "^2.0.18",
     "@mdx-js/react": "^3.0.0",
     "@radix-ui/react-icons": "^1.1.1",
@@ -34,7 +34,7 @@
     "url": "^0.11.3"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.0.0",
+    "@docusaurus/module-type-aliases": "latest",
     "@tsconfig/docusaurus": "^1.0.5",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.24",

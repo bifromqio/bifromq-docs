@@ -3,341 +3,112 @@ sidebar_position: 2
 title: "Configuration file"
 ---
 
-# Configuration File Manual
+# Configuration Manual
+The configuration file for BifroMQ is a YAML file located in the `conf` directory under `standalone.yml`. This file contains all the configuration parameters for BifroMQ. When starting BifroMQ, you can specify the path to the configuration file with the command-line parameter `-c` or `--config`. If the configuration file path is not specified, BifroMQ will attempt to load the `standalone.yml` file from the `conf` directory.
 
-## Introduction
+The complete configuration file is defined by a set of configuration objects, with the top-level object being `StandaloneConfig`.
 
-This document describes the configuration parameters for BifroMQ.
+## StandaloneConfig
+| Configuration Name                             | Value Type               | Default Value | Description                                                                                                                                                          |
+|-----------------------------------------------|-------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bootstrap`                                   | Boolean                 | false         | If the node is responsible for cluster bootstrapping, this value should be set to true. Otherwise, it should be set to false. Note: In cluster deployments, there must be **exactly one** bootstrap node.                           |
+| `authProviderFQN`                             | String                  | null          | Fully qualified class name of the custom Auth Provider implementation. If not configured, authentication and authorization will not be performed.                     |
+| `resourceThrottlerFQN`                        | String                  | null          | Fully qualified class name of the custom Resource Throttler implementation. If not configured, resource limiting will not be performed.                              |
+| `settingProviderFQN`                          | String                  | null          | Fully qualified class name of the custom Setting Provider implementation. If not configured, default initial values defined in Settings will be used.                 |
+| `clusterConfig.env`                           | String                  | "Test"        | Cluster environment name. Cluster nodes with different environment names are isolated from each other. Cannot be null or an empty string.                             |
+| `clusterConfig.host`                          | String                  |               | Communication address of the node as a cluster node. If not configured, the actual value is determined by the following rules: If the value of `mqttServerConfig.tcpListener.host` is not "0.0.0.0", use that value; otherwise, if `rpcServerConfig.host` is configured, use that value; otherwise, use the SiteLocal address resolved from NetworkInterface. |
+| `clusterConfig.port`                          | Integer                 | 0             | Communication port number of the node as a cluster node. `0` means automatically selecting an unused port number. It is recommended to configure a specific port number for nodes with the `bootstrap role` to simplify the configuration process.  |
+| `clusterConfig.seedEndpoints`                 | String                  | null          | Addresses of seed nodes to join the cluster, in the form of `ip:port` addresses separated by `,`. It is recommended that nodes other than the `bootstrap role` configure the bootstrap node address to simplify the configuration process.   |
+| `clusterConfig.clusterDomainName`             | String                  | null          | Cluster domain name. Specifying the domain name here can further simplify the configuration process for cluster nodes when the cluster nodes are registered to a fixed domain name. BifroMQ will resolve this domain name to obtain the address of the cluster contact nodes. |
+| `mqttServerConfig.connTimeoutSec`             | Integer                 | 20            | The tolerable timeout duration from establishing a TCP connection to completing the MQTT connection operation. If this limit is exceeded, the server will proactively disconnect.  |
+| `mqttServerConfig.maxConnPerSec`              | Integer                 | 2000          | The maximum rate of MQTT connection operations accepted per second. Connections exceeding this limit will be limited by the token bucket and subsequently disconnected.   |
+| `mqttServerConfig.maxDisconnPerSec`           | Integer                 | 1000          | The maximum rate of disconnecting connections per second when the node is gracefully shutting down.                                                                          |
+| `mqttServerConfig.maxMsgByteSize`             | Integer                 | 262144        | The maximum allowed size of an MQTT packet.                                                                                                                                   |
+| `mqttServerConfig.maxConnBandwidth`           | Integer                 | 524288        | The maximum bandwidth allowed for a single connection, calculated separately for inbound and outbound traffic.                                                                |
+| `mqttServerConfig.defaultKeepAliveSec`        | Integer                 | 300           | The default keep-alive duration for connections. When clients do not actively set this, this value is used.                                                                    |
+| `mqttServerConfig.bossELGThreads`             | Integer                 | 1             | The number of threads for accepting TCP connection requests.                                                                                                                   |
+| `mqttServerConfig.workerELGThreads`           | Integer                 | max(processor cores/2, 2) | The number of worker threads for processing MQTT protocol signaling.                                                                                                             |
+| `mqttServerConfig.tcpListener.enable`         | Boolean                 | true          | Whether to enable MQTT over TCP connection method.                                                                                                                              |
+| `mqttServerConfig.tcpListener.host`           | String                  | "0.0.0.0"     | Communication address for MQTT over TCP connection method.                                                                                                                      |
+| `mqttServerConfig.tcpListener.port`           | Integer                 | 1883          | Communication port for MQTT over TCP connection method.                                                                                                                         |
+| `mqttServerConfig.tlsListener.enable`         | Boolean                 | false         | Whether to enable MQTT over TLS connection method.                                                                                                                              |
+| `mqttServerConfig.tlsListener.host`           | String                  | "0.0.0.0"     | Communication address for MQTT over TLS connection method.                                                                                                                      |
+| `mqttServerConfig.tlsListener.port`           | Integer                 | 1884          | Communication port for MQTT over TLS connection method.                                                                                                                         |
+| `mqttServerConfig.tlsListener.sslConfig`      | ServerSSLContextConfig  | null          | SSL configuration for MQTT over TLS connection method. Refer to the settings of the ServerSSLContextConfig object.                                                              |
+| `mqttServerConfig.wsListener.enable`          | Boolean                 | true          | Whether to enable MQTT over WebSocket connection method.                                                                                                                        |
+| `mqttServerConfig.wsListener.host`            | String                  | "0.0.0.0"     | Communication address for MQTT over WebSocket connection method.                                                                                                                |
+| `mqttServerConfig.wsListener.port`            | Integer                 | 8080          | Communication port for MQTT over WebSocket connection method.                                                                                                                   |
+| `mqttServerConfig.wsListener.wsPath`          | String                  | "/mqtt"       | Access path for MQTT over WebSocket connection method.                                                                                                                          |
+| `mqttServerConfig.wssListener.enable`         | Boolean                 | false         | Whether to enable MQTT over WebSocket Secure connection method.                                                                                                                 |
+| `mqttServerConfig.wssListener.host`           | String                  | "0.0.0.0"     | Communication address for MQTT over WebSocket Secure connection method.                                                                                                         |
+| `mqttServerConfig.wssListener.port`           | Integer                 | 8443          | Communication port for MQTT over WebSocket Secure connection method.                                                                                                            |
+| `mqttServerConfig.wssListener.wsPath`         | String                  | "/mqtt"       | Access path for MQTT over WebSocket Secure connection method.                                                                                                                   |
+| `mqttServerConfig.wssListener.sslConfig`      | ServerSSLContextConfig  | null          | SSL configuration for MQTT over WebSocket Secure connection method. Refer to the settings of the ServerSSLContextConfig object.                                                  |
+| `rpcClientConfig.workerThreads`              | Integer                 | processor cores | The number of worker threads when communicating between nodes as a client via RPC.                                                                                              |
+| `rpcClientConfig.sslConfig`                   | SSLContextConfig        | null          | SSL configuration when Secure RPC is enabled. Refer to the settings of the SSLContextConfig object.                                                                             |
+| `rpcServerConfig.host`                        | String                  |               | See the rule description for ClusterConfig.host.                                                                                                                                |
+| `rpcServerConfig.port`                        | Integer                 | 0             | See the rule description for ClusterConfig.port.                                                                                                                                |
+| `rpcServerConfig.workerThreads`               | Integer                 | 2             | The number of worker threads when communicating between nodes as a server via RPC.                                                                                              |
+| `rpcServerConfig.sslConfig`                   | ServerSSLContextConfig  | null          | SSL configuration when Secure RPC is enabled. Refer to the settings of the ServerSSLContextConfig object.                                                                       |
+| `stateStoreConfig.queryThreads`               | Integer                 | min(available cores/2, 2) | The number of threads for the built-in state storage service to execute query type requests.                                                                                    |
+| `stateStoreConfig.tickerThreads`              | Integer                 | min(available cores/20, 1) | The number of threads for the built-in state storage service to perform periodic tick operations.                                                                               |
+| `stateStoreConfig.bgWorkerThreads`            | Integer                 | min(available cores/4, 1) | The number of threads for the built-in state storage service to perform background operations.                                                                                  |
+| `stateStoreConfig.distWorkerConfig.queryPipelinePerStore` | Integer                | 1000          | The number of queryPipelines for the Dist Worker state storage service.                                                                                                         |
+| `stateStoreConfig.distWorkerConfig.compactWALThreshold`  | Integer                | 2500          | The maximum number of logs before a compaction operation is performed in the Dist Worker state storage service.                                                                 |
+| `stateStoreConfig.distWorkerConfig.dataEngineConfig`     | StorageEngineConfig    |               | Data storage engine configuration for the Dist Worker state storage service. Refer to the settings of the StorageEngineConfig object.                                           |
+| `stateStoreConfig.distWorkerConfig.walEngineConfig`      | StorageEngineConfig    |               | WAL storage engine configuration for the Dist Worker state storage service. Refer to the settings of the StorageEngineConfig object.                                            |
+| `stateStoreConfig.distWorkerConfig.balanceConfig`        | BalancerOptions        |               | Balancer configuration for the Dist Worker state storage service. Refer to the settings of the BalancerOptions object.                                                          |
+| `inboxStoreConfig.queryPipelinePerStore`                 | Integer                | 100           | The number of queryPipelines for the Inbox Store state storage service.                                                                                                         |
+| `inboxStoreConfig.compactWALThreshold`                   | Integer                | 2500          | The maximum number of logs before a compaction operation is performed in the Inbox Store state storage service.                                                                 |
+| `inboxStoreConfig.gcIntervalSeconds`                     | Integer                | 600           | The interval (in seconds) for recycling expired Session data in the Inbox Store.                                                                                                |
+| `inboxStoreConfig.dataEngineConfig`                      | StorageEngineConfig    |               | Data storage engine configuration for the Inbox Store state storage service. Refer to the settings of the StorageEngineConfig object.                                           |
+| `inboxStoreConfig.walEngineConfig`                       | StorageEngineConfig    |               | WAL storage engine configuration for the Inbox Store state storage service. Refer to the settings of the StorageEngineConfig object.                                            |
+| `inboxStoreConfig.balanceConfig`                         | BalancerOptions        |               | Balancer configuration for the Inbox Store state storage service. Refer to the settings of the BalancerOptions object.                                                          |
+| `retainStoreConfig.queryPipelinePerStore`                | Integer                | 100           | The number of queryPipelines for the Retain Store state storage service.                                                                                                        |
+| `retainStoreConfig.compactWALThreshold`                  | Integer                | 2500          | The maximum number of logs before a compaction operation is performed in the Retain Store state storage service.                                                                |
+| `retainStoreConfig.gcIntervalSeconds`                    | Integer                | 600           | The interval (in seconds) for recycling expired data in the Retain Store.                                                                                                       |
+| `retainStoreConfig.dataEngineConfig`                     | StorageEngineConfig    |               | Data storage engine configuration for the Retain Store state storage service. Refer to the settings of the StorageEngineConfig object.                                          |
+| `retainStoreConfig.walEngineConfig`                      | StorageEngineConfig    |               | WAL storage engine configuration for the Retain Store state storage service. Refer to the settings of the StorageEngineConfig object.                                           |
+| `retainStoreConfig.balanceConfig`                        | BalancerOptions        |               | Balancer configuration for the Retain Store state storage service. Refer to the settings of the BalancerOptions object.                                                         |
+| `apiServerConfig.enable`                                 | Boolean                | true          | Whether to enable HTTP API access.                                                                                                                                    |
+| `apiServerConfig.host`                                   | String                 | null          | Access address for the HTTP API. If not configured, the same rule as ClusterConfig.host is used to determine the address.                                                      |
+| `apiServerConfig.httpPort`                               | Integer                | 8091          | Access port for the HTTP API.                                                                                                                                         |
+| `apiServerConfig.apiBossThreads`                         | Integer                | 1             | The number of threads for handling HTTP API TCP connection requests.                                                                                                   |
+| `apiServerConfig.apiWorkerThreads`                       | Integer                | 2             | The number of worker threads for processing HTTP API requests.                                                                                                         |
+| `apiServerConfig.httpsListenerConfig.enable`             | Boolean                | false         | Whether to enable HTTPS API access.                                                                                                                                   |
+| `apiServerConfig.httpsListenerConfig.host`               | String                 | null          | Access address for the HTTPS API. If not configured, the same rule as ClusterConfig.host is used to determine the address.                                                 |
+| `apiServerConfig.httpsListenerConfig.port`               | Integer                | 8090          | Access port for the HTTPS API.                                                                                                                                        |
+| `apiServerConfig.httpsListenerConfig.sslConfig`          | ServerSSLContextConfig | null          | SSL configuration for the HTTPS API. Refer to the settings of the ServerSSLContextConfig object.                                                                       |
 
-### bootstrap
 
-- Type: Boolean
-- Default value: false
-- Description: If the node is responsible for cluster bootstrap, then the value should be set to be true. Otherwise, it 
-should be false. NOTE: there must be EXACTLY ONE bootstrap node in cluster deployment.
+## SSLContextConfig && ServerSSLContextConfig
+SSLContextConfig is used to set the configuration parameters for client SSL connections. ServerSSLContextConfig is used to set the configuration parameters for server SSL connections.
 
-### authProviderFQN
-- Type: String
-- Default value: null
-- Description: Specifies the name of the authProvider to be loaded via Pf4j. If not configured, the built-in 
-DefaultAuthProvider will be used.
+| Configuration Name                             | Value Type              | Default Value | Description                                                                                                                               |
+|-----------------------------------------------|------------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `certFile`                                    | String                 | null          | The filename of the public certificate for the client or server.                                                                         |
+| `keyFile`                                     | String                 | null          | The filename of the private certificate for the client or server.                                                                        |
+| `trustCertsFile`                              | String                 | null          | The filename of the root certificate for the client or server.                                                                           |
+| `clientAuth`                                  | String                 | "OPTIONAL"    | Only valid for ServerSSLContextConfig. Whether the server requires client verification. Possible values include: NONE: No verification required; OPTIONAL: Server requests client verification, but if the client does not provide a certificate, it will not fail; REQUIRE: Server requires client verification, and if the client does not provide a certificate, it will fail. |
 
-### settingProviderFQN
-- Type: String
-- Default value: null
-- Description: Specifies the name of the settingProvider to be loaded via Pf4j. If not configured, the built-in 
-DefaultSettingProvider will be used.
+## StorageEngineConfig
+StorageEngineConfig is used to set the configuration parameters for the data engine and WAL engine of the built-in state service.
 
-## clusterConfig
-### env
-- Type: String
-- Default value: empty
-- Description: the cluster environment. Note: clusters with different environment are dependent with each other. Also,
-Cluster environment cannot be null or empty string.
-### host
-- Type: String
-- Default value: empty
-- Description: The host address
-### port
-- Type: int
-- Default value: 0
-- Description: The port of host.
-### seedEndpoints
-- Type: String
-- Default value: null
-- Description: The advertised ip:port list in agent cluster.
-### clusterDomainName
-- Type: String
-- Default value: empty
-- Description: The domain name of the agent host cluster.
-## mqttServerConfig
-### connTimeoutSec
-- Type: Integer
-- Default value: 20
-- Description: The tolerable timeout duration from the establishment of the TCP connection to the completion of the 
-Connect action. The server will actively disconnect if this limit is exceeded.
-### maxConnPerSec
-- Type: Integer
-- Default value: 2000
-- Description: The maximum frequency of Connect actions accepted per second. Connections exceeding this limit are 
-restricted through a token bucket and will be disconnected subsequently.
-### maxDisconnPerSec
-- Type: Integer
-- Default value: 1000
-- Description: The maximum frequency of Disconnect actions accepted per second, controlled through a token bucket.
-### maxMsgByteSize
-- Type: Integer
-- Default value: 256 * 1024
-- Description: The maximum allowed size for an mqtt packet.
-### maxResendTimes
-- Type: Integer
-- Default value: 5
-- Description: The maximum number of resends for messages with QoS1 and QoS2. The message will be discarded after 
-exceeding this limit.
-### maxConnBandwidth
-- Type: Integer
-- Default value: 512 * 1024
-- Description: The maximum bandwidth allowed for a single MQTT connection, calculated separately for inbound and 
-outbound traffic.
-### defaultKeepAliveSec
-- Type: Integer
-- Default value: 300
-- Description: The default keepAlive duration for MQTT connections. This value is used when the client does not actively 
-set it.
-### qos2ConfirmWindowSec
-- Type: Integer
-- Default value: 5
-- Description: The expiration time for caching messageId internally for QoS2 messages.
-### bossELGThreads
-- Type: Integer
-- Default value: 1
-- Description: Number of threads handling connection in Netty.
-### workerELGThreads
-- Type: Integer
-- Default value: 1/2 of the availableProcessors with a minimum of 2.
-- Description: Number the threads handling message processing for channels.
-### tcpListener
-#### enable
-- Type: Boolean
-- Default value: true
-- Description: Whether to build tcp access capability within the mqtt-server.
-#### host
-- Type: String
-- Default value: 0.0.0.0
-- Description: The address to which the mqtt-server binds. This is used to provide an external mqtt access point.
-#### port
-- Type: Integer
-- Default value: 1883
-- Description: The port to which the mqtt-server binds for exposing the mqtt tcp access port to the outside.
-### tlsListener
-#### enable
-- Type: Boolean
-- Default value: false
-- Description: Whether to build tls access capability within the mqtt-server.
-#### host
-- Type: String
-- Default value: 0.0.0.0
-- Description: The address to which the mqtt-server binds. This is used to provide an external mqtt access point.
-#### port
-- Type: Integer
-- Default value: 1884
-- Description: The port to which the mqtt-server binds for exposing the mqtt tls access port to the outside.
-#### sslConfig
-##### certFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the public key certificate used by the server when the mqtt-server module 
-provides TLS and WSS capabilities. It will attempt to load from the directory specified by the “CONF_DIR” system 
-parameter, or from the current classpath.
-##### keyFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the private key certificate used by the server when the mqtt-server module 
-provides TLS and WSS capabilities. It will attempt to load from the directory specified by the “CONF_DIR” system 
-parameter, or from the current classpath.
-##### trustCertsFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the root certificate used by the server when the mqtt-server module provides 
-TLS and WSS capabilities. It will attempt to load from the directory specified by the “CONF_DIR” system parameter, or 
-from the current classpath.
-##### clientAuth
-- Type: String
-- Default value: OPTIONAL
-- Description: Specifies whether client authentication is required when establishing an SSL connection between the 
-mqtt-server and the client. Possible values include:
-  * NONE: No verification required
-  * OPTIONAL: The server requests client verification but won't fail if the client does not provide a certificate.
-  * REQUIRE: The server requires client verification and will fail if the client does not provide a certificate.
-### wsListener
-#### enable
-- Type: Boolean
-- Default value: true
-- Description: Whether to build ws access capability within the mqtt-server.
-#### host
-- Type: String
-- Default value: 0.0.0.0
-- Description: The address to which the mqtt-server binds. This is used to provide an external mqtt access point.
-#### port
-- Type: Integer
-- Default value: 8080
-- Description: The port to which the mqtt-server binds for exposing the mqtt websocket access port to the outside.
-#### wsPath
-- Type: String
-- Default value: /mqtt
-- Description: The access path for ws and wss in the mqtt-server.
-### wssListener
-#### enable
-- Type: Boolean
-- Default value: false
-- Description: Whether to build wss access capability within the mqtt-server.
-#### host
-- Type: String
-- Default value: 0.0.0.0
-- Description: The address to which the mqtt-server binds. This is used to provide an external mqtt access point.
-#### port
-- Type: Integer
-- Default value: 8443
-- Description: Whether to build wss access capability within the mqtt-server.
-#### wsPath
-- Type: String
-- Default value: /mqtt
-- Description: The access path for ws and wss in the mqtt-server.
-#### sslConfig
-- Description: The same with tlsListener.sslConfig.
-## rpcClientConfig
-### workerThreads
-- Type: Integer
-- Default value: 1/8 of the available processor cores with a minimum of 2.
-- Description: The number of threads in rpc clients.
-### sslConfig
-#### certFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the public key certificate.
-#### keyFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the private key certificate.
-#### trustCertsFile
-- Type: String
-- Default value: null
-- Description: Specifies the file name of the root certificate.
-## rpcServerConfig
-### host
-- Type: String
-- Default value: The same with mqtt server host address.
-- Description: The host for RPC server.
-### port
-- Type: Integer
-- Default value: 0
-- Description: The port for RPC server.
-### workerThreads
-- Type: Integer
-- Default value: 1/4 of the available processor cores with a minimum of 2.
-- Description: The number of threads in rpc server.
-### sslConfig
-- Description: It shares the same fields and meaning with tlsListener.sslConfig.
-## baseKVRpcServerConfig
-- Description: It shares the same fields and meaning with rpcServerConfig.
-## stateStoreConfig
-### queryThreads
-- Type: Integer
-- Default Value: 1/3 of available processors with a minimum of 2
-- Description: The number of core and maximum threads in the thread pool used for executing query-type requests in the 
-BaseKV storage of dist-worker, inbox-store, and retain-store modules.
-### tickerThreads
-- Type: Integer
-- Default Value: 1/20 of available processors with a minimum of 1
-- Description: The number of core and maximum threads in the thread pool used for executing periodic tick actions within 
-the BaseKV storage of dist-worker, inbox-store, and retain-store modules.
-### bgWorkerThreads
-- Type: Integer
-- Default Value: 1/4 of available processors with a minimum of 1
-- Description: The number of core and maximum threads in the thread pool used for executing background actions.
-### distWorkerConfig
-#### queryPipelinePerStore
-- Type: Integer
-- Default Value: 1000
-- Description: The number of query pipelines per BaseKV store.
-#### compactWALThreshold
-- Type: Integer
-- Default Value: 2000
-- Description: The max number of logs before compaction
-#### dataEngineConfig
-##### type
-- Type: String
-- Default Value: rocksdb
-- Description: Specifies the type of data engine used for BaseKV storage in the dist-worker module. Options include:
-  * rocksDB: Provides persistence capabilities; can recover state after a restart.
-  * memory: No persistence; data is lost after a restart.
-##### gcIntervalInSec
-- Type: Integer
-- Default value: 300
-- Description: Specifies the interval (in seconds) at which the data engine in the dist-worker module's BaseKV 
-performs garbage collection.
-##### dataPathRoot
-- Type: String
-- Default value: null
-- Description: Effective when the type is set to rocksDB. Specifies the directory where the dist-worker module's 
-dataEngine stores data files. If configured as an absolute path, it will load directly; if a relative path, it will 
-attempt to load from the directories specified by the “DATA_DIR” and “user.dir” system parameters.
-##### compactMinTombstoneKeys
-- Type: Integer
-- Default Value: 200,000
-- Description: Effective when 'type' is set to rocksDB.
-##### compactTombstonePercent
-- Type: Double
-- Default Value: 0.3
-- Description: Effective when 'type' is set to rocksDB. When the number of keys deleted in a particular Range in the 
-rocksDB used by dataEngine exceeds compactMinTombstoneKeys, and the proportion of deleted keys exceeds 
-compactTombstonePercent of the total, a compact operation is executed on this Range space.
-##### asyncWALFlush
-- Type: Boolean
-- Default Value: false
-- Description: It only works for WAL engine and the logs will be flushed asynchronously.
-##### fsyncWAL
-- Type: Boolean
-- Default Value: false
-- Description: It only works for WAL engine. If this flag is true, writes will be slower. If this flag is false, and 
-the machine crashes, some recent writes may be lost.
-#### walEngineConfig
-- Description: Similar to data engine. For rocksdb configuration, the default compactMinTombstoneKeys is 10,000.
-#### balanceConfig
-#### scheduleIntervalInMs
-- Type: Long
-- Default Value: 5000
-- Description: Scheduling interval for BaseKV range balancers.
-#### balancers
-- Type: List of String
-- Default Value: com.baidu.bifromq.dist.worker.balance.ReplicaCntBalancerFactory
-- Description: BaseKV range balancers FQNs.
-### inboxStoreConfig
-#### purgeDelaySeconds
-- Type: Integer
-- Default Value: 180
-- Description: Puring some delay for expired inboxes.
-#### queryPipelinePerStore
-- Type: Integer
-- Default Value: 100
-- Description: The number of query pipelines per BaseKV store.
-#### other fields
-- Description: Other fields are the same meaning with dist workers'.
-### retainStoreConfig
-- Description: The fields are the same meaning with dist workers'.
-## apiServerConfig
-### enable
-- Type: Boolean
-- Default Value: true
-- Description: Whether to build http access capability within the api-service.
-### host
-- Type: String
-- Default value: The same with mqtt server host address.
-- Description: The host for api-service.
-### httpPort
-- Type: Integer
-- Default value: 8091
-- Description: The http port for api-service.
-### apiBossThreads
-- Type: Integer
-- Default value: 1
-- Description: Number of threads handling connection in Netty.
-### apiWorkerThreads
-- Type: Integer
-- Default value: 2
-- Description: Number the threads handling message processing for channels.
-### httpsListenerConfig
-#### enable
-- Type: Boolean
-- Default Value: false
-- Description: Whether to build https access capability within the api-service.
-#### host
-- Type: String
-- Default value: The same with mqtt server host address.
-- Description: The host for api-service.
-#### port
-- Type: Integer
-- Default value: 8090
-- Description: The http port for api-service.
-#### sslConfig
-- Description: It shares the same fields and meaning with tlsListener.sslConfig.
+| Configuration Name                             | Value Type             | Description                                                                                                                               |
+|-----------------------------------------------|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`                                        | String                | Specifies the type of data engine used in the built-in storage service. Options include: rocksdb: Provides persistence functionality, allowing state to be recovered after a restart; memory: No persistence, data will be lost after a restart. |
+| `dataPathRoot`                                | String                | Effective when type is set to rocksdb. Specifies the directory to store data files. If configured as an absolute path, it will be directly loaded; if configured as a relative path, it will try to load from the directory specified by the `DATA_DIR` and `user.dir` system parameters. |
+| `compactMinTombstoneKeys`                     | Integer               | Effective when type is set to rocksdb. The number of Tombstone keys that trigger a compaction operation.                                                               |
+| `compactTombstonePercent`                     | Double                | Effective when type is set to rocksdb. When the number of deleted keys in a specific Range exceeds compactMinTombstoneKeys, and the proportion of deleted keys to the total exceeds compactTombstonePercent, a compaction operation will be performed on this range. |
+| `asyncWALFlush`                               | Boolean               | Applicable only to the WAL engine, whether to enable asynchronous FlushWAL data to disk.                                                                               |
+| `fsyncWAL`                                    | Boolean               | Applicable only to the WAL engine. Whether to perform an fsync operation after writing to the WAL. If this flag is true, writing speed will be slower. If this flag is false, and the machine crashes, some recent writes may be lost. |
+
+## BalancerOptions
+BalancerOptions is used to set the configuration parameters for the Balancer of the built-in state service.
+
+| Configuration Name                             | Value Type             | Default Value | Description                                                                                                                               |
+|-----------------------------------------------|------------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `scheduleIntervalInMs`                        | Long                   | 5000          | The interval at which the Balancer attempts to balance the load.                                                                         |
+| `balancers`                                   | List of String         |               | The fully qualified names of the balancer implementations that are enabled. Different balancer implementations can be set for different built-in storage services. |
+
+Note: Adjusting the parameters related to StorageEngineConfig and BalancerOptions requires an in-depth understanding of the storage engine implementation of BifroMQ. Improper configuration may lead to abnormal behavior of the state storage service.

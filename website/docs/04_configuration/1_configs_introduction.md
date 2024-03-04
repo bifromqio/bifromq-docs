@@ -5,16 +5,8 @@ title: "Overview"
 
 
 # Configuration Overview
+Based on different usage scenarios, BifroMQ divides configurations into system-level and tenant-level. System-level configurations are set at the system's startup and cannot be changed afterward. In contrast, tenant-level configurations can be dynamically adjusted during runtime as needed, and their initial values can also be customized at the system's startup. The capability for tenant-level settings requires the implementation of a custom bifroq-plugin-setting-provider plugin, which is not covered in this chapter.
 
-BifroMQ's system parameters can be configured through configuration file. This section will introduce explain their meanings.
+System-level configurations are categorized based on criteria such as their common use, whether they are in an experimental phase, or whether they have not been finalized. They can be provided either through a [configuration file](2_file_configs_manual.md) (located in the conf directory's standalone.yml) or via JVM system properties (in the format of -D`conf`=`value`).
 
-## Configuration File Introduction
-
-The main configuration file is named `standalone.yml` and is located at:
-
-| Installation Method | File Location                          |
-| :------------------ | -------------------------------------- |
-| Zip Extraction      | ./conf/standalone.yml                  |
-| Docker Container    | /usr/share/bifromq/conf/standalone.yml |
-
-The main configuration file contains most of the essential configuration options. For any additional configuration options not explicitly specified in the configuration file, the default settings will be used. For the full list of available configuration options and their descriptions, please refer to the [Configuration File Manual](2_file_configs_manual.md).
+The configuration file usually includes common and relatively stable configuration items, while other settings are provided through JVM system properties. Therefore, as versions are updated, the content and method of system-level configurations may change. To simplify the migration process of system-level configurations, BifroMQ provides auxiliary means, with detailed information available in [Configuration Convention & Migration](../../deploy/config_migration).

@@ -48,8 +48,3 @@ Run the script `./bin/standalone.sh start` to start the leader node.
 ### Cluster Deploying Check
 After running the script, the nodes will form a cluster and generate the `AgentHost joined 
 seedEndpoint: ${seedEndpoints}` logs on their respective machines.
-### Deploy Convention
-Configurations may vary between different versions. While deploying BifroMQ, you can use previous configurations to set 
-it up, and it won't interrupt the running of BifroMQ. However, please note that these configurations may not take an effect.
-
-Additionally, at the start of the info log, the complete configurations will be printed.
