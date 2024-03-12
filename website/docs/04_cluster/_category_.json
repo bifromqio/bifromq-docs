@@ -1,0 +1,8 @@
+{
+  "label": "BifroMQ Cluster",
+  "position": 4,
+  "link": {
+    "type": "doc",
+    "id": "cluster/intro"
+  }
+}

@@ -1,5 +1,8 @@
-# Test Report
-
+---
+id: "testreport"
+sidebar_position: 1
+title: "Test Report"
+---
 ## Test Objectives
 
 BifroMQ Standard mode now supports cluster deployment, with significant performance variations observed across different

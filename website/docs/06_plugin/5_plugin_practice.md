@@ -1,29 +1,14 @@
 ---
-sidebar_position: 5
-title: "BifroMQ Plugin Practice and Notice"
+sidebar_position: 5 
+title: "Plugin Practice and Notice"
 ---
-# Plugin Practice and Notice in BifroMQ
+
 BifroMQ is a powerful messaging system that allows seamless communication between itself and customized services. 
 When working with BifroMQ plugins, it's essential to follow best practices and be aware of certain considerations 
 to ensure smooth integration and debugging. This article outlines some essential practices and notices when developing 
 BifroMQ plugins.
 
-## Setting the Plugin's FQN (Fully Qualified Name)
-When developing a BifroMQ plugin, it's essential to set its Fully Qualified Name (FQN) in the `standalone.yml`
-configuration file. The FQN uniquely identifies the plugin and helps BifroMQ to load and manage the plugin effectively.
-The FQN should be set at the root level of the configuration.
-Example:
-```yaml
-authProviderFQN: com.example.plugin.MyPlugin
-```
-In this example, the FQN for the plugin is `com.example.plugin.MyPlugin`. 
-Ensure that the FQN accurately represents the plugin's package and class name.
-
-Especially, in the current implementation of BifroMQ, the [authProvider](2_auth_provider.md) 
-and [settingProvider](4_setting_provider.md) need to specify FQN (Fully Qualified Name). However, 
-for [eventCollector](3_event_collector.md), it is not required to do so, and multiple implementations 
-of eventCollector are allowed.
-## Fully Utilize Java Remote Debugging with BifroMQ
+## Remote Debugging with BifroMQ
 Java Remote Debugging allows developers to debug customized plugins remotely from an IDE. 
 BifroMQ supports remote debugging, which can be enabled through environment variable `JVM_DEBUG`. Also, one can specify
 remote debugging port through environment variable `JAVA_DEBUG_PORT`. If it is not specified, the default one is 8008.
@@ -64,7 +49,7 @@ class MyAuthProvider {
 ```
 ## Organize Plugin Directory Correctly
 When developing plugins, ensure that there are no unrelated jar files in the plugin directory. 
-PF4J (Plugin Framework for Java) recursively checks jar files in the plugin directory, and unrelated jars 
+[pf4j](https://pf4j.org) (Plugin Framework for Java) recursively checks jar files in the plugin directory, and unrelated jars 
 may cause PF4J validation errors.
 
 Keeping the plugin directory clean and containing only the necessary jar files ensures smooth plugin loading and 

@@ -190,9 +190,6 @@ export default function HeroSection() {
       {/* Feature section */}
       <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-24 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-base font-semibold leading-7 dark:text-blue-400 text-blue-600">
-            <Translate>Core Feature</Translate>
-            </h2>
           <p className="mt-2 text-3xl font-bold tracking-tight  sm:text-4xl">
             <Translate>What is BifroMQ?</Translate>
           </p>

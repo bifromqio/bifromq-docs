@@ -38,9 +38,9 @@ sidebar_position: 3
 
 ## Server端及测试发压端TCP相关调优
 
-推荐使用centos7环境进行部署及压力测试。
+推荐使用CentOS7及以上环境进行部署及压力测试。
 
-centos6环境需要进行系统参数调优:
+CentOS6环境需要进行系统参数调优:
 * net.core.wmem_max: 最大的TCP数据发送窗口大小（字节）
   * 修改命令：`echo 'net.core.wmem_max=16777216' >> /etc/sysctl.conf`
 * net.core.wmem_default: 默认的TCP数据发送窗口大小（字节）
