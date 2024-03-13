@@ -49,9 +49,9 @@ necessarily be the actual runtime values. An example of the printed output is as
 ...
 ```
 
-### BifroMQProps
+### BifroMQ[System Properties](./2_bifromq_sys_props.md)
 
-BifroMQProps are some BifroMQ configuration options that can be passed in through system properties. An example of the printed output is as follows:
+An example of the printed output is as follows:
 
 ```text
 17:21:34.067 [main] INFO  c.b.b.starter.StandaloneStarter - BifroMQ system properties: 
@@ -67,8 +67,7 @@ BifroMQProps are some BifroMQ configuration options that can be passed in throug
 
 ### BifroMQ Configuration File
 
-BifroMQ's configuration file refers to the system parameters specified in the `conf/standalone.yml` configuration file. For more information, see: [Configuration File Manual](1_config_file_manual.md)。
-An example of the printed output is as follows:
+The configuration file section will include the consolidated complete content of the configuration file, with an example of the output as follows:
 
 ```text
 17:21:34.098 [main] INFO  c.b.b.starter.StandaloneStarter - Consolidated Config: 

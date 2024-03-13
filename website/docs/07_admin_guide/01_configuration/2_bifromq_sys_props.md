@@ -3,9 +3,10 @@ sidebar_position: 2
 title: "System Properties"
 ---
 
-Adjusting system properties in BifroMQ requires a deep understanding of its internal workings. While the default values for these properties are generally well-tuned for most use cases, making unnecessary adjustments can lead to unintended behaviors. It's crucial to note that these system properties are closely tied to BifroMQ's internal implementations. Consequently, they are not guaranteed to remain stable across different versions, emphasizing the importance of cautious use and thorough testing when making changes. System properties can be set via JVM startup variables, providing a flexible way to customize BifroMQ's behavior. For example, setting `-Dmqtt_utf8_sanity_check=false` disables the check for MQTT protocol-defined UTF8 string formats, illustrating how system properties can tailor BifroMQ's functionality to specific requirements.
+Before adjusting system properties in BifroMQ, it's necessary to have a thorough understanding of its internal mechanisms, as inappropriate modifications can lead to unexpected behavior. Additionally, these system properties are closely linked with BifroMQ's internal implementation and may not be compatible across different versions. System properties can be set via JVM startup parameters, allowing for flexible customization of BifroMQ's behavior.
+For example, setting `-Dmqtt_utf8_sanity_check=false` disables the check for MQTT protocol-defined UTF8 string formats.
 
-Below is a documentation table for BifroMQ system properties, outlining their keys, default values, and descriptions to aid administrators in making informed adjustments.
+Below is a table listing the system properties supported by the current version:
 
 | Property Key                                | Default Value                                      | Description                                                                            |
 |---------------------------------------------|----------------------------------------------------|----------------------------------------------------------------------------------------|

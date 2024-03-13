@@ -3,13 +3,8 @@ sidebar_position: 2
 title: "Auth Provider"
 ---
 
-# Auth Provider Plugin
-
-The Auth Provider plugin adds authentication and authorization for MQTT clients and Pub/Sub actions to BifroMQ. 
-
-The Plugin's interface is defined in the following Maven module:
-
-```
+The Auth Provider plugin enhances BifroMQ by integrating authentication and authorization functionalities for MQTT clients and Pub/Sub operations. The plugin's interface is detailed in the following Maven module:
+```xml
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-auth-provider</artifactId>
@@ -17,7 +12,8 @@ The Plugin's interface is defined in the following Maven module:
 </dependency>
 ```
 
-BifroMQ allows only a single instance of the Auth Provider to run at a time. You can configure the specific implementation class to be loaded through a configuration file by specifying its fully qualified name (FQN) using the following key:
+BifroMQ operates with only one instance of the Auth Provider at any given time. The specific class to be loaded can be configured in [configuration file](../07_admin_guide/01_configuration/1_config_file_manual.md) by specifying its Fully Qualified Name (FQN):
+
 ```yaml
 authProviderFQN: "YOUR_AUTH_PROVIDER_CLASS"
 ```
@@ -25,7 +21,8 @@ authProviderFQN: "YOUR_AUTH_PROVIDER_CLASS"
 
 ## Authentication
 
-During the Connect phase, BifroMQ authenticates MQTT client connections for versions 3.1, 3.1.1, and 5.0. The plugin interface for authentication includes:
+During the connection phase, BifroMQ invokes the Auth Provider Plugin's interface methods to authenticate MQTT client connections across versions 3.1, 3.1.1, and 5.0:
+
 
 ```java
 // Authenticate MQTT 3.1 and 3.1.1 clients
@@ -38,10 +35,9 @@ CompletableFuture<MQTT5AuthResult> auth(MQTT5AuthData authData);
 CompletableFuture<MQTT5ExtendedAuthResult> extendedAuth(MQTT5ExtendedAuthData authData); 
 ```
 
-The Auth Provider plugin requires efficient, non-blocking implementations for MQTT client authentication. BifroMQ supports two authentication methods for MQTT 5.0: basic and extended. If you don't implement basic mode for MQTT 5.0, the
-plugin will default to using the authentication mechanisms for MQTT 3.1 and 3.1.1. However, extended mode authentication will not be available in this scenario.
+It's crucial to ensure that the implementations of these interface methods are efficient and non-blocking to avoid negatively impacting connection performance. For MQTT 5.0, BifroMQ supports two methods of authentication: Basic and Extended. The Basic authentication provides compatibility with MQTT 3 behavior by default.
 
-Protobuf objects are used for interface methods’ arguments and return types.
+Protobuf objects are utilized for the parameters and return types of these interface methods.
 
 #### [MQTT3AuthData](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt3_auth_types.proto)
 
@@ -170,29 +166,21 @@ message MQTT5ExtendedAuthResult {
 }
 ```
 
-Successful authentication returns an Ok structure with tenantId, userId, and optionally additional metadata in attrs, which is copied to ClientInfo. A Reject return indicates failure due to incorrect authentication
-info (BadPass), unauthorized access (NotAuthorized), or internal errors (Error), detailed in optional fields.
+Successful authentication returns an Ok structure with tenantId, userId, and optionally additional metadata in attrs, which is copied to ClientInfo. A Reject return indicates failure due to incorrect authentication info (BadPass), unauthorized access (NotAuthorized), or internal errors (Error), with detailed explanations in optional fields.
 
 ## Authorization
 
-BifroMQ checks permissions for Publish, Subscribe, and Unsubscribe actions with:
+BifroMQ checks permissions for Publish, Subscribe, and Unsubscribe actions via:
 
 ```java
 CompletableFuture<CheckResult> checkPermission(ClientInfo client, MQTTAction action);
 ```
 
-The `checkPermission` method efficiently processes authorization without blocking to ensure high performance. Importantly, it leverages ClientInfo received from successful authentication, including metadata that can be utilized for JWT-like
-authentication and authorization mechanisms. This metadata, which contains authorization information similar to JWT claims, allows for flexible and secure access control strategies.
+Ensuring the `checkPermission` method's implementation is efficient and non-blocking is critical to prevent any negative impact on messaging performance. The method leverages ClientInfo with metadata returned from authentication, enabling JWT-like authentication and authorization mechanisms. Additionally, the permission check method is not differentiated by the client's MQTT protocol version. However, for clients using MQTT 5.0, the MQTTAction object will contain UserProperties from the Control Packets.
 
-Moreover, the permission check method is agnostic to the MQTT client protocol version, ensuring consistent authorization enforcement across different MQTT versions.
+In cases of authorization failure for MQTT 5.0 clients, UserProperties included in the result are relayed back to the client within the corresponding MQTT Control Packets' UserProperties, aiding in problem diagnosis.
 
-For MQTT 5.0 clients, MQTTAction transparently passes UserProperties from the client's Control Packets. This feature enables the implementation of more sophisticated and custom authorization logic by allowing access to additional
-client-provided information.
-
-In cases where authorization fails for MQTT 5.0 clients, UserProperties included in the return result are relayed back to the client within the corresponding MQTT Control Packets' UserProperties. This capability facilitates problem
-diagnosis by providing clients with feedback on the reason for authorization failure.
-
-Implementers are encouraged to make the check method's implementation lightweight and non-blocking to avoid negatively impacting BifroMQ’s messaging performance. The arguments and return type are defined as Protobuf objects as well.
+The checkPermission method's parameters and return type are also defined by Protobuf.
 
 #### [ClientInfo](https://github.com/bifromqio/bifromq/blob/main/bifromq-common-type/src/main/proto/commontype/ClientInfo.proto)
 
@@ -203,9 +191,7 @@ message ClientInfo{
   map<string, string> metadata = 3; // the metadata of the client
 }
 ```
-
-The predefined metadata in the `ClientInfo` object is crucial for understanding the context of each MQTT client connection. These constants help in identifying the protocol version, client and user IDs, and other details about the
-connection. Here's a table summarizing these predefined metadata keys and their meanings:
+BifroMQ will include the following predefined metadata in the `metadata` property of the `ClientInfo` object:
 
 | Key           | Description                                        | Possible Values                                      |
 |---------------|----------------------------------------------------|------------------------------------------------------|
@@ -218,7 +204,7 @@ connection. Here's a table summarizing these predefined metadata keys and their 
 | `sessionType` | Type of session                                    | `"t"` (Transient), `"p"` (Persistent)                |
 | `respInfo`    | Response information for MQTT 5.0 request/response | User-defined string                                  |
 
-These metadata fields are set automatically and provide essential information about the client and its connection. They are not overwritten by attributes (`attrs`) passed through from the authentication result.
+These metadata fields will not be overwritten by attributes (attrs) passed in the authentication result.
 
 #### [MQTTAction](https://github.com/bifromqio/bifromq/blob/main/bifromq-plugin/bifromq-plugin-auth-provider/src/main/proto/mqtt_actions.proto)
 
@@ -277,6 +263,4 @@ message CheckResult {
 ```
 
 ## DevOnly Mode
-
-The [DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java) is used by default for development and testing when no AuthPlugin
-type is specified. It bypasses client authentication and permission checks. DevOnly Mode is strictly for non-production environments due to its lack of security.
+By default, when no AuthPlugin type is specified, BifroMQ loads the [DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java), bypassing client authentication and permission checks. This mode is strictly for development and testing purposes due to its lack of security.

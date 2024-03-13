@@ -55,7 +55,7 @@ Underlay Cluster是BifroMQ集群体系的核心，该层的成员代表一个运
 
 <img src={Join} style={{width: 700}} />
 
-正如上图所示，集群的join操作可以由任一节点向目标集群的任一节点发起。为了简化讨论，我们将作为join操作目标的节点称为“seeds”。在部署过程中，这些seed节点的地址通常会被配置在新加入集群节点的配置文件（[seedEndpoints](/zh-Hans/docs/configuration/file_configs_manual/)）中。集群成功合并后，BifroMQ集群中的每个节点都能在本地获取到完整的集群Membership信息。
+正如上图所示，集群的join操作可以由任一节点向目标集群的任一节点发起。为了简化讨论，我们将作为join操作目标的节点称为“seeds”。在部署过程中，这些seed节点的地址通常会被配置在新加入集群节点的配置文件（[seedEndpoints](/zh-Hans/docs/admin_guide/configuration/config_file_manual/)）中。集群成功合并后，BifroMQ集群中的每个节点都能在本地获取到完整的集群Membership信息。
 
 细心的读者可能已经注意到，在节点配置中直接指定seed地址的方式，在容器化环境下可能存在一定的局限性。为了解决这一问题，base-cluster框架内置了DNS解析功能。在容器环境中，我们可以通过将所有节点纳入一个固定的网络Domain（例如External DNS或Kubernetes Service），简化集群的部署过程。这样，新加入的节点可以使用由该Domain解析出的任意Remote地址作为seed，以完成join过程。
 

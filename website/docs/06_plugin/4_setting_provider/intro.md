@@ -7,7 +7,7 @@ title: "Setting Provider"
 BifroMQ defines a category of [Tenant-level Settings](1_tenantsetting.md) that can be modified at runtime, allowing for dynamic adjustment of BifroMQ's service behavior per tenant. The purpose of the Setting Provider Plugin is to supply custom values for these settings at runtime. 
 
 The Plugin's interface is defined in the following Maven module:
-```
+```xml
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-setting-provider</artifactId>

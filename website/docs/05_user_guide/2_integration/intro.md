@@ -4,13 +4,11 @@ sidebar_position: 0
 title: "Data Integration Overview"
 ---
 
-This document aims to provide a recommended approach for integrating BifroMQ with various systems, facilitating seamless message communication across different platforms. BifroMQ's unique architecture and capabilities make it a versatile
-tool for creating sophisticated IoT messaging ecosystems.
+BifroMQ focuses on being deeply integrated, providing foundational MQTT capabilities for various messaging systems. This guide primarily introduces the recommended methods for data integration with BifroMQ.
 
 ## Understanding Data Integration with BifroMQ
 
-Data Integration with BifroMQ involves a bidirectional flow of messages between BifroMQ and external systems, including databases, rule-based message forwarding systems, other messaging middleware or another MQTT
-Broker deployment. This integration encompasses several key aspects:
+Data integration with BifroMQ involves a bidirectional flow of messages between BifroMQ and external systems, including databases, rule-based message forwarding systems, other messaging middleware, or another MQTT Broker. This integration encompasses several key aspects:
 
 - **Protocol Conversion**
 - **Service Quality Matching**
@@ -19,46 +17,40 @@ Broker deployment. This integration encompasses several key aspects:
 - **Monitoring**
 - **Scalability Considerations**
 
-### Commonly Used Approach
+### Common Pattern
 
-Traditionally, integration approaches embed downstream system clients directly within the MQTT Broker. This method utilizes ad-hoc communication mechanisms and mapping logic to achieve protocol conversion, treating the MQTT protocol
-implementation and integration with heterogeneous systems as a unified whole.
+A common architectural pattern involves embedding downstream system clients directly within the MQTT Broker. This method utilizes specific communication mechanisms and mapping logic to achieve protocol conversion, treating the MQTT protocol implementation and integration with heterogeneous systems as a unified whole, providing out-of-the-box integration capabilities.
 
-![common_approach](./images/commonapproach.jpg)
+![Common Approach](./images/commonapproach.jpg)
 
+### Non-Coupled Pattern
 
-### Non-Coupled Approach for Heterogeneous System Integration
+Contrary to the common practice, BifroMQ recommends a non-coupled approach for data integration: Integration logic directly utilizes the MQTT protocol as a client to subscribe to messages from BifroMQ. This architectural pattern allows the integration module to be reused across different MQTT Brokers, hence the BifroMQ project itself does not include out-of-the-box data integration functionalities.
 
-Contrary to the traditional method, BifroMQ takes a non-coupled integration approach, leveraging MQTT standard capabilities to ensure the reusability of connection logic across different MQTT brokers. This strategy allows BifroMQ to
-concentrate on enhancing its core broker functionalities, promoting a more modular and flexible integration ecosystem.
-
-![bifromq_approach](./images/bifromqapproach.jpg)
+![BifroMQ Approach](./images/bifromqapproach.jpg)
 
 ## Directions of Message Flow Integration
 
-BifroMQ supports message integration in two primary directions:
+There are two primary directions for message flow integration with BifroMQ:
 
 ### 1. From BifroMQ to External Systems
 
-BifroMQ recommends for the use of the [shared subscription](../1_basic/3_shared_sub.md) feature to balance the load of messages sent to downstream systems, taking advantage of MQTT's QoS capabilities for semantic message forwarding. This approach requires maintaining a
-set of MQTT client connections that subscribe to BifroMQ. Notably, BifroMQ supports shared subscriptions across MQTT versions 3.1, 3.1.1, and 5.0.
+BifroMQ recommends using the [shared subscription](../1_basic/3_shared_sub.md) feature to balance the message load sent to downstream systems, utilizing MQTT's QoS capabilities for semantic message forwarding. This approach requires maintaining a set of MQTT client connections that subscribe to BifroMQ. Notably, BifroMQ supports shared subscriptions across MQTT versions 3.1, 3.1.1, and 5.0.
 
 ### 2. From External Systems to BifroMQ
 
-External systems can publish messages to BifroMQ using direct MQTT client connections or the HTTP Restful API, providing a straightforward method for message injection into the BifroMQ deployment.
+External systems can publish messages to BifroMQ using direct MQTT client connections or the [HTTP Restful API](../../05_user_guide/3_api/intro.md), providing a straightforward method for message injection into the BifroMQ deployment.
 
-## Notes on Implementing Data Integration
+## Considerations for Implementing Data Integration
 
 When integrating data with BifroMQ, consider the following:
 
-1. **Bandwidth Limitations**: BifroMQ defaults to a bandwidth limit of 512kb/s per MQTT connection, adjustable via Tenant Settings. It's crucial to calculate the number of connections needed based on actual business demands when receiving
-   forwarded messages through shared subscriptions.
+1. **Bandwidth Limitations**: BifroMQ defaults to a bandwidth limit of 512kb/s per MQTT connection, adjustable via Tenant Settings. Calculating the number of connections needed based on actual business demands when receiving messages forwarded through shared subscriptions is crucial.
 
-2. **Flow Control**: Utilizing MQTT as the forwarding protocol inherently provides flow control. Downstream systems must have sufficient resources to receive forwarded messages to avoid backpressure-induced message loss.
+2. **Flow Control**: Using MQTT as the forwarding protocol inherently provides flow control. Downstream systems must have sufficient resources to receive forwarded messages to avoid backpressure-induced message loss.
 
-3. **Monitoring**: Thanks to the use of MQTT protocol, the monitoring metrics provided by BifroMQ can be directly reused during the message forwarding phase, simplifying the integration monitoring process.
+3. **Monitoring**: Thanks to the use of the MQTT protocol, the monitoring metrics provided by BifroMQ can be directly reused during the message forwarding phase, simplifying the integration monitoring process.
 
-## Reference for Starter
+## Reference for Starters
 
-To aid in your integration efforts, we recommend exploring the community [project](https://github.com/bifromqio/bifromq-data-integration) which demonstrates the concepts discussed in this guide. This project showcases practical examples of configuring shared subscriptions,
-managing bandwidth limitations, and setting up monitoring for BifroMQ integrations.
+This [project](https://github.com/bifromqio/bifromq-data-integration) showcases the concepts discussed in this guide and can serve as a reference for similar projects.

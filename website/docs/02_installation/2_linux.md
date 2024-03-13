@@ -8,9 +8,7 @@ title: "Linux"
 * JDK 17+ environment installed
 * Obtain the latest version of BifroMQ from BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
 
-## On Linux or other Unix-based systems
-
-Execute the following commands to run BifroMQ.
+## Shell Commands
 
 ```
 tar -zxvf bifromq-*-standalone.tar.gz --strip-components 1  -C /usr/share/bifromq/

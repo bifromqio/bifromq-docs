@@ -3,37 +3,25 @@ sidebar_position: 5
 title: "Plugin Practice and Notice"
 ---
 
-BifroMQ is a powerful messaging system that allows seamless communication between itself and customized services. 
-When working with BifroMQ plugins, it's essential to follow best practices and be aware of certain considerations 
-to ensure smooth integration and debugging. This article outlines some essential practices and notices when developing 
-BifroMQ plugins.
+This article outlines some practices and considerations when developing BifroMQ plugins.
 
 ## Remote Debugging with BifroMQ
-Java Remote Debugging allows developers to debug customized plugins remotely from an IDE. 
-BifroMQ supports remote debugging, which can be enabled through environment variable `JVM_DEBUG`. Also, one can specify
-remote debugging port through environment variable `JAVA_DEBUG_PORT`. If it is not specified, the default one is 8008.
-Example in Linux Shell:
+
+BifroMQ supports remote debugging, which can be activated through the `JVM_DEBUG` environment variable. Additionally, the remote debugging port can be specified through the `JAVA_DEBUG_PORT` environment variable. If not specified, the default port is 8008. Before starting the BifroMQ process, specify these environment variables using shell:
+
 ```shell
 export JVM_DEBUG=true
-export JAVA_DEBUG_PORT=8009
+export JAVA_DEBUG_PORT=8008
+export DEBUG_SUSPEND_FLAG=n
 ```
-Make sure to configure the debugging port correctly and there is no port conflict. And one can use it to connect 
-the IDE (e.g., [IntelliJ](https://www.jetbrains.com/help/idea/tutorial-remote-debug.html) 
-or [Eclipse](https://www.eclipse.org/community/eclipse_newsletter/2017/june/article1.php)) for remote debugging.
+Ensure the debugging port is correctly configured to avoid port conflicts. Remote debugging can be performed using an IDE (for example, IntelliJ or Eclipse). Setting DEBUG_SUSPEND_FLAG=y can assist in debugging the plugin's initialization process.
 
-Environment variable `DEBUG_SUSPEND_FLAG` option defines whether the JVM should suspend and wait for a debugger to 
-attach or not. If developers want to JVM to suspend, `export DEBUG_SUSPEND_FLAG=y`.
 ## Pay Attention to Java ClassLoading
-Java ClassLoading is crucial when developing plugins, especially if the plugins rely on external libraries or modules. 
-Ensure proper handling of ClassLoaders during plugin initialization and other phases.
 
-For example, `KafkaProducer` might depend on some classes that use `ContextClassLoader` during initialization. If the 
-current contextClassLoader points to `AppClassLoader`, it may cause `ClassNotFoundException`.
-BifroMQ has covered some cases during plugin construction phase, but developers should be vigilant in other 
-phases to avoid potential ClassLoading issues. The initialization of dependencies involved in the above scenario can 
-be performed as follows:
+BifroMQ uses separate ClassLoaders for each plugin to load classes from the plugin's classpath. Therefore, ensure your plugin's packaging includes all dependencies used (except those [provided](intro.md#plugin-deployment) by BifroMQ). Some third-party libraries might load classes in other ways, leading to class loading failures. Most situations can be resolved by swapping the Thread ContextLoader:
+
 ```java
-class MyAuthProvider {  
+class MyAuthProvider {
     public void method() {
         try {
             ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
@@ -41,16 +29,13 @@ class MyAuthProvider {
             Thread.currentThread().setContextClassLoader(targetLoader);
             // Initialize dependencies here  
             dependenciesInit();
-        }finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalLoader);
         }
-    }  
+    }
 }
 ```
-## Organize Plugin Directory Correctly
-When developing plugins, ensure that there are no unrelated jar files in the plugin directory. 
-[pf4j](https://pf4j.org) (Plugin Framework for Java) recursively checks jar files in the plugin directory, and unrelated jars 
-may cause PF4J validation errors.
 
-Keeping the plugin directory clean and containing only the necessary jar files ensures smooth plugin loading and 
-avoids any conflicts or validation issues.
+## Properly Organize the Plugin Directory
+
+When developing plugins, ensure there are no unrelated jar files in the plugin directory. [pf4j](https://pf4j.org) recursively checks jar files in the plugin directory, and unrelated jars may lead to PF4J validation errors. Keeping the plugin directory clean and containing only necessary jar files ensures smooth plugin loading and prevents conflicts or validation issues.

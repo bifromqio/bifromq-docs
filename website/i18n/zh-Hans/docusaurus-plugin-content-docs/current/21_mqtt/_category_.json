@@ -1,8 +1,0 @@
-{
-  "label": "MQTT",
-  "position": 21,
-  "link": {
-    "type": "generated-index",
-    "description": "MQTT Specification Link."
-  }
-}

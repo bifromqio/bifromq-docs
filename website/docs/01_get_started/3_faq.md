@@ -34,7 +34,7 @@ BifroMQ's built-in storage engine is mainly used for the persistence of SessionS
 
 BifroMQ emphasizes integration within various types of business systems, thus it doesn't define higher-level management modes and concepts at the middleware level. However, BifroMQ does provide the following capabilities for runtime control integration and monitoring:
 
-- **[API](../05_user_guide/3_api/intro.md)**: Broker-side control logic, such as forcing disconnection (to be released).
+- **[API](../05_user_guide/3_api/intro.md)**: Broker-side control logic, such as forcing disconnection.
 - **[Metrics](../07_admin_guide/03_observability/metrics/intro.md)**: Runtime metrics of BifroMQ, which can be integrated with existing monitoring systems.
 - **[EventCollector Plugin](../06_plugin/2_event_collector.md)**: Various events produced during BifroMQ operation, enabling different Event Sourcing business logic, such as connection counting, online/offline events, etc.
 - **[ResourceThrottler Plugin](../06_plugin/3_resource_throttler.md)**: Used to control tenant-level resource usage.

@@ -18,4 +18,4 @@ Use the IP address or domain name corresponding to the launched service. Below a
 
 ## Authentication
 
-By default, authentication is not enabled. You can connect without providing a username or password. If you need authentication, please refer to the [Auth Provider Plugin](../../06_plugin/2_auth_provider.md).
+By default, authentication is not enabled. You can connect without providing a username or password. If you need authentication, please refer to the [Auth Provider Plugin](../../06_plugin/1_auth_provider.md).

@@ -1,5 +1,5 @@
 ---
-id: "testreport"
+id: report
 sidebar_position: 1
 title: "Test Report"
 ---

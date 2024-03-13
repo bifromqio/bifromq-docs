@@ -9,7 +9,7 @@ title: "Windows"
 * Latest version of bifromq from BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
 *
 
-## On Windows
+## Shell Commands
 
 ```
 unzip -zxvf bifromq-*-standalone-windows.zip

@@ -1,8 +1,8 @@
 {
-  "label": "Data Integration",
-  "position": 4,
+  "label": "数据集成",
+  "position": 2,
   "link": {
-    "type": "generated-index",
-    "description": "BifroMQ Data Integration."
+    "type": "doc",
+    "id": "user_guide/integration/intro"
   }
 }
