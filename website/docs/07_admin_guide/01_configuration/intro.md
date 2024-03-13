@@ -1,7 +1,7 @@
 ---
 id: "intro"
 sidebar_position: 0 
-title: "Overview"
+title: "Configuration Overview"
 ---
 
 Based on different usage scenarios, BifroMQ divides configurations into system-level and tenant-level. System-level configurations are set at the system's startup and cannot be changed afterward. In contrast, tenant-level configurations can be dynamically adjusted during runtime as needed, and their initial values can also be customized at the system's startup. The capability for tenant-level settings requires the implementation of a custom [setting provider](../../06_plugin/4_setting_provider/intro.md) plugin, which is not covered in this chapter.

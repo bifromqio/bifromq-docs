@@ -1,7 +1,7 @@
 ---
 id: intro
 sidebar_position: 0
-title: "Overview"
+title: "API Overview"
 ---
 BifroMQ incorporates built-in API capabilities, allowing for operations such as disconnecting client connections, querying session status, publishing messages, and managing subscriptions. These features enable the integration of BifroMQ's management operations into custom management workflows.
 
