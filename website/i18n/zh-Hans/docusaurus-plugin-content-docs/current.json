@@ -43,9 +43,17 @@
     "message": "配置",
     "description": "The label for category configs in sidebar tutorialSidebar"
   },
+  "sidebar.tutorialSidebar.category.Tuning": {
+    "message": "调优",
+    "description": "The label for category Tuning in sidebar tutorialSidebar"
+  },
   "sidebar.tutorialSidebar.category.Observability": {
     "message": "可观测性",
     "description": "The label for category Observability in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Security": {
+    "message": "安全",
+    "description": "The label for category Security in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.MQTT Best Practices": {
     "message": "MQTT 最佳实践",

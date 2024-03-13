@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2 
-title: "Linux内核调优"
+title: "Linux Kernel Tuning"
 ---
 
 The following Kernel parameters can affect the maximum number of connections that the machine hosting BifroMQ can accept.

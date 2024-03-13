@@ -1,7 +1,7 @@
 ---
 id: "intro"
 sidebar_position: 1
-title: "Overview"
+title: "Tuning Overview"
 ---
 
 Performance tuning in BifroMQ requires starting with adjustments in the running environment and specific optimizations for the workload.
