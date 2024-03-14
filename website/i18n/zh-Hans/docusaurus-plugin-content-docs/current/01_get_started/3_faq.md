@@ -19,15 +19,14 @@ BifroMQ的Java版本要求可以分为两个方面：
 ## 如何使用BifroMQ进行数据集成？
 
 使用BifroMQ进行数据集成的方法在很大程度上取决于您的业务场景：
-The approach to using BifroMQ for data integration largely depends on your business scenarios:
 
-- **单租户系统**: 对于逻辑上的单租户系统，其他系统可以直接使用MQTT协议与BifroMQ集成。例如，可以利用共享订阅并行订阅消息，或MQTT客户端可以直接向BifroMQ发布消息。这种方法完全解耦了上游和下游系统，便于比较不同的MQTT中间件。大多数专有企业应用属于此类。
+- **单租户系统**: 对于逻辑上的单租户系统，其他系统可以直接使用MQTT协议与BifroMQ[集成](../05_user_guide/2_integration/intro.md)。例如，可以利用共享订阅并行订阅消息，或MQTT客户端可以直接向BifroMQ发布消息。这种方法完全解耦了上游和下游系统，便于比较不同的MQTT中间件。大多数专有企业应用属于此类。
 
-- **多租户系统**: 对于多租户业务场景，BifroMQ作为多租户业务系统内的一个子系统。在这种情况下，系统集成需要采用BifroMQ的插件机制。下游系统将在插件级别与BifroMQ有一定程度的耦合，使得实现变得有些复杂。这通常用于业务支持或云服务场景。
+- **多租户系统**: 对于共享资源架构的多租户业务场景，BifroMQ作为该类系统内的一个子系统，与其他多租户子系统共享同一个租户管理控制面。在这种情况下，系统集成需要采用BifroMQ的插件机制(目前还未开放)。下游系统将在插件级别与BifroMQ有一定程度的耦合，使得实现变得有些复杂。这通常用于构建Serverless云服务的业务场景。
 
 ## BifroMQ内置存储引擎主要用于哪些数据持久化？
 
-BifroMQ的内置存储引擎主要用于持久化MQTT协议要求的SessionState（参见： [MQTT v3.1.1 3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718028)）（CleanSession=false）和保留主题消息。这有助于防止代理重启或崩溃时丢失会话状态。值得注意的是，持久化引擎大多数情况下与消息的QoS没有直接关系。例如，当一个MQTT连接开始一个持久会话时，离线QoS0订阅消息仍将被持久化，直到会话恢复并完成推送。
+BifroMQ的内置存储引擎主要用于持久化MQTT协议要求的SessionState（参见： [MQTT v3.1.1 3.1.2.4](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718028)）和Retain消息。这有助于防止Broker重启或崩溃时丢失会话状态。需要注意的是，持久化引擎大多数情况下与消息的QoS没有直接关系。例如，当一个MQTT连接开始一个持久会话时，离线QoS0订阅消息仍将被持久化，直到会话恢复并完成推送。
 
 ## 为什么BifroMQ没有管理控制台/UI界面？
 
