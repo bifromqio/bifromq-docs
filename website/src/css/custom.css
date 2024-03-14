@@ -59,6 +59,7 @@ nav.navbar {
 
 .container {
   margin-left: 0.6rem;
+  max-width: 100%;
 }
 
 button.clean-btn.menu__caret {

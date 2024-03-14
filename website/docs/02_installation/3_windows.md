@@ -6,8 +6,7 @@ title: "Windows"
 ## Prerequisites
 
 * JDK 17+
-* Latest version of bifromq from BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
-*
+* Latest version from BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
 
 ## Shell Commands
 

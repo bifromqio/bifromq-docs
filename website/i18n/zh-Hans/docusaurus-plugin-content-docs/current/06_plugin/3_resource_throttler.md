@@ -10,6 +10,7 @@ title: "Resource Throttler"
 插件的接口在以下Maven模块中定义：
 
 ```xml
+
 <dependency>
     <groupId>com.baidu.bifromq</groupId>
     <artifactId>bifromq-plugin-resource-throttler</artifactId>
@@ -28,33 +29,34 @@ resourceThrottlerFQN: "YOUR_SETTING_PROVIDER_CLASS"
 ```java
 public boolean hasResource(String tenantId, TenantResourceType type);
 ```
+
 此方法在BifroMQ的工作线程被上同步调用，需要确保其实现的高效，以避免影响BifroMQ性能。当方法返回false时将产生限制行为，同时生成一个ResourceThrottling事件，并报告给[Event Collector](2_event_collector.md)。
 
 以下是`TenantResourceType`中定义的资源类型：
 
-| 枚举值                                       | 描述                    |
-|----------------------------------------|-----------------------|
-| `TotalConnections`                     | 总连接数                  |
-| `TotalSessionMemoryBytes`              | 总会话占用内存字节数            |
-| `TotalPersistentSessions`              | 总持久化会话数               |
-| `TotalPersistentSessionSpaceBytes`     | 总持久化会话占用存储空间字节数       |
-| `TotalSharedSubscriptions`             | 总共享订阅数                |
-| `TotalTransientSubscriptions`          | 总非持久化订阅数              |
-| `TotalPersistentSubscriptions`         | 总持久化订阅数               |
-| `TotalRetainMessageSpaceBytes`         | 总Retain消息占用存储空间字节数    |
-| `TotalRetainTopics`                    | 总Retain主题数            |
-| `TotalConnectPerSecond`                | 每秒总连接数                |
-| `TotalInboundBytesPerSecond`           | 每秒总入向字节数              |
-| `TotalTransientSubscribePerSecond`     | 每秒总非持久化订阅数            |
-| `TotalPersistentSubscribePerSecond`    | 每秒总持久化订阅数             |
-| `TotalTransientUnsubscribePerSecond`   | 每秒总非持久化取消订阅数          |
-| `TotalPersistentUnsubscribePerSecond`  | 每秒总持久化取消订阅数           |
-| `TotalTransientFanOutBytesPerSeconds`  | 每秒总非持久化扇出字节数          |
-| `TotalPersistentFanOutBytesPerSeconds` | 每秒总持久化扇出字节数           |
-| `TotalRetainedMessagesPerSeconds`      | 每秒总Retain消息数          |
-| `TotalRetainedBytesPerSecond`          | 每秒总Retain字节数          |
-| `TotalRetainMatchPerSeconds`           | 每秒总Retain消息匹配请求数      |
-| `TotalRetainMatchBytesPerSecond`       | 每秒总Retain匹配请求产生的消息字节数 |
+| Enum Value                             | Description                                      | Action on Limiting(MQTT3)   | Action on Limiting(MQTT5)                                 |
+|----------------------------------------|--------------------------------------------------|-----------------------------|-----------------------------------------------------------|
+| `TotalConnections`                     | Total number of connections                      | ConnAck with code(0x03)     | ConnAck with code(0x97)                                   | 
+| `TotalSessionMemoryBytes`              | Total session memory usage in bytes              | ConnAck with code(0x03)     | ConnAck with code(0x97)                                   |
+| `TotalPersistentSessions`              | Total number of persistent sessions              | Close connection by server  | Disconnect with code(0x97) and close connection by server |
+| `TotalPersistentSessionSpaceBytes`     | Total persistent session storage space in bytes  | Close connection by server  | Disconnect with code(0x97) and close connection by server |
+| `TotalSharedSubscriptions`             | Total number of shared subscriptions             | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalTransientSubscriptions`          | Total number of transient subscriptions          | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalPersistentSubscriptions`         | Total number of persistent subscriptions         | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalRetainMessageSpaceBytes`         | Total storage space for Retain messages in bytes | Ignore                      | Ignore                                                    |
+| `TotalRetainTopics`                    | Total number of Retain topics                    | Ignore                      | Ignore                                                    |
+| `TotalConnectPerSecond`                | Total connections per second                     | ConnAck with code(0x03)     | ConnAck with code(0x97)                                   |
+| `TotalInboundBytesPerSecond`           | Total inbound bytes per second                   | Slowdown throughput         | Slowdown throughput                                       |
+| `TotalTransientSubscribePerSecond`     | Total transient subscribes per second            | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalPersistentSubscribePerSecond`    | Total persistent subscribes per second           | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalTransientUnsubscribePerSecond`   | Total transient unsubscribes per second          | UnsubAck only               | UnsubAck with code(0x80)                                  |
+| `TotalPersistentUnsubscribePerSecond`  | Total persistent unsubscribes per second         | UnsubAck only               | UnsubAck with code(0x80)                                  |
+| `TotalTransientFanOutBytesPerSeconds`  | Total transient fan-out bytes per second         | Throttled to one subscriber | Throttled                                                 |
+| `TotalPersistentFanOutBytesPerSeconds` | Total persistent fan-out bytes per second        | Throttled to one subscriber | Throttled                                                 |
+| `TotalRetainedMessagesPerSeconds`      | Total Retain messages per second                 | Ignore                      | Ignore                                                    |
+| `TotalRetainedBytesPerSecond`          | Total bytes for Retain messages per second       | Ignore                      | Ignore                                                    |
+| `TotalRetainMatchPerSeconds`           | Total Retain message match requests per second   | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
+| `TotalRetainMatchBytesPerSecond`       | Total bytes for Retain match requests per second | SubAck with code(0x80)      | SubAck with code(0x97)                                    |
 
 这些枚举值代表了在多租户BifroMQ设置中可以限流的资源类型，不同资源类型触发的限制后会产生不同的限制行为。
 
@@ -70,7 +72,8 @@ public boolean hasResource(String tenantId, TenantResourceType type);
 
 ## 实现范例
 
-BifroMQ包含了一个Resource Throttler的示范实现，可以通过在[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`resourceThrottlerFQN`为`com.baidu.demo.plugin.DemoResourceThrottler`启用。范例实现利用JVM启动参数(-Dplugin.resourcethrottler.url)来指定一个webhook的回调URL。
+BifroMQ包含了一个Resource Throttler的示范实现，可以通过在[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`resourceThrottlerFQN`为`com.baidu.demo.plugin.DemoResourceThrottler`启用。范例实现利用JVM启动参数(
+-Dplugin.resourcethrottler.url)来指定一个webhook的回调URL。
 
 当BifroMQ调用hasResource方法时，插件会发起一个包含tenant_id和resource_type header的GET请求，对应于hasResource方法的两个调用的参数。请求是异步的，未返回结果前，hasResource始终返回true，确保处理不会因请求而被阻塞。
 

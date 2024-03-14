@@ -5,8 +5,8 @@ title: "Linux"
 
 ## Prerequisites
 
-* JDK 17+ environment installed
-* Obtain the latest version of BifroMQ from BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
+* JDK 17+
+* Latest version BifroMQ [Releases](https://github.com/bifromqio/bifromq/releases)
 
 ## Shell Commands
 
