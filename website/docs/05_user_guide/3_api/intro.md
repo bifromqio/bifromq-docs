@@ -7,7 +7,7 @@ BifroMQ incorporates built-in API capabilities, allowing for operations such as 
 
 ## Deployment
 
-By default, the API service functionality is automatically enabled on every BifroMQ service node. Operational requests can be sent to any node, ensuring high availability of the API capabilities in a standard deployment setup.
+By default, the API service functionality is automatically enabled on every BifroMQ service node using port 8091, For more setting options, refer to the [configuration file](../../07_admin_guide/01_configuration/1_config_file_manual.md). Operational requests can be sent to any node, ensuring high availability of the API capabilities in a standard deployment setup.
 
 ![API-Arch.png](images%2FAPI-Arch.png)
 

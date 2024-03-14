@@ -3,7 +3,7 @@ sidebar_position: 3
 title: "共享订阅"
 ---
 
-MQTT共享订阅是MQTT协议中的一个特性，它允许多个订阅者公平地从同一主题接收消息。
+MQTT共享订阅是MQTT 5.0版本协议中的一个特性，它允许多个订阅者公平地从同一主题接收消息，BifroMQ支持MQTT 3.1和3.1.1版本下使用共享订阅。
 
 ![shared-subscription](images/shared-subscription.png)
 
@@ -16,6 +16,6 @@ MQTT共享订阅是MQTT协议中的一个特性，它允许多个订阅者公平
 
 1. **随机选择（`$share/{groupName}/topicFilter`）**：使用`$share`作为共享订阅的前缀，适用于消息处理逻辑无顺序性要求的应用。
 
-2. **有序绑定（`$oshare/{groupName}/topicFilter`）**：使用`$oshare`作为共享订阅的前缀，这种模式将来自同一客户端连接和同一主题的消息按发布顺序转发给同一个订阅者，适用于消息有序性要求的应用。
+2. **有序绑定（`$oshare/{groupName}/topicFilter`）**：使用`$oshare`作为共享订阅的前缀，这种模式将来自同一客户端连接和同一主题的消息按发布顺序转发给同一个订阅者，适用于消息有顺序性要求的应用。
 
 **注意**：共享策略与共享组名的组合是唯一的，即使用`$share`和`$oshare`创建相同组名的共享订阅，实际上会创建组名相同但共享策略不同的两个共享订阅组。

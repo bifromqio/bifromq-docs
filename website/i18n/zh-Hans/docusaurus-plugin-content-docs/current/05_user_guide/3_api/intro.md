@@ -8,7 +8,7 @@ BifroMQ内置了API能力，允许执行类似断开客户端连接、查询会�
 
 ## 部署
 
-默认情况下，API服务能力在每个BifroMQ服务节点上自动启用。操作请求可以发送到任何节点，确保了默认部署中API能力的高可用性。
+默认情况下，API服务能力在每个BifroMQ服务节点上自动启用，使用端口8091，参考[配置文件](../../07_admin_guide/01_configuration/1_config_file_manual.md)，了解更多的设置选项。操作请求可以发送到任何节点，确保了默认部署中API能力的高可用性。
 
 ![API-Arch.png](images%2FAPI-Arch.png)
 

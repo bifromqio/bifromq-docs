@@ -35,17 +35,17 @@ BifroMQ更专注被深度集成的能力，为各类消息通讯类系统提供M
 
 ### 1. 从BifroMQ到外部系统
 
-BifroMQ推荐使用[共享订阅](../1_basic/3_shared_sub.md)功能，以平衡发送到下游系统的消息负载，利用MQTT的QoS能力进行语义消息转发。这种方法需要维护一组订阅BifroMQ的MQTT客户端连接。值得注意的是，BifroMQ支持MQTT版本3.1、3.1.1和5.0的共享订阅。
+BifroMQ推荐使用[共享订阅](../1_basic/3_shared_sub.md)功能，以平衡发送到下游系统的消息负载，利用MQTT的QoS能力进行语义消息转发。为此，BifroMQ在MQTT 3.1、3.1.1版本下同样支持共享订阅。
 
 ### 2. 从外部系统到BifroMQ
 
-外部系统可以使用直接的MQTT客户端连接或[HTTP Restful API](../../05_user_guide/3_api/intro.md)向BifroMQ发布消息，为消息注入到BifroMQ部署提供了一种直接的方法。
+外部系统可以使用MQTT客户端或[HTTP Restful API](../../05_user_guide/3_api/intro.md)向BifroMQ发布消息。
 
 ## 实现方面的注意事项
 
 在与BifroMQ集成数据时，请考虑以下几点：
 
-1. **带宽限制**：BifroMQ默认每个MQTT连接的带宽限制为512kb/s，可以通过租户设置调整。根据实际业务需求计算接收通过共享订阅转发的消息所需的连接数量至关重要。
+1. **带宽限制**：BifroMQ默认每个MQTT连接的带宽限制为512kb/s，可以通过租户[设置](../../06_plugin/4_setting_provider/1_tenantsetting.md)调整。
 
 2. **流量控制**：使用MQTT作为转发协议天然提供了流量控制。下游系统必须具有足够的资源接收转发的消息，以避免因背压导致的消息丢失。
 
