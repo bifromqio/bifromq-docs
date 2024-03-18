@@ -1,4 +1,8 @@
-# 测试报告
+---
+id: report
+sidebar_position: 1
+title: "测试报告"
+---
 
 ## 测试目的
 
