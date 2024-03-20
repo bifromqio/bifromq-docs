@@ -60,6 +60,15 @@ public boolean hasResource(String tenantId, TenantResourceType type);
 
 这些枚举值代表了在多租户BifroMQ设置中可以限流的资源类型，不同资源类型触发的限制后会产生不同的限制行为。
 
+## Metrics
+
+因为`hasResource`方法会被频繁调用，BifroMQ记录并输出以下指标，以帮助插件实现者观察插件接口方法的性能指标：
+
+| Metric Name            | Meter Type | Tag(`method`)                 | Description                         |
+|------------------------|------------|-------------------------------|-------------------------------------|
+| `call.exec.timer`      | TIMER      | ResourceThrottler/hasResource | Latency for `hasResource` call      |
+| `call.exec.fail.count` | COUNTER    | ResourceThrottler/hasResource | Fail counter for `hasResource` call |
+
 ## 实现考量点
 
 利用BifroMQ实现多租户服务时有以下几点需要考虑，以有效管理资源使用并确保各租户之间的公平访问：

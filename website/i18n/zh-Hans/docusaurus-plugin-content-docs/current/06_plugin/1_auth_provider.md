@@ -2,6 +2,7 @@
 sidebar_position: 2
 title: "Auth Provider"
 ---
+
 Auth Provider插件为BifroMQ添加了MQTT客户端和Pub/Sub操作的认证与授权功能。
 插件接口定义在以下Maven模块中：
 
@@ -12,11 +13,12 @@ Auth Provider插件为BifroMQ添加了MQTT客户端和Pub/Sub操作的认证与�
     <version>X.Y.Z</version> <!--replace X.Y.Z with the latest version number-->
 </dependency>
 ```
+
 BifroMQ一次只允许运行一个Auth Provider实例。需要通过[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)指定实现类的完全限定名（FQN）：
+
 ```yaml
 authProviderFQN: "YOUR_AUTH_PROVIDER_CLASS"
 ```
-
 
 ## 认证
 
@@ -32,6 +34,7 @@ CompletableFuture<MQTT5AuthResult> auth(MQTT5AuthData authData);
 // Enhanced authentication for MQTT 5.0 clients
 CompletableFuture<MQTT5ExtendedAuthResult> extendedAuth(MQTT5ExtendedAuthData authData); 
 ```
+
 务必确保接口方法实现的高效和非阻塞，避免对连接性能造成负面影响。针对MQTT 5.0，BifroMQ支持两种认证方法：Basic和Extended。Basic认证提供兼容MQTT3的默认行为。
 
 接口方法的参数和返回类型使用Protobuf对象。
@@ -162,16 +165,19 @@ message MQTT5ExtendedAuthResult {
   }
 }
 ```
+
 认证成功需返回一个Ok结构，包含tenantId、userId和额外的元数据attrs，元数据(如果有的话)将被复制到ClientInfo中；返回Reject表示不通过，结合Code字段表示失败原因认证信息不正确（BadPass）、未授权访问（NotAuthorized）或内部错误（Error），详细信息在可选字段中说明。
 
-## 鉴权 
+## 鉴权
+
 BifroMQ通过以下接口方法检查发布、订阅和取消订阅操作的权限：
 
 ```java
 CompletableFuture<CheckResult> checkPermission(ClientInfo client, MQTTAction action);
 ```
 
-确保`checkPermission`方法实现的高效和非阻塞，避免对消息性能产生负面影响。方法传入的ClientInfo对象包含认证返回的元数据，利用它可以实现类似JWT的认证和鉴权机制。此外，权限检查方法不按客户端使用的MQTT协议版本区分。但对于使用MQTT 5.0连接的客户端，MQTTAction对象会包含Control Packets中的UserProperties。
+确保`checkPermission`方法实现的高效和非阻塞，避免对消息性能产生负面影响。方法传入的ClientInfo对象包含认证返回的元数据，利用它可以实现类似JWT的认证和鉴权机制。此外，权限检查方法不按客户端使用的MQTT协议版本区分。但对于使用MQTT
+5.0连接的客户端，MQTTAction对象会包含Control Packets中的UserProperties。
 
 在MQTT 5.0客户端授权失败的情况下，返回结果中包含的UserProperties将被回传给客户端，包含在相应的MQTT Control Packets的UserProperties中，有助于问题诊断。
 
@@ -186,6 +192,7 @@ message ClientInfo{
   map<string, string> metadata = 3; // the metadata of the client
 }
 ```
+
 BifroMQ会在`ClientInfo`对象的metadata属性中包含以下预定义的元数据：
 
 | Key           | Description                                        | Possible Values                                      |
@@ -257,6 +264,19 @@ message CheckResult {
 }
 ```
 
+## Metrics
+
+因为AuthProvider插件的两个方法在连接认证以及处理消息发布和订阅转发的过程中会被频繁调用，BifroMQ记录并输出以下指标，以帮助插件实现者观察插件接口方法的性能指标：
+| Metric Name | Meter Type | Tag(`method`)        | Description |
+|------------------------|------------|----------------------|-----------------------------------------|
+| `call.exec.timer`      | TIMER | AuthProvider/auth | Latency for `auth` call |
+| `call.exec.fail.count` | COUNTER | AuthProvider/auth | Fail counter for `auth` call |
+| `call.exec.timer`      | TIMER | AuthProvider/extAuth | Latency for `extendedAuth` call |
+| `call.exec.fail.count` | COUNTER | AuthProvider/extAuth | Fail counter for `extendedAuth` call |
+| `call.exec.timer`      | TIMER | AuthProvider/check | Latency for `checkPermission` call |
+| `call.exec.fail.count` | COUNTER | AuthProvider/check | Fail counter for `checkPermission` call |
+
 ## DevOnly Mode
 
-当未指定AuthPlugin类型时，BifroMQ会默认加载[DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)。DevOnlyAuthProvider会绕过了客户端认证和权限检查，因此仅用于测试和开发的目的。
+当未指定AuthPlugin类型时，BifroMQ会默认加载[DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)
+。DevOnlyAuthProvider会绕过了客户端认证和权限检查，因此仅用于测试和开发的目的。

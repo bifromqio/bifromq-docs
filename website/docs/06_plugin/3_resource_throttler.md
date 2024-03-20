@@ -64,6 +64,16 @@ Here are the resource types defined in `TenantResourceType`:
 
 These enum values represent the types of resources that can be throttled in a multi-tenant BifroMQ setup, with different resource types triggering different limiting actions.
 
+## Metrics
+
+Because the `hasResource` method is frequently called, BifroMQ records and outputs the following metrics to help
+plugin implementers observe the performance indicators of the plugin interface methods:
+
+| Metric Name            | Meter Type | Tag(`method`)                 | Description                       |
+|------------------------|------------|-------------------------------|-----------------------------------|
+| `call.exec.timer`      | TIMER      | ResourceThrottler/hasResource | Latency for `hasResource` call      |
+| `call.exec.fail.count` | COUNTER    | ResourceThrottler/hasResource | Fail counter for `hasResource` call |
+
 ## Implementation Considerations
 
 Implementing multi-tenant services with BifroMQ involves several key considerations for effectively managing resource usage and ensuring fair access across tenants:
