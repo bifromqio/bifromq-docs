@@ -55,6 +55,7 @@ const config = {
         },
         blog: {
           showReadingTime: true,
+          blogSidebarCount: 10,
           // Please change this to your repo.
           editUrl: ({locale}) => {
             if (locale !== config.i18n.defaultLocale) {
