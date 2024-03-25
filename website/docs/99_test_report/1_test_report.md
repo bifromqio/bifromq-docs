@@ -235,10 +235,10 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 |--------------------------|-----|--------|---------------|------|--------|---------------------------|-----------------------|-----|--------------------------|
-| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 11.12                 | 62.91            | 80% | 5 ~ 10 |
+| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.12                | 15.91          | 80% | 5 ~ 10 |
 | 1.5k_1.5k_qos1_p32_100mps_1n | 1 | 100 | 32 | 3k | 150k | 14.67 | 83.88 | 85% | 5 ~ 10 |
-| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 9.58                  | 44.03            | 85% | 5 ~ 10 |
-| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 23.12                 | 104.85            | 85% | 5 ~ 10 |
+| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 7.58                 | 35.03          | 85% | 5 ~ 10 |
+| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 13.12              | 55.85          | 85% | 5 ~ 10 |
 
 2k_2k_qos0_p32_100mps_1n scenario charts：
 
