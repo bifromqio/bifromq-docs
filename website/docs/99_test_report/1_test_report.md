@@ -235,10 +235,10 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 |--------------------------|-----|--------|---------------|------|--------|---------------------------|-----------------------|-----|--------------------------|
-| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.22                      | 24.11                 | 80% | 5 ~ 10 |
-| 2k_2k_qos1_p32_100mps_1n | 1 | 100 | 32 | 4k | 200k | 38.92                     | 184.54                | 85% | 5 ~ 15 |
-| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 3.38                      | 24.11                 | 83% | 5 ~ 20 |
-| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 9.62                      | 65.0                  | 85% | 5 ~ 18 |
+| 2k_2k_qos0_p32_100mps_1n | 0   | 100    | 32            | 4k   | 200k   | 3.12                | 15.91          | 80% | 5 ~ 10 |
+| 1.5k_1.5k_qos1_p32_100mps_1n | 1 | 100 | 32 | 3k | 150k | 14.67 | 83.88 | 85% | 5 ~ 10 |
+| 5k_5k_qos0_p32_100mps_3n | 0 | 100 | 32 | 10k | 500k | 7.58                 | 35.03          | 85% | 5 ~ 10 |
+| 4k_4k_qos1_p32_100mps_3n | 1 | 100 | 32 | 8k | 400k | 13.12              | 55.85          | 85% | 5 ~ 10 |
 
 2k_2k_qos0_p32_100mps_1n scenario charts：
 
@@ -247,12 +247,12 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 ![p99](./images/true_2k_2k_qos0_p32_100mps_1n/p99.png) | ![max](./images/true_2k_2k_qos0_p32_100mps_1n/max.png)
 ![cpu](./images/true_2k_2k_qos0_p32_100mps_1n/cpu.png) | ![mem](./images/true_2k_2k_qos0_p32_100mps_1n/mem.png)
 
-2k_2k_qos1_p32_100mps_1n scenario charts：
+1.5k_1.5k_qos1_p32_100mps_1n scenario charts：
 
-![qps](./images/true_2k_2k_qos1_p32_100mps_1n/qps.png) | ![mean](./images/true_2k_2k_qos1_p32_100mps_1n/mean.png)
+![qps](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/qps.png) | ![mean](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
-![p99](./images/true_2k_2k_qos1_p32_100mps_1n/p99.png) | ![max](./images/true_2k_2k_qos1_p32_100mps_1n/max.png)
-![cpu](./images/true_2k_2k_qos1_p32_100mps_1n/cpu.png) | ![mem](./images/true_2k_2k_qos1_p32_100mps_1n/mem.png)
+![p99](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/p99.png) | ![max](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/max.png)
+![cpu](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/cpu.png) | ![mem](./images/true_1.5k_1.5k_qos1_p32_100mps_1n/mem.png)
 
 5k_5k_qos0_p32_100mps_3n scenario charts：
 
@@ -272,10 +272,10 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 | --------------------------- | ---- | --------- | -------- | ------- | --------- |---------------------------| ------------- | ---- | ---------- |
-| 100k_100k_qos0_p256_1mps_1n | 0    | 1         | 256      | 200k    | 100k      | 2.14                      | 17.82       | 80%  | 6 ~ 12     |
-| 100k_100k_qos1_p256_1mps_1n | 1    | 1         | 256      | 200k    | 100k      | 13.56                     | 104.84        | 83%  | 8 ~ 13     |
-| 300k_300k_qos0_p256_1mps_3n | 0    | 1         | 256      | 600k    | 300k      | 17.03                     | 113.23        | 83%  | 10 ~ 20    |
-| 200k_200k_qos1_p256_1mps_3n | 1    | 1         | 256      | 400k    | 200k      | 3.86                      | 29.34         | 81%  | 7 ~ 12     |
+| 100k_100k_qos0_p256_1mps_1n | 0    | 1         | 256      | 200k    | 100k      | 5.72                  | 52.42  | 80% | 8 ~ 15   |
+| 100k_100k_qos1_p256_1mps_1n | 1    | 1         | 256      | 200k    | 100k      | 59.15                 | 318.75  | 88% | 8 ~ 15    |
+| 250k_250k_qos0_p256_1mps_3n | 0    | 1         | 256      | 500k   | 250k    | 17.96                     | 113.23                | 85% | 8 ~ 15 |
+| 200k_200k_qos1_p256_1mps_3n | 1    | 1         | 256      | 400k    | 200k      | 12.8 | 100.65 | 85%  | 7 ~ 12     |
 
 100k_100k_qos0_p256_1mps_1n scenario charts：
 
@@ -291,21 +291,21 @@ scenarios may be reduced compared to high-frequency sending scenarios.*
 ![p99](./images/true_100k_100k_qos1_p256_1mps_1n/p99.png) | ![max](./images/true_100k_100k_qos1_p256_1mps_1n/max.png)
 ![cpu](./images/true_100k_100k_qos1_p256_1mps_1n/cpu.png) | ![mem](./images/true_100k_100k_qos1_p256_1mps_1n/mem.png)
 
-300k_300k_qos0_p256_1mps_3n scenario charts：
+250k_250k_qos0_p256_1mps_3n scenario charts：
 
-![qps](./images/true_300k_300k_qos0_p256_1mps_3n/qps.png) | ![mean](./images/true_300k_300k_qos0_p256_1mps_3n/mean.png)
+![qps](./images/true_250k_250k_qos0_p256_1mps_3n/qps.png) | ![mean](./images/true_250k_250k_qos0_p256_1mps_3n/mean.png)
 ------------------------------------------------------------ | ------------------------------------------------------------
-![p99](./images/true_300k_300k_qos0_p256_1mps_3n/p99.png) | ![max](./images/true_300k_300k_qos0_p256_1mps_3n/max.png)
-![cpu](./images/true_300k_300k_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/true_300k_300k_qos0_p256_1mps_3n/mem.png)
+![p99](./images/true_250k_250k_qos0_p256_1mps_3n/p99.png) | ![max](./images/true_250k_250k_qos0_p256_1mps_3n/max.png)
+![cpu](./images/true_250k_250k_qos0_p256_1mps_3n/cpu.png) | ![mem](./images/true_250k_250k_qos0_p256_1mps_3n/mem.png)
 
 #### Shared Subscriptions Scenario
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 | --------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
-| 100k_1000_qos0_p256_1mps_1n | 0    | 1         | 256      | 101k    | 100k      | 1.17           | 11.0          | 82%  | 6 ~ 20     |
-| 100k_1000_qos1_p256_1mps_1n | 1    | 1         | 256      | 101k    | 100k      | 1.82           | 14.67         | 78%  | 5 ~ 18     |
-| 300k_3000_qos0_p256_1mps_3n | 0    | 1         | 256      | 303k    | 300k      | 3.17           | 19.91         | 80%  | 10 ~ 20    |
-| 200k_2000_qos1_p256_1mps_3n | 1    | 1         | 256      | 202k    | 200k      | 5.9         | 44.84       | 77%  | 5 ~ 20     |
+| 100k_1000_qos0_p256_1mps_1n | 0    | 1         | 256      | 101k    | 100k      | 1.53         | 13.62     | 78% | 6 ~ 12   |
+| 100k_1000_qos1_p256_1mps_1n | 1    | 1         | 256      | 101k    | 100k      | 6.52       | 56.61    | 82% | 6 ~ 12  |
+| 300k_3000_qos0_p256_1mps_3n | 0    | 1         | 256      | 303k    | 300k      | 5.18       | 30.39    | 82% | 7 ~ 12 |
+| 200k_2000_qos1_p256_1mps_3n | 1    | 1         | 256      | 202k    | 200k      | 11.34    | 83.88  | 78% | 7 ~ 16  |
 
 100k_1000_qos0_p256_1mps_1n scenario charts：
 
@@ -342,10 +342,10 @@ scenario where each message is widely fan-out broadcast.
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 | -------------------------- | ---- | --------- | -------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
-| 1_100000_qos0_p256_1mps_1n | 0    | 1         | 256      | 100k    | 100k      | 282.61         | 465.57        | 15%  | 2 ~ 5      |
-| 1_100000_qos1_p256_1mps_1n | 1    | 1         | 256      | 100k    | 100k      | 312.11         | 515.9         | 20%  | 2 ~ 7      |
-| 1_300000_qos0_p256_1mps_3n | 0    | 1         | 256      | 300k    | 300k      | 593.23         | 889.19        | 20%  | 2 ~ 10     |
-| 1_200000_qos1_p256_1mps_3n | 1    | 1         | 256      | 200k    | 200k      | 395.96         | 595.59        | 12%  | 2~ 8       |
+| 1_100000_qos0_p256_1mps_1n | 0    | 1         | 256      | 100k    | 100k      | 119.09   | 226.46  | 20% | 2 ~ 7 |
+| 1_100000_qos1_p256_1mps_1n | 1    | 1         | 256      | 100k    | 100k      | 186.05 | 352.26   | 20%  | 2 ~ 9     |
+| 1_300000_qos0_p256_1mps_3n | 0    | 1         | 256      | 300k    | 300k      | 237.33   | 570.36  | 15% | 2 ~ 6    |
+| 1_200000_qos1_p256_1mps_3n | 1    | 1         | 256      | 200k    | 200k      | 249.58   | 570.36  | 20% | 3~ 6     |
 
 1_100000_qos0_p256_1mps_1n scenario charts：
 
@@ -381,12 +381,12 @@ scenario where each message is widely fan-out broadcast.
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 | ---------------------------- | ---- | --------- | -------------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
-| 15k_15k_qos0_p256_1mps_1n_1v | 0    | 1         | 256            | 20k     | 15k       | 10.24          | 52.4          | 65%  | 5~15       |
-| 15k_15k_qos1_p256_1mps_1n_1v | 1    | 1         | 256            | 20k     | 15k       | 13.64          | 67.08         | 70%  | 5~18       |
-| 30k_30k_qos0_p256_1mps_3n_1v | 0    | 1         | 256            | 60k     | 30k       | 70.34          | 285.18        | 60%  | 5~20       |
-| 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       | 90.2           | 352.29        | 62%  | 7~20       |
-| 15k_15k_qos0_p256_1mps_3n_3v | 0    | 1         | 256            | 30k     | 15k       | 27.32          | 142.54        | 65%  | 5~20       |
-| 15k_15k_qos1_p256_1mps_3n_3v | 1    | 1         | 256            | 30k     | 15k       | 31.01          | 167.71        | 65%  | 5~20       |
+| 15k_15k_qos0_p256_1mps_1n_1v | 0    | 1         | 256            | 20k     | 15k       | 6.35                      | 134.18                | 50%  | 5~20        |
+| 15k_15k_qos1_p256_1mps_1n_1v | 1    | 1         | 256            | 20k     | 15k       | 5.75       | 113.21 | 60% | 5~20     |
+| 30k_30k_qos0_p256_1mps_3n_1v | 0    | 1         | 256            | 60k     | 30k       | 15.68     | 234.85  | 60%  | 5~20       |
+| 30k_30k_qos1_p256_1mps_3n_1v | 1    | 1         | 256            | 60k     | 30k       | 22.75      | 285.18  | 70% | 5~18    |
+| 15k_15k_qos0_p256_1mps_3n_3v | 0    | 1         | 256            | 30k     | 15k       | 9.0       | 133.15 | 50% | 5~18     |
+| 15k_15k_qos1_p256_1mps_3n_3v | 1    | 1         | 256            | 30k     | 15k       | 9.75      | 134.15  | 50% | 5~20       |
 
 15k_15k_qos0_p256_1mps_1n_1v scenario charts：
 
@@ -434,12 +434,12 @@ scenario where each message is widely fan-out broadcast.
 
 | Scenario combinations | QoS | Single connection frequency(m/s) | Payload (byte) | Connection number | Total frequency (m/s) | average response time(ms) | P99 response time(ms) | CPU | Memory (GB) |
 | ---------------------------- | ---- | --------- | -------------- | ------- | --------- | -------------- | ------------- | ---- | ---------- |
-| 300_300_qos0_p32_50mps_1n_1v | 0    | 50        | 32             | 0.6k    | 15k       | 14.38          | 50.27         | 70%  | 3~15       |
-| 300_300_qos1_p32_50mps_1n_1v | 1    | 50        | 32             | 0.6k    | 15k       | 16.5           | 52.4          | 75%  | 5~15       |
-| 900_900_qos0_p32_50mps_3n_1v | 0    | 50        | 32             | 1.8k    | 45k       | 82.36          | 243.2         | 55%  | 5~18       |
-| 900_900_qos1_p32_50mps_3n_1v | 1    | 50        | 32             | 1.8k    | 45k       | 95.74          | 369.03        | 65%  | 5~20       |
-| 300_300_qos0_p32_50mps_3n_3v | 0    | 50        | 32             | 0.6k    | 15k       | 22.91          | 75.43         | 70%  | 5~15       |
-| 300_300_qos1_p32_50mps_3n_3v | 1    | 50        | 32             | 0.6k    | 15k       | 26.96          | 88.01         | 70%  | 5~15       |
+| 300_300_qos0_p32_50mps_1n_1v | 0    | 50        | 32             | 0.6k    | 15k       | 6.58 | 129.99 | 45% | 5~15      |
+| 300_300_qos1_p32_50mps_1n_1v | 1    | 50        | 32             | 0.6k    | 15k       | 10.21      | 234.85    | 50% | 5~15       |
+| 900_900_qos0_p32_50mps_3n_1v | 0    | 50        | 32             | 1.8k    | 45k       | 26.16 | 402.62 | 65% | 5~20     |
+| 900_900_qos1_p32_50mps_3n_1v | 1    | 50        | 32             | 1.8k    | 45k       | 35.39 | 419.4 | 70% | 5~20       |
+| 300_300_qos0_p32_50mps_3n_3v | 0    | 50        | 32             | 0.6k    | 15k       | 29.79 | 385.81   | 35% | 5~20     |
+| 300_300_qos1_p32_50mps_3n_3v | 1    | 50        | 32             | 0.6k    | 15k       | 22.21     | 318.7    | 40% | 5~15       |
 
 300_300_qos0_p32_50mps_1n_1v scenario charts：
 
@@ -506,8 +506,8 @@ This scenario is designed to test BifroMQ's resource consumption when handling a
 
 | Scenario combinations                | cleanSession | Connection number | Connection establishment rate | cpu  | Memory(GB) |
 | ----------------------- | ------------ | ------ | ------------ | ---- | ---------- |
-| conn-tcp-1M-5K_1n_true  | true         | 1M     | 5k           | 30%  | 7.2G       |
-| conn-tcp-1M-5K_1n_false | false        | 1M     | 5k           | 40% | 13G        |
+| conn-tcp-1M-5K_1n_true  | true         | 1M     | 5k           | 30% | 13G    |
+| conn-tcp-1M-5K_1n_false | false        | 1M     | 5k           | 55%  | 18G        |
 
 conn-tcp-1M-5K_1n_true scenario charts：
 
