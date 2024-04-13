@@ -81,8 +81,8 @@ public boolean hasResource(String tenantId, TenantResourceType type);
 
 ## 实现范例
 
-BifroMQ包含了一个Resource Throttler的示范实现，可以通过在[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`resourceThrottlerFQN`为`com.baidu.demo.plugin.DemoResourceThrottler`启用。范例实现利用JVM启动参数(
--Dplugin.resourcethrottler.url)来指定一个webhook的回调URL。
+BifroMQ包含了一个Resource Throttler的示范实现，可以通过在[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`resourceThrottlerFQN`为`com.baidu.demo.plugin.DemoResourceThrottler`启用。范例实现利用JVM启动参数(`
+-Dplugin.resourcethrottler.url`)来指定一个webhook的回调URL。
 
 当BifroMQ调用hasResource方法时，插件会发起一个包含tenant_id和resource_type header的GET请求，对应于hasResource方法的两个调用的参数。请求是异步的，未返回结果前，hasResource始终返回true，确保处理不会因请求而被阻塞。
 
@@ -90,57 +90,39 @@ BifroMQ包含了一个Resource Throttler的示范实现，可以通过在[配置
 
 以下是一个演示用webhook服务器实现(基于node.js)，可以用来测试示例插件，webhook的url地址为：`http://<ADDR>:<PORT>/query`，`http://<ADDR>:<PORT>/throttle`和`http://<ADDR>:<PORT>/release`分别用于设置和取消给定租户的限流状态。
 
-```
-// 用于保持限流状态的map
+```js
 const hasResourceMap = {};
 
-// 从命令行参数获取绑定地址和端口
 const args = process.argv.slice(2);
-const hostname = args[0] || 'localhost'; // 默认绑定到localhost
-const port = args[1] || 0; // 默认使用系统分配的临时端口
+const hostname = args[0] || 'localhost'; 
+const port = args[1] || 3000; 
 
 const server = http.createServer((req, res) => {
-
 const parsedUrl = url.parse(req.url, true); 
 const pathname = parsedUrl.pathname;
-
-// 设置基本响应头
 res.setHeader('Content-Type', 'text/plain');
 
-// 处理查询接口
 if (pathname === '/query') {
     const tenantId = req.headers['tenant_id'];
-    const resourceType =
-
- req.headers['resource_type'];
+    const resourceType = req.headers['resource_type'];
     const key = `${tenantId}${resourceType}`;
-
     const exists = key in hasResourceMap ? hasResourceMap[key] : true;
     res.end(`${exists}`);
-
 }
-// 处理添加记录接口
 else if (pathname === '/throttle') {
     const tenantId = req.headers['tenant_id'];
     const resourceType = req.headers['resource_type'];
     const key = `${tenantId}${resourceType}`;
-
-    // 向Map中添加记录，这里我们以false为例
     hasResourceMap[key] = false;
     res.end('Throttled');
-
 }
 else if (pathname === '/release') {
     const tenantId = req.headers['tenant_id'];
     const resourceType = req.headers['resource_type'];
     const key = `${tenantId}${resourceType}`;
-
-    // 从Map中删除记录，作为释放限流的例子
     delete hasResourceMap[key];
     res.end('Released');
-
 }
-// 处理无效路径
 else {
     res.statusCode = 404;
     res.end('Not Found');

@@ -89,7 +89,7 @@ Implementing multi-tenant services with BifroMQ involves several key considerati
 
 BifroMQ includes an example implementation of the Resource Throttler, which can be enabled by specifying `resourceThrottlerFQN` as `com.baidu.demo.plugin.DemoResourceThrottler` in the [configuration file](../07_admin_guide
 
-/01_configuration/1_config_file_manual.md). The example uses a JVM startup argument (-Dplugin.resourcethrottler.url) to specify a callback URL for a webhook.
+/01_configuration/1_config_file_manual.md). The example uses a JVM startup argument (`-Dplugin.resourcethrottler.url`) to specify a callback URL for a webhook.
 
 When BifroMQ calls the hasResource method, the plugin initiates a GET request that includes tenant_id and resource_type headers, corresponding to the two parameters of the hasResource method call. The request is asynchronous, and
 hasResource always returns true before a response is received, ensuring processing is not blocked by the request.
@@ -99,24 +99,20 @@ The result of the request is cached for 60 seconds and refreshed every second. T
 Below is a demonstration webhook server implementation (based on Node.js) that can be used to test the example plugin. The webhook URL address is `http://<ADDR>:<PORT>/query`. Two additional urls `http://<ADDR>:<PORT>/throttle`,
 and `http://<ADDR>:<PORT>/release` are for setting and cancelling the throttling state for a given tenant, respectively.
 
-```
-// Map for keeping throttling state
+```js
 const hasResourceMap = {};
 
-// Get the bound address and port from command line arguments
 const args = process.argv.slice(2);
-const hostname = args[0] || 'localhost'; // Default to localhost
-const port = args[1] || 0; // Default to a system-assigned temporary port
+const hostname = args[0] || 'localhost'; 
+const port = args[1] || 3000; 
 
 const server = http.createServer((req, res) => {
 
 const parsedUrl = url.parse(req.url, true); 
 const pathname = parsedUrl.pathname;
 
-// Set basic response headers
 res.setHeader('Content-Type', 'text/plain');
 
-// Handle the query interface
 if (pathname === '/query') {
     const tenantId = req.headers['tenant_id'];
     const resourceType = req.headers['resource_type'];
@@ -126,13 +122,11 @@ if (pathname === '/query') {
     res.end(`${exists}`);
 
 }
-// Handle adding a record interface
 else if (pathname === '/throttle') {
     const tenantId = req.headers['tenant_id'];
     the resourceType = req.headers['resource_type'];
     const key = `${tenantId}${resourceType}`;
 
-    // Add a record to the Map, here we record false as an example
     hasResourceMap[key] = false;
     res.end('Throttled');
 
@@ -142,12 +136,9 @@ else if (pathname === '/release') {
     the resourceType = req.headers['resource_type'];
     const key = `${tenantId}${resourceType}`;
 
-    // Remove the record from the Map, as an example of releasing the throttle
     delete hasResourceMap[key];
     res.end('Released');
-
 }
-// Handle invalid paths
 else {
     res.statusCode = 404;
     res.end('Not Found');
