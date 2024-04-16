@@ -69,8 +69,8 @@ These enum values represent the types of resources that can be throttled in a mu
 Because the `hasResource` method is frequently called, BifroMQ records and outputs the following metrics to help
 plugin implementers observe the performance indicators of the plugin interface methods:
 
-| Metric Name            | Meter Type | Tag(`method`)                 | Description                       |
-|------------------------|------------|-------------------------------|-----------------------------------|
+| Metric Name            | Meter Type | Tag(`method`)                 | Description                         |
+|------------------------|------------|-------------------------------|-------------------------------------|
 | `call.exec.timer`      | TIMER      | ResourceThrottler/hasResource | Latency for `hasResource` call      |
 | `call.exec.fail.count` | COUNTER    | ResourceThrottler/hasResource | Fail counter for `hasResource` call |
 
@@ -87,9 +87,8 @@ Implementing multi-tenant services with BifroMQ involves several key considerati
 
 ## Example Implementation
 
-BifroMQ includes an example implementation of the Resource Throttler, which can be enabled by specifying `resourceThrottlerFQN` as `com.baidu.demo.plugin.DemoResourceThrottler` in the [configuration file](../07_admin_guide
-
-/01_configuration/1_config_file_manual.md). The example uses a JVM startup argument (`-Dplugin.resourcethrottler.url`) to specify a callback URL for a webhook.
+BifroMQ includes an example implementation of the Resource Throttler, which can be enabled by specifying `resourceThrottlerFQN` as `com.baidu.demo.plugin.DemoResourceThrottler` in
+the [configuration file](../07_admin_guide/01_configuration/intro.md). The example uses a JVM startup argument (`-Dplugin.resourcethrottler.url`) to specify a callback URL for a webhook.
 
 When BifroMQ calls the hasResource method, the plugin initiates a GET request that includes tenant_id and resource_type headers, corresponding to the two parameters of the hasResource method call. The request is asynchronous, and
 hasResource always returns true before a response is received, ensuring processing is not blocked by the request.

@@ -50,6 +50,7 @@ public <R> R provide(Setting setting, String tenantId);
 | `setting_refresh_seconds`    | 5             | The interval, in seconds, between refreshes of a cached setting.                                                   |
 | `setting_expire_seconds`     | 300           | The expiration time, in seconds, of a setting in the cache.                                                        |
 | `setting_tenant_cache_limit` | 100           | The maximum number of tenants' values that can be cached.                                                          |
+
 **注意:** 如果 `provide` 方法执行缓慢，启用 `setting_provide_init_value` 可能会阻塞 BifroMQ 的工作线程并导致性能问题。
 
 ## Metrics
@@ -63,7 +64,7 @@ BifroMQ记录并输出以下指标，以帮助插件实现者观察插件接口�
 
 ## 实现范例
 
-BifroMQ包含了一个基于WebHook的SettingProvider的示范实现，可以通过在[配置文件](../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`settingProviderFQN`为`com.baidu.demo.plugin.DemoSettingProvider`启用。范例实现利用JVM启动参数(
+BifroMQ包含了一个基于WebHook的SettingProvider的示范实现，可以通过在[配置文件](../../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`settingProviderFQN`为`com.baidu.demo.plugin.DemoSettingProvider`启用。范例实现利用JVM启动参数(
 `-Dplugin.settingprovider.url`)来指定一个webhook的回调URL。
 
 当BifroMQ调用`provide`方法时，插件会发起一个包含tenant_id和setting_name header的HTTP GET请求，对应于`provide`方法的两个调用的参数。响应Body内包含的字符串被解析成对应的Setting值类型作为返回值。
