@@ -22,7 +22,7 @@ const textLines = [
 const primaryFeatures = [
   {
     name: <Translate>100% MQTT Support.</Translate>,
-    description: <Translate>Fully supports MQTT 3.1, 3.1.1 features over TCP, TLS, WS, WSS. Stay tuned for MQTT5.</Translate>,
+    description: <Translate>Full support for MQTT 3.1, 3.1.1 and 5.0 features over TCP, TLS, WS, WSS.</Translate>,
     icon: CloudArrowUpIcon,
   },
   {

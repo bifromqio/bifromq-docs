@@ -17,7 +17,7 @@ various systems or applications.
 
 ## Features List
 
-* Full support for MQTT 3.1, 3.1.1, and 5.0 features over TCP, TLS, WS, WSS.
+* Full support for MQTT 3.1, 3.1.1 and 5.0 features over TCP, TLS, WS, WSS.
 * Native support for multi-tenancy, resource sharing, and workload isolation.
 * Built-in distributed storage engine optimized for MQTT workloads, with no third-party middleware dependencies.
 * Extension mechanism for supporting:
