@@ -19,35 +19,35 @@ deployments.
 
 ## Supported Settings
 
-| Name                             | Type    | Initial Value | Description                                                   |
-|----------------------------------|---------|---------------|---------------------------------------------------------------|
-| `MQTT3Enabled`                   | Boolean | true          | Enables or disables MQTT version 3.1 support.                 |
-| `MQTT4Enabled`                   | Boolean | true          | Enables or disables MQTT version 3.1.1 support.               |
-| `MQTT5Enabled`                   | Boolean | true          | Enables or disables MQTT version 5.0 support.                 |
-| `DebugModeEnabled`               | Boolean | false         | Enables or disables debug mode.                               |
-| `ForceTransient`                 | Boolean | false         | Forces transient mode for connections.                        |
-| `ByPassPermCheckError`           | Boolean | true          | Bypasses permission check errors.                             |
-| `PayloadFormatValidationEnabled` | Boolean | true          | Enables or disables payload format validation.                |
-| `RetainEnabled`                  | Boolean | true          | Enables or disables message retain feature.                   |
-| `WildcardSubscriptionEnabled`    | Boolean | true          | Enables or disables wildcard subscriptions.                   |
-| `SubscriptionIdentifierEnabled`  | Boolean | true          | Enables or disables subscription identifiers.                 |
-| `SharedSubscriptionEnabled`      | Boolean | true          | Enables or disables shared subscriptions.                     |
-| `MaximumQoS`                     | Integer | 2             | Sets the maximum QoS level. Valid values: 0, 1, 2.            |
-| `MaxTopicLevelLength`            | Integer | 40            | Maximum length of each topic level.                           |
-| `MaxTopicLevels`                 | Integer | 16            | Maximum number of topic levels.                               |
-| `MaxTopicLength`                 | Integer | 255           | Maximum total length of a topic.                              |
-| `MaxTopicAlias`                  | Integer | 10            | Maximum number of topic aliases.                              |
-| `MaxSharedGroupMembers`          | Integer | 200           | Maximum members in a shared subscription group.               |
-| `MaxTopicFiltersPerInbox`        | Integer | 100           | Maximum topic filters per inbox.                              |
-| `MsgPubPerSec`                   | Integer | 200           | Maximum number of messages published per second.              |
-| `ReceivingMaximum`               | Integer | 200           | Maximum number of receiving messages.                         |
-| `InBoundBandWidth`               | Long    | 512 * 1024L   | Maximum inbound bandwidth in bytes.                           |
-| `OutBoundBandWidth`              | Long    | 512 * 1024L   | Maximum outbound bandwidth in bytes.                          |
-| `MaxUserPayloadBytes`            | Integer | 256 * 1024    | Maximum user payload size in bytes.                           |
-| `MaxResendTimes`                 | Integer | 3             | Maximum times a message can be resent.                        |
-| `ResendTimeoutSeconds`           | Integer | 10            | Timeout in seconds before a message is considered for resend. |
-| `MaxTopicFiltersPerSub`          | Integer | 10            | Maximum topic filters per subscription.                       |
-| `MaxSessionExpirySeconds`        | Integer | 24 * 60 * 60  | Maximum session expiry time in seconds.                       |
-| `SessionInboxSize`               | Integer | 1000          | Maximum size of session inbox.                                |
-| `QoS0DropOldest`                 | Boolean | false         | Whether to drop the oldest QoS 0 messages first.              |
-| `RetainMessageMatchLimit`        | Integer | 10            | Limit for retained message matches.                           |
+| Name                             | Type    | Initial Value | Description                                                      |
+|----------------------------------|---------|---------------|------------------------------------------------------------------|
+| `MQTT3Enabled`                   | Boolean | true          | Enables or disables MQTT version 3.1 support.                    |
+| `MQTT4Enabled`                   | Boolean | true          | Enables or disables MQTT version 3.1.1 support.                  |
+| `MQTT5Enabled`                   | Boolean | true          | Enables or disables MQTT version 5.0 support.                    |
+| `DebugModeEnabled`               | Boolean | false         | Enables or disables debug mode.                                  |
+| `ForceTransient`                 | Boolean | false         | Forces transient mode for connections.                           |
+| `ByPassPermCheckError`           | Boolean | true          | Bypasses permission check errors.                                |
+| `PayloadFormatValidationEnabled` | Boolean | true          | Enables or disables payload format validation.                   |
+| `RetainEnabled`                  | Boolean | true          | Enables or disables message retain feature.                      |
+| `WildcardSubscriptionEnabled`    | Boolean | true          | Enables or disables wildcard subscriptions.                      |
+| `SubscriptionIdentifierEnabled`  | Boolean | true          | Enables or disables subscription identifiers.                    |
+| `SharedSubscriptionEnabled`      | Boolean | true          | Enables or disables shared subscriptions.                        |
+| `MaximumQoS`                     | Integer | 2             | Sets the maximum QoS level. Valid values: 0, 1, 2.               |
+| `MaxTopicLevelLength`            | Integer | 40            | Maximum length of each topic level.                              |
+| `MaxTopicLevels`                 | Integer | 16            | Maximum number of topic levels.                                  |
+| `MaxTopicLength`                 | Integer | 255           | Maximum total length of a topic.                                 |
+| `MaxTopicAlias`                  | Integer | 10            | Maximum number of topic aliases.                                 |
+| `MaxSharedGroupMembers`          | Integer | 200           | Maximum members in a shared subscription group.                  |
+| `MaxTopicFiltersPerInbox`        | Integer | 100           | Maximum topic filters per inbox.                                 |
+| `MsgPubPerSec`                   | Integer | 200           | Maximum number of messages published per second per connection.  |
+| `ReceivingMaximum`               | Integer | 200           | Maximum number of receiving messages per second per connection.  |
+| `InBoundBandWidth`               | Long    | 512 * 1024L   | Maximum inbound bandwidth in bytes per connection.               |
+| `OutBoundBandWidth`              | Long    | 512 * 1024L   | Maximum outbound bandwidth in bytes per connection.              |
+| `MaxUserPayloadBytes`            | Integer | 256 * 1024    | Maximum user payload size in bytes.                              |
+| `MaxResendTimes`                 | Integer | 3             | Maximum times a message can be resent when qos is 1 or 2.        |
+| `ResendTimeoutSeconds`           | Integer | 10            | Timeout in seconds before a message is considered for resend.    |
+| `MaxTopicFiltersPerSub`          | Integer | 10            | Maximum topic filters per subscription.                          |
+| `MaxSessionExpirySeconds`        | Integer | 24 * 60 * 60  | Maximum session expiry time in seconds.                          |
+| `SessionInboxSize`               | Integer | 1000          | Maximum size of session inbox.                                   |
+| `QoS0DropOldest`                 | Boolean | false         | Whether to drop the oldest QoS 0 messages first.                 |
+| `RetainMessageMatchLimit`        | Integer | 10            | Limit for retained message matches.                              |
