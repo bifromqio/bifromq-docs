@@ -322,7 +322,7 @@ const server = http.createServer((req, res) => {
           res.end(JSON.stringify({ "ok": { "tenantId": user.tenantId, "userId": data.username} }));
         } else {
           res.writeHead(403, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ "Reject": "NotAuthorized" }));
+          res.end(JSON.stringify({ "reject": "NotAuthorized" }));
         }
       } else {
         res.writeHead(400, { 'Content-Type': 'text/plain' });
