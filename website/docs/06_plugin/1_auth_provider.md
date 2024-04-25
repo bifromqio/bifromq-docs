@@ -290,3 +290,109 @@ plugin implementers observe the performance indicators of the plugin interface m
 
 By default, when no AuthPlugin type is specified, BifroMQ loads the [DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java),
 bypassing client authentication and permission checks. This mode is strictly for development and testing purposes due to its lack of security.
+
+## Implementation Example
+
+BifroMQ includes a demonstration implementation of a WebHook-based AuthProvider that can be enabled by specifying `authProviderFQN` as `com.baidu.demo.plugin.DemoAuthProvider` in
+the [configuration file](../../07_admin_guide/01_configuration/intro.md). The example implementation uses the JVM startup parameter (`-Dplugin.authprovider.url`) to specify a webhook callback URL.
+
+When BifroMQ triggers the auth method, the plugin initializes an HTTP POST request. Within this request, we transform the protobuf message `MQTT3AuthData` into JSON format to serve as its body. The content of the response body is then interpreted and converted into the appropriate `MQTT3AuthResult` value type.
+
+Below is a simple Node implementation of a WebhookServer for testing the example plugin, with webhook URLs: `http://<ADDR>:<PORT>/auth`, `http://<ADDR>:<PORT>/check` and `http://<ADDR>:<PORT>/register` for authentication, checking pub/sub permession and registering users' information,
+respectively.
+
+
+```js
+const http = require('http');
+const url = require('url'); 
+
+const authMap = {};
+const server = http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
+
+  res.setHeader('Content-Type', 'text/plain');
+
+  if (pathname === '/auth') {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      let data = {}
+      try {
+        data = JSON.parse(body);
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Invalid JSON');
+      }
+      if (data.username && data.password) {
+        const user = authMap[data.username];
+        if (user && user.password === data.password) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ "ok": { "tenantId": user.tenantId, "userId": data.username} }));
+        } else {
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ "Reject": "NotAuthorized" }));
+        }
+      } else {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Missing username or password');
+      }
+    });
+  } else if (pathname === '/check') {
+    if (!req.method === 'POST') {
+      res.writeHead(404);
+    }
+    const tenantId = req.headers['tenant_id'];
+    const userId = req.headers['user_id'];
+    if (tenantId && userId) {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      if (userId in authMap) {
+        res.end("true");
+      } else {
+        res.end("false");
+      }
+    } else {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end("Missing user_id or tenant_id");
+    }
+  } else if (pathname === '/register') {
+    const tenantId = req.headers['tenant_id'];
+    const userId = req.headers['user_id'];
+    const password = req.headers['password'];
+
+    if (tenantId && userId && password) {
+      if (!authMap[userId]) {
+        authMap[userId] = {
+          password: btoa(password),
+          tenantId: tenantId
+        };
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end("User registered successfully");
+      } else {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end("User already exists");
+      }
+    } else {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end("Missing user_id, password or tenant_id");
+    }
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
+});
+
+const args = process.argv.slice(2);
+const hostname = args[0] || 'localhost';
+const port = args[1] || 3000;
+
+server.listen(port, hostname, () => {
+  console.log(`Server listening on port ${server.address().port}`);
+});
+
+```
+
+In this example, we simply convert the registered password to Base64 format for storage. Please choose a more secure and reliable method for handling it in actual usage.

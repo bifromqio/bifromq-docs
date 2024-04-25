@@ -280,3 +280,107 @@ message CheckResult {
 
 当未指定AuthPlugin类型时，BifroMQ会默认加载[DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)
 。DevOnlyAuthProvider会绕过了客户端认证和权限检查，因此仅用于测试和开发的目的。
+
+## Implementation Example
+
+BifroMQ包含了一个基于WebHook的AuthProvider的示范实现，可以通过在[配置文件](../../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`authProviderFQN`为`com.baidu.demo.plugin.DemoAuthProvider`启用。范例实现利用JVM启动参数(
+`-Dplugin.authprovider.url`)来指定一个webhook的回调URL。
+
+当BifroMQ调用`auth`方法时，插件会发起一个HTTP POST请求，在这个请求中，我们将其body设置为`MQTT3AuthData`的JSON格式。响应Body内包含的字符串被解析成对应的`MQTT3AuthResult`值类型作为返回值。
+
+以下是一个Node实现的简单的WebhookServer用于测试示例插件，webhook的url地址为：`http://<ADDR>:<PORT>/auth`，`http://<ADDR>:<PORT>/check`，`http://<ADDR>:<PORT>/register`分别用于用户身份认证、sub/pub权限许可认证、注册用户信息。
+
+```js
+const http = require('http');
+const url = require('url'); 
+
+const authMap = {};
+const server = http.createServer((req, res) => {
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
+
+  res.setHeader('Content-Type', 'text/plain');
+
+  if (pathname === '/auth') {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk.toString();
+    });
+
+    req.on('end', () => {
+      let data = {}
+      try {
+        data = JSON.parse(body);
+      } catch (error) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Invalid JSON');
+      }
+      if (data.username && data.password) {
+        const user = authMap[data.username];
+        if (user && user.password === data.password) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ "ok": { "tenantId": user.tenantId, "userId": data.username} }));
+        } else {
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ "Reject": "NotAuthorized" }));
+        }
+      } else {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Missing username or password');
+      }
+    });
+  } else if (pathname === '/check') {
+    if (!req.method === 'POST') {
+      res.writeHead(404);
+    }
+    const tenantId = req.headers['tenant_id'];
+    const userId = req.headers['user_id'];
+    if (tenantId && userId) {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      if (userId in authMap) {
+        res.end("true");
+      } else {
+        res.end("false");
+      }
+    } else {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end("Missing user_id or tenant_id");
+    }
+  } else if (pathname === '/register') {
+    const tenantId = req.headers['tenant_id'];
+    const userId = req.headers['user_id'];
+    const password = req.headers['password'];
+
+    if (tenantId && userId && password) {
+      if (!authMap[userId]) {
+        authMap[userId] = {
+          password: btoa(password),
+          tenantId: tenantId
+        };
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end("User registered successfully");
+      } else {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end("User already exists");
+      }
+    } else {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end("Missing user_id, password or tenant_id");
+    }
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
+});
+
+const args = process.argv.slice(2);
+const hostname = args[0] || 'localhost';
+const port = args[1] || 3000;
+
+server.listen(port, hostname, () => {
+  console.log(`Server listening on port ${server.address().port}`);
+});
+
+```
+
+请注意，这个示例里我们只是简单的将注册的密码转换为Base64格式进行存储，在实际使用时请选择更为安全稳妥的处理方式。
