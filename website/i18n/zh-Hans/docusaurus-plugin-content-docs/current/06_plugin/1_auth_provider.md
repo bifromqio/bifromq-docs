@@ -281,7 +281,7 @@ message CheckResult {
 当未指定AuthPlugin类型时，BifroMQ会默认加载[DevOnlyAuthProvider](https://github.com/bifromqio/bifromq/blob/main/bifromq-server/src/main/java/com/baidu/bifromq/server/service/authprovider/DevOnlyAuthProvider.java)
 。DevOnlyAuthProvider会绕过了客户端认证和权限检查，因此仅用于测试和开发的目的。
 
-## Implementation Example
+## 实现范例
 
 BifroMQ包含了一个基于WebHook的AuthProvider的示范实现，可以通过在[配置文件](../../07_admin_guide/01_configuration/1_config_file_manual.md)中指定`authProviderFQN`为`com.baidu.demo.plugin.DemoAuthProvider`启用。范例实现利用JVM启动参数(
 `-Dplugin.authprovider.url`)来指定一个webhook的回调URL。
