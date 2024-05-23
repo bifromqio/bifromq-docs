@@ -17,7 +17,7 @@ const config = {
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
-  trailingSlash: true,
+  trailingSlash: false,
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'zh-Hans'],
