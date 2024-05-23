@@ -5,7 +5,7 @@ const footerNavigation = {
   social: [
     {
       name: 'Mail',
-      href: 'mailto:hello+web@bifromq.io',
+      href: 'mailto:hello@bifromq.io',
       icon: (props) => (
         <svg fill="currentColor" viewBox="0 0 1024 1024" {...props}>
             <path 

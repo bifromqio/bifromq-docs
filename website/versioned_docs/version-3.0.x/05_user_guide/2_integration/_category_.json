@@ -1,0 +1,8 @@
+{
+  "label": "Data Integration",
+  "position": 2,
+  "link": {
+    "type": "doc",
+    "id": "user_guide/integration/intro"
+  }
+}
