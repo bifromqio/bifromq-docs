@@ -268,10 +268,6 @@ message CheckResult {
 }
 ```
 
-Here's the translation of the metrics section from Chinese to English:
-
----
-
 ## Metrics
 
 Because the two methods of the AuthProvider Plugin are frequently called during connection authentication and the process of handling message publication and subscription forwarding, BifroMQ records and outputs the following metrics to help
