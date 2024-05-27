@@ -24,12 +24,11 @@ BifroMQ会为每个插件使用单独的ClassLoader从插件的classpath中加�
 某些第三方类库可能其他方式加载类，导致类加载失败。大部分情况可以通过替换Thread ContextLoader的方式解决：
 
 ```java
-class MyAuthProvider {
-    public void method() {
+class MyPlugin {
+    public void pluginMethod() {
+        ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
         try {
-            ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader targetLoader = this.getClass().getClassLoader();
-            Thread.currentThread().setContextClassLoader(targetLoader);
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             // Initialize dependencies here  
             dependenciesInit();
         } finally {

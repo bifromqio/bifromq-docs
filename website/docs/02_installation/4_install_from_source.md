@@ -27,6 +27,5 @@ mvn wrapper:wrapper
 
 The build output are two tar.gz and one zip files under `/build/build-bifromq-starters/target/`
 
-* bifromq-xxx-all.tar.gz // standard cluster deployment tar.gz for linux and mac os
 * bifromq-xxx-standalone.tar.gz // standalone deployment tar.gz for linux and mac os
 * bifromq-xxx-windows-standalone.zip // standalone deployment zip for windows

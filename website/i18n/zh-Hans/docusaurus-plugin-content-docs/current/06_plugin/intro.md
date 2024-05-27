@@ -27,27 +27,18 @@ title: "插件能力概述"
     * `com.google.protobuf.*`
     * `org.slf4j.*`
 
-**注意**：插件内的一些依赖，例如`KafkaProducer`，可能会在实例化过程中使用Java反射。这一过程可能使用`Thread.currentThread().getContextClassLoader()`来加载目标类，这将导致抛出`ClassNotFoundException`异常。
-对于这种情况，需要应显式地将上下文类加载器设置为相应的插件类加载器。例如：
+**注意**：某些插件的依赖可能会使用`Thread.currentThread().getContextClassLoader()`加载class，从而导致`ClassNotFoundException`，为避免这种情况的发生，可以将加载依赖class的逻辑包含在如下try-finally结构中：
 
 ```java
-ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
-Thread.
-
-currentThread().
-
-setContextClassLoader(YOUR_PLUGIN_INSTANCE.getClass().
-
-getClassLoader());
-        try{
-        // 初始化KAFKA生产者的代码;
-        }
-        finally{
-        Thread.
-
-currentThread().
-
-setContextClassLoader(contextLoader);
+public pluginMethod() {
+    ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+    // using PluginClassLoader for context class loader 
+    Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+    try {
+        // loading 3rd party dependencies
+    } finally {
+        Thread.currentThread().setContextClassLoader(contextLoader);
+    }
 }
 ```
 

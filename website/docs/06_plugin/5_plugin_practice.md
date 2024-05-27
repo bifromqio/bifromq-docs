@@ -25,12 +25,11 @@ BifroMQ uses separate ClassLoaders for each plugin to load classes from the plug
 third-party libraries might load classes in other ways, leading to class loading failures. Most situations can be resolved by swapping the Thread ContextLoader:
 
 ```java
-class MyAuthProvider {
-    public void method() {
+class MyPlugin {
+    public void pluginMethod() {
+        ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
         try {
-            ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader targetLoader = this.getClass().getClassLoader();
-            Thread.currentThread().setContextClassLoader(targetLoader);
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
             // Initialize dependencies here  
             dependenciesInit();
         } finally {

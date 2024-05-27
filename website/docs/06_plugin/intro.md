@@ -27,18 +27,18 @@ The plugin mechanism is a primary way for BifroMQ to deeply integrate with busin
     * `com.google.protobuf.*`
     * `org.slf4j.*`
 
-**Note**: Some dependencies inside a plugin, such as `KafkaProducer`, may use Java Reflection during instantiation. This process might use `Thread.currentThread().getContextClassLoader()` to load target classes, which could lead to
-a `ClassNotFoundException`.
-For such cases, it's necessary to explicitly set the context class loader to the corresponding plugin class loader. For example:
+**Note**: Some 3rd party dependencies used in a plugin may use the `Thread.currentThread().getContextClassLoader()` to load classes, which can result in a `ClassNotFoundException`. To prevent this, you can include the logic for loading dependency classes within the following try-finally structure:
 
 ```java
-ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
-Thread.currentThread().setContextClassLoader(YOUR_PLUGIN_INSTANCE.getClass().getClassLoader());
-try{
-        // YOUR CODE TO INITIATE KAFKA PRODUCER;
-}
-finally{
+public pluginMethod() {
+    ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+    // using PluginClassLoader for context class loader 
+    Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+    try {
+        // loading 3rd party dependencies
+    } finally {
         Thread.currentThread().setContextClassLoader(contextLoader);
+    }
 }
 ```
 
