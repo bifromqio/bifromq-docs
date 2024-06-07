@@ -13,6 +13,10 @@ The Java version requirements for BifroMQ can be divided into two aspects:
 - **BifroMQ runtime environment**: BifroMQ itself requires JDK 17 or higher for operation.
 - **BifroMQ plugin development**: For developing BifroMQ plugins, there's no enforced requirement for a specific Java language version or JDK version. However, plugin developers need to ensure their plugins function properly in higher Java environments. To prevent compatibility issues, we suggest keeping the plugin's runtime environment consistent with BifroMQ's.
 
+## What is your version support policy?
+
+We only support the latest major version and do not handle bugs or issues from previous major versions. Within the current major version, we ensure that the latest minor version is compatible with earlier minor versions. If you encounter issues in an old version, please upgrade to the latest version first and try again.
+
 ## Does BifroMQ include a built-in rule engine?
 
 Unlike other products or projects providing MQTT protocol capabilities, BifroMQ's primary aim is to serve as a high-performance, multi-tenant, distributed middleware implementing the standard MQTT protocol. "Rule engines" are not part of the MQTT protocol specification and hence are not included in BifroMQ. 
