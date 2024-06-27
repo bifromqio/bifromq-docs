@@ -28,7 +28,7 @@ and `< YOUR_PLUGIN_CONTEXT_CLASS_NAME>` with your specific details. This command
 project structured for BifroMQ plugin development.
 
 **Important Note**: The archetype version should be 3.2.0 or higher as the archetype is compatible starting from version
-3.2.0. Ensure that <BIFROMQ_VERSION> is set accordingly.
+3.2.0. Ensure that `<BIFROMQ_VERSION>` is set accordingly.
 
 ## Remote Debugging with BifroMQ
 
