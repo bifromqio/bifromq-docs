@@ -1,0 +1,8 @@
+{
+  "label": "Configuration",
+  "position": 1,
+  "link": {
+    "type": "doc",
+    "id": "admin_guide/configuration/intro"
+  }
+}

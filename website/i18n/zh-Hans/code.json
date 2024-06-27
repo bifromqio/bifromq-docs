@@ -327,9 +327,6 @@
   "Our track record": {
     "message": "我们的成绩"
   },
-  "Trusted by thousands of developers worldwide": {
-    "message": "受到全球数千名开发人员的信赖"
-  },
   "Thanks to the operation of Baidu Intelligent Cloud (IoT Core), we have served thousands customers and a large number of device connections in the public cloud based on BifroMQ.": {
     "message": "得益于百度智能云物联网核心套件（IoT Core）的运营，我们已经基于 BifroMQ 在公有云中服务了数千名客户，并经过亿级设备的接入验证。"
   },
@@ -344,15 +341,6 @@
   },
   "Go to GitHub": {
     "message": "前往 GitHub"
-  },
-  "Connected Clients": {
-    "message": "连接设备数"
-  },
-  "180 Million+": {
-    "message": "1.8 亿 +"
-  },
-  "Customers": {
-    "message": "服务用户数"
   },
   "MQTT Broker": {
     "message": "MQTT Broker"

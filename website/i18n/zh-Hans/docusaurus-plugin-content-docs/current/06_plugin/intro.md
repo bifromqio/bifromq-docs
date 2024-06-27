@@ -16,16 +16,17 @@ title: "插件能力概述"
 * 项目组织：一个pf4j项目可以包含多个插件实现。
 * 单例插件：AuthProvider、Resource Throttler和Setting Provider类型的扩展在运行时是单例的。需要通过配置文件指定要加载的具体类型。
 * 多例插件：EventCollector允许多个不同类型的实例存在，这些EventCollector实例的接口方法将同时被回调。
+* 快速开发：提供了插件项目搭建工具，可以快速开始进行插件开发。参见[快速开始插件开发](../plugin_practice/#快速开始插件开发)
 
 ## 插件部署
 
 * 插件目录：BifroMQ从其安装目录内的plugins子目录加载插件实现（JAR文件或目录）。
 * 类加载器隔离：每个插件使用独立的ClassLoader来隔离其代码与BifroMQ及其他插件。
 * BifroMQ为以下常用包提供类加载：
-    * `com.baidu.bifromq.*`
+    * `com.baidu.bifromq.type.*`
+    * `com.baidu.bifromq.plugin.*`
     * `io.micrometer.core.*`
     * `com.google.protobuf.*`
-    * `org.slf4j.*`
 
 **注意**：某些插件的依赖可能会使用`Thread.currentThread().getContextClassLoader()`加载class，从而导致`ClassNotFoundException`，为避免这种情况的发生，可以将加载依赖class的逻辑包含在如下try-finally结构中：
 

@@ -1,0 +1,8 @@
+{
+  "label": "MQTT Best Practices",
+  "position": 21,
+  "link": {
+    "type": "doc",
+    "id": "mqtt"
+  }
+}

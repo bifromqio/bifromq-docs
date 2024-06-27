@@ -29,6 +29,12 @@ mvn archetype:generate \
 
 **重要提示**：原型的版本应为 3.2.0 或更高版本，因为该原型从 3.2.0 版本开始兼容。确保 `<BIFROMQ_VERSION>` 设置正确。
 
+除了插件开发的基础代码框架外，生成的 BifroMQ 插件项目还为您提供以下机制：
+
+* PluginContext：定义插件上下文，方便传递插件运行所需信息。
+* 配置文件：使用独立的 config.yaml 文件来配置插件。
+* 日志配置：使用独立的 logback.xml 文件来配置插件日志。
+
 ## BifroMQ的远程调试
 
 Java远程调试允许开发人员从IDE远程调试定制化插件。BifroMQ支持远程调试，可以通过环境变量JVM_DEBUG来启用。同时，还可以通过环境变量JAVA_DEBUG_PORT指定远程调试端口。如果没有指定，那么默认端口为8008。Linux Shell示例：

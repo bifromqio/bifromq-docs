@@ -16,16 +16,17 @@ The plugin mechanism is a primary way for BifroMQ to deeply integrate with busin
 * Project Organization: A pf4j project can contain multiple plugin implementations.
 * Singleton Plugins: Extensions of AuthProvider, Resource Throttler, and Setting Provider types are singletons at runtime. The specific type to be loaded needs to be specified through a configuration file.
 * Multiple Instance Plugins: EventCollector allows for multiple different types of instances to exist, with interface methods of these EventCollector instances being called back simultaneously.
+* Quick Start：We provide a plugin project scaffolding tool, allowing you to start plugin development quickly. See [Start a BifroMQ Plugin Project Quickly](../plugin_practice/#start-a-bifromq-plugin-project-quickly)
 
 ## Plugin Deployment
 
 * Plugin Directory: BifroMQ loads plugin implementations (JAR files or directories) from the plugins subdirectory within its installation directory.
 * Classloader Isolation: Each plugin uses an independent ClassLoader to isolate its code from BifroMQ and other plugins.
 * BifroMQ provides class loading for the following commonly used packages:
-    * `com.baidu.bifromq.*`
+    * `com.baidu.bifromq.type.*`
+    * `com.baidu.bifromq.plugin.*`
     * `io.micrometer.core.*`
     * `com.google.protobuf.*`
-    * `org.slf4j.*`
 
 **Note**: Some 3rd party dependencies used in a plugin may use the `Thread.currentThread().getContextClassLoader()` to load classes, which can result in a `ClassNotFoundException`. To prevent this, you can include the logic for loading dependency classes within the following try-finally structure:
 

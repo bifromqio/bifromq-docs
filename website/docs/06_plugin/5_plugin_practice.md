@@ -5,7 +5,7 @@ title: "Plugin Practice and Notice"
 
 This article outlines some practices and considerations when developing BifroMQ plugins.
 
-## Quickly Start a BifroMQ Plugin Project
+## Start a BifroMQ Plugin Project Quickly
 
 To jump start your BifroMQ plugin development, execute the following Maven command:
 
@@ -29,6 +29,12 @@ project structured for BifroMQ plugin development.
 
 **Important Note**: The archetype version should be 3.2.0 or higher as the archetype is compatible starting from version
 3.2.0. Ensure that `<BIFROMQ_VERSION>` is set accordingly.
+
+In addition to the foundational code framework for plugin development, the generated BifroMQ plugin project also includes the following features:
+
+* PluginContext: Defines the plugin context to facilitate the transfer of necessary runtime information.
+* Configuration File: Uses a standalone config.yaml file for plugin configuration.
+* Logging Configuration: Uses a standalone logback.xml file for plugin logging configuration.
 
 ## Remote Debugging with BifroMQ
 
