@@ -5,6 +5,30 @@ title: "Plugin开发实践"
 
 本文概述了开发BifroMQ插件时一些基本的实践和注意事项。
 
+## 快速开始插件开发
+
+执行以下 Maven 命令，快速启动 BifroMQ 插件开发：
+
+```bash
+mvn archetype:generate \
+    -DarchetypeGroupId=com.baidu.bifromq \
+    -DarchetypeArtifactId=bifromq-plugin-archetype \
+    -DarchetypeVersion=<BIFROMQ_VERSION> \
+    -DgroupId=<YOUR_GROUP_ID> \
+    -DartifactId=<YOUR_ARTIFACT_ID> \
+    -Dversion=<YOUR_PROJECT_VERSION> \
+    -DpluginName=<YOUR_PLUGIN_CLASS_NAME> \
+    -DpluginContextName=<YOUR_PLUGIN_CONTEXT_CLASS_NAME> \
+    -DbifromqVersion=<BIFROMQ_VERSION> \
+    -DinteractiveMode=false
+```
+
+请将 `<YOUR_GROUP_ID>`、`<YOUR_ARTIFACT_ID>`、`<YOUR_PROJECT_VERSION>`、`<YOUR_PLUGIN_CLASS_NAME>`
+和 `<YOUR_PLUGIN_CONTEXT_CLASS_NAME>` 替换为您的具体信息。该命令生成一个准备就绪的、结构清晰的多模块项目，专为 BifroMQ
+插件开发而设计。
+
+**重要提示**：原型的版本应为 3.2.0 或更高版本，因为该原型从 3.2.0 版本开始兼容。确保 `<BIFROMQ_VERSION>` 设置正确。
+
 ## BifroMQ的远程调试
 
 Java远程调试允许开发人员从IDE远程调试定制化插件。BifroMQ支持远程调试，可以通过环境变量JVM_DEBUG来启用。同时，还可以通过环境变量JAVA_DEBUG_PORT指定远程调试端口。如果没有指定，那么默认端口为8008。Linux Shell示例：

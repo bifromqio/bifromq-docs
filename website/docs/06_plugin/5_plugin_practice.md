@@ -5,6 +5,31 @@ title: "Plugin Practice and Notice"
 
 This article outlines some practices and considerations when developing BifroMQ plugins.
 
+## Quickly Start a BifroMQ Plugin Project
+
+To jump start your BifroMQ plugin development, execute the following Maven command:
+
+```
+mvn archetype:generate \
+    -DarchetypeGroupId=com.baidu.bifromq \
+    -DarchetypeArtifactId=bifromq-plugin-archetype \
+    -DarchetypeVersion=<BIFROMQ_VERSION> \
+    -DgroupId=<YOUR_GROUP_ID> \
+    -DartifactId=<YOUR_ARTIFACT_ID> \
+    -Dversion=<YOUR_PROJECT_VERSION> \
+    -DpluginName=<YOUR_PLUGIN_CLASS_NAME> \
+    -DpluginContextName=<YOUR_PLUGIN_CONTEXT_CLASS_NAME> \
+    -DbifromqVersion=<BIFROMQ_VERSION> \
+    -DinteractiveMode=false
+```
+
+Replace `<YOUR_GROUP_ID>`, `<YOUR_ARTIFACT_ID>`, `<YOUR_PROJECT_VERSION>`, `<YOUR_PLUGIN_CLASS_NAME>`,
+and `< YOUR_PLUGIN_CONTEXT_CLASS_NAME>` with your specific details. This command generates a ready-to-build multi-module
+project structured for BifroMQ plugin development.
+
+**Important Note**: The archetype version should be 3.2.0 or higher as the archetype is compatible starting from version
+3.2.0. Ensure that <BIFROMQ_VERSION> is set accordingly.
+
 ## Remote Debugging with BifroMQ
 
 BifroMQ supports remote debugging, which can be activated through the `JVM_DEBUG` environment variable. Additionally, the remote debugging port can be specified through the `JAVA_DEBUG_PORT` environment variable. If not specified, the
