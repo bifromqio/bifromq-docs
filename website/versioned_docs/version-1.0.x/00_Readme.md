@@ -24,4 +24,4 @@ Join our Discord or WeChat group if you are interested in our work.
 
 ### WeChat group
 
-<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="30%"/>
+[Email](mailto:hello@bifromq.io) us your WeChat ID, along with more information on why BifroMQ has caught your attention (we'd love to hear about it), and we will invite you to join our group as soon as possible.

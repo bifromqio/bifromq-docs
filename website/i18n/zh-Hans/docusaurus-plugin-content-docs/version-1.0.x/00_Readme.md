@@ -20,7 +20,7 @@ BifroMQ 的名称灵感来自于北欧神话中的`Bifröst`，一座彩虹之�
 
 如果你对我们的项目感兴趣，你可以加入我们的微信群。
 
-<img src="https://bifromq.io/img/qrcode.png" width="30%" />
+[通过电子邮件](mailto:hello@bifromq.io) 向我们发送您的微信 ID，以及为什么您对 BifroMQ 感兴趣的更多信息（我们很乐意听到），我们将尽快邀请您加入我们的群组。
 
 ### Discord
 

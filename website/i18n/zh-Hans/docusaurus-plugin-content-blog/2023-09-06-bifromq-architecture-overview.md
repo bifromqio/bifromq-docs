@@ -87,8 +87,6 @@ base-cluster 构建的集群逻辑上分为两层：Underlay Cluster 和 Overlay
 
 ### 总结
 
-综上是对 BifroMQ 技术架构的整体介绍。请期待我们将在接下来发布的一系列专题文章中，深入探讨 BifroMQ 的各个组件和设计原则。同时，欢迎您扫码加入 BifroMQ 开发者交流群，向我们反馈关于文章内容的意见和建议。如有 BifroMQ 合作需求，请填写[问卷](https://iwenjuan.baidu.com/?code=5x2ip1)，我们会尽快与您联系。
-
-<img decoding="async" src="https://bifromq.io/img/qrcode.png" width="25%"/>
+综上是对 BifroMQ 技术架构的整体介绍。请期待我们将在接下来发布的一系列专题文章中，深入探讨 BifroMQ 的各个组件和设计原则。同时，欢迎您加入 BifroMQ 开发者交流群，向我们反馈关于文章内容的意见和建议。您可以 [通过电子邮件](mailto:hello@bifromq.io) 向我们发送您的微信 ID，以及为什么您对 BifroMQ 感兴趣的更多信息（我们很乐意听到），我们将尽快邀请您加入我们的群组。如有 BifroMQ 合作需求，请填写[问卷](https://iwenjuan.baidu.com/?code=5x2ip1)，我们会尽快与您联系。
 
 最后，为了帮助大家更好地了解 BifroMQ 的技术架构，我们将于** 9 月 21 日（周四）**举办一场 BifroMQ 线上直播公开课，欢迎各位关注 BifroMQ 开发者交流群内信息，提前锁定直播地址，与广大同行交流学习！

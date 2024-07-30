@@ -9,7 +9,6 @@ import DistSubCluster from './images/2023-10-24-bifromq-standardcluster/BifroMQ-
 import InboxSubCluster from './images/2023-10-24-bifromq-standardcluster/BifroMQ-Inbox-SubCluster.png';
 import LoadBasedSplitter from './images/2023-10-24-bifromq-standardcluster/BifroMQ-Inbox-LoadBasedSplitter.png';
 import APIService from './images/2023-10-24-bifromq-standardcluster/BifroMQ-API-Service.png';
-import QRCode from '../static/img/qrcode.png';
 
 # Introduction
 Since the first release of BifroMQ, it has gained wide attention from the community. Among them, cluster capability has been highly anticipated and also one of the top priorities for the BifroMQ team. After three months of tireless efforts, we officially released the cluster version of BifroMQ, which we call the **Standard Cluster**. The Standard Cluster is the main cluster mode supported in the open source version of BifroMQ, where each node has full MQTT protocol capabilities under this mode. At the same time, HTTP API is also supported in this version
@@ -68,7 +67,4 @@ In a Standard Cluster deployment, a single node possesses complete MQTT protocol
 In a previous BifroMQ technical architecture article, we mentioned that BifroMQ clusters are built on a decentralized technology (base-cluster), eliminating the need for external node registration and discovery services. As a result, the deployment process for building a BifroMQ Standard Cluster is straightforward (for detailed instructions, please refer to [this link](/docs/cluster/standardcluster/)). It only requires designating any node in a cluster as a seed node to enable the addition of new nodes. Furthermore, BifroMQ includes self-healing capabilities in the event of cluster partitioning, greatly simplifying operational tasks during network partition and other failures.
 
 ## Future Outlook
-The BifroMQ team adheres to a neutral technology philosophy, dedicated to the large-scale implementation of the MQTT protocol, as well as improving reliability and maintainability. We look forward to more community participation and in-depth user feedback to collectively advance this technology. Additionally, you can join the developer community by scanning the QR code below
-or by joining our Discord group via this [link](https://discord.gg/Pfs3QRadRB).
-
-<img src={QRCode} style={{width: 200}} />
+The BifroMQ team adheres to a neutral technology philosophy, dedicated to the large-scale implementation of the MQTT protocol, as well as improving reliability and maintainability. We look forward to more community participation and in-depth user feedback to collectively advance this technology. Additionally, you can join the developer community by [emailing](mailto:hello@bifromq.io) us your WeChat ID, along with more information on why BifroMQ has caught your attention (we'd love to hear about it), or by joining our Discord group via this [link](https://discord.gg/Pfs3QRadRB).
