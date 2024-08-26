@@ -16,7 +16,7 @@ title: "部署StandardCluster"
 默认情况下提供了一个配置文件，其中包含以下设置：
 
 ```yaml
-# The cluster requires exactly one bootstrap node
+# To bootstrap cluster, at least one node must set bootstrap to true or alternatively configuring RangeBootstrapBalancer in StateStoreConfig
 bootstrap: true
 
 mqttServerConfig:
@@ -47,16 +47,12 @@ clusterConfig.seedEndpoints: ${NODE1_ADDR}:${PORT},${NODE2_ADDR}:${PORT},${NODE3
 ```
 有关详细的配置信息，请参阅 BifroMQ [配置文档](../07_admin_guide/01_configuration/1_config_file_manual.md).
 
-### 设置引导节点
-使用以下命令启动引导节点：
+### 启动节点
+使用以下命令启动节点：
 ```shell
 ./bin/standalone.sh start
 ```
-这将创建集群运行所需的重要持久化元数据。
-
-### 设置非引导节点
-对于非引导节点，必须将引导配置设置为 **`false`** 以防止它们生成不一致的元数据。
-运行脚本`./bin/standalone.sh start`启动非引导节点。
+建议首先启动 'bootstrap' 节点。
 
 ### 检查集群状态
 

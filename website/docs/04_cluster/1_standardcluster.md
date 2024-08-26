@@ -17,7 +17,7 @@ This section illustrates the deployment process for a 3-node cluster. Similar to
 A configuration file is provided by default with the following settings:
 
 ```yaml
-# The cluster requires exactly one bootstrap node
+# To bootstrap cluster, at least one node must set bootstrap to true or alternatively configuring RangeBootstrapBalancer in StateStoreConfig
 bootstrap: true
 
 mqttServerConfig:
@@ -48,16 +48,12 @@ clusterConfig.seedEndpoints: ${NODE1_ADDR}:${PORT},${NODE2_ADDR}:${PORT},${NODE3
 ```
 For detailed configuration information, refer to the BifroMQ Configuration [Documentation](../07_admin_guide/01_configuration/1_config_file_manual.md).
 
-### Setup Bootstrap Node
-Start the bootstrap node using the command:
+### Start Node
+Run following command to start standalone node:
 ```shell
 ./bin/standalone.sh start
 ```
-This will create the necessary persistent metadata required for the cluster to function.
-
-### Setup Non-Bootstrap Nodes
-For non-bootstrap nodes, the bootstrap configuration must be set to **`false`** to prevent them from generating inconsistent metadata.
-Run the script `./bin/standalone.sh start` to start non-boostrap nodes.
+It's suggested to start the 'bootstrap' node first.
 
 ### Cluster Status Check
 
