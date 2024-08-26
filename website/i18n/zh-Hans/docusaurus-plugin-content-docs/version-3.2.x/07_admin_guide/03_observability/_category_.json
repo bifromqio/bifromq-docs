@@ -1,0 +1,8 @@
+{
+  "label": "可观察性",
+  "position": 3,
+  "link": {
+    "type": "doc",
+    "id" : "admin_guide/observability/intro"
+  }
+}

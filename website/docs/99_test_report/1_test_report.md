@@ -533,13 +533,13 @@ accept.
 ### Memory
 
 * vm.max_map_count: Limits the number of VMAs (Virtual Memory Areas) that a process can have. It can be increased to
-  221184.
+    221184.
 
 ### Maximum Open Files
 
 * nofile: Specifies the maximum number of files that a single process can open.
 * nr_open: Specifies the maximum number of files that can be allocated per process, usually defaulting to 1024 * 1024 =
-  1048576.
+    1048576.
 * file-max: Specifies the maximum number of files that the system kernel can open, with a default value of 185745.
 
 ### NetFilter Tuning
