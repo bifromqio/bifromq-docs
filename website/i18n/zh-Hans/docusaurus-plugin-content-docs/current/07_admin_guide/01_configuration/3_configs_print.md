@@ -22,7 +22,6 @@ JVM参数指的是使用-D参数启动BifroMQ时传递给JVM的参数。输出�
 -DLOG_DIR=/usr/share/bifromq-standalone/bin/../logs
 -DCONF_DIR=/usr/share/bifromq-standalone/bin/../conf
 -DDATA_DIR=/usr/share/bifromq-standalone/bin/../data
--DBIND_ADDR=127.0.0.1
 -Dpf4j.pluginsDir=/usr/share/bifromq-standalone/bin/../plugins
 -Dfile.encoding=UTF-8
 ```

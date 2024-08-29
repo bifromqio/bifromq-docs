@@ -24,7 +24,6 @@ JVM parameters refer to the parameters passed to the JVM when starting BifroMQ u
 -DLOG_DIR=/usr/share/bifromq-standalone/bin/../logs
 -DCONF_DIR=/usr/share/bifromq-standalone/bin/../conf
 -DDATA_DIR=/usr/share/bifromq-standalone/bin/../data
--DBIND_ADDR=127.0.0.1
 -Dpf4j.pluginsDir=/usr/share/bifromq-standalone/bin/../plugins
 -Dfile.encoding=UTF-8
 ```
