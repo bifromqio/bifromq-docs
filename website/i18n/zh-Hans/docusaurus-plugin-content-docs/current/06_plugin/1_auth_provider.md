@@ -46,7 +46,7 @@ message MQTT3AuthData{
   bool isMQIsdp = 1; // true indicates the client is using MQTT 3.1
   optional string username = 2; // username specified by the client in Connect
   optional bytes password = 3; // password specified by the client in Connect
-  optional bytes cert = 4; // TLS certificate used by the client
+  optional bytes cert = 4; // TLS certificate used by the client in Base64 encoding
   optional string clientId = 5; // client identifier specified by the client in Connect
   string remoteAddr = 6; // source address of the client
   uint32 remotePort = 7; // port of the client

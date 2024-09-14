@@ -39,6 +39,8 @@ clusterConfig:
   seedEndpoints:
 ```
 
+**Note**: In addition to the `clusterConfig.port`, BifroMQ uses dedicated ports for inter-cluster RPC communication, such as `RPCServerConfig.port`. If these ports are not explicitly set in the configuration file, they will be randomly selected, which may cause communication failures in environments with firewalls. In such cases, please refer to the [full configuration file](../07_admin_guide/01_configuration/1_config_file_manual.md) to specify these ports explicitly and adjust your firewall rules accordingly.
+
 ### Setting Seed Nodes
 
 Before setting up the cluster, you need to specify seedPoints in a comma-separated format of `<ADDRESS>:<PORT>`, for example:
