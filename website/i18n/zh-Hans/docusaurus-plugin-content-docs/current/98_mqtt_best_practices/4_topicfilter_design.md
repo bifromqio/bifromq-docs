@@ -1,18 +1,32 @@
 ---
 sidebar_position: 4 
-title: "Topic Filters Design"
+title: "主题过滤器（Topic Filters）设计"
 ---
 
-Topic Filters in MQTT are a mechanism used for subscribing to topics, allowing clients to receive messages from topics they are interested in. When selecting and designing Topic Filters, the following are some recommendations:
+在 MQTT 中，主题过滤器 (Topic Filters) 是一种用于订阅主题的机制，允许客户端接收其感兴趣的主题消息。在选择和设计主题过滤器时，
+可以参考以下建议：
 
-- Appropriate Granularity: The granularity of the Topic Filter should match the requirements of the application. If the granularity is too coarse, the client may receive a large number of unnecessary messages, thus increasing network traffic and resource consumption. On the other hand, if the granularity is too fine, the client may not receive the messages it is interested in, affecting the normal operation of the application. It is important to choose granularity according to the actual circumstances.
+---
 
-- Consider Using Wildcards: Topic Filters support the use of wildcards, including single-level and multi-level wildcards. The single-level wildcard "+" is used to match any character in a single level, while the multi-level wildcard "#" is used to match characters in any number of levels. When designing Topic Filters, consider using wildcards to simplify filtering rules and expand the filtering range.
+- **适当的粒度**：  
+  主题过滤器的粒度应与应用程序的需求相匹配。如果粒度过粗，客户端可能会接收到大量不必要的消息，从而增加网络流量和资源消耗；反之，如果粒度过细，
+  客户端可能无法接收到其感兴趣的消息，影响应用程序的正常运行。因此，应根据实际情况选择适当的粒度。
 
-- Avoid Using the "#" Wildcard Whenever Possible: Although the multi-level wildcard "#" can match characters across any number of levels, it can also potentially lead to security issues. If the "#" wildcard is used to subscribe to highly sensitive topics, it might result in unauthorized clients receiving sensitive information. Therefore, it is best to avoid using the "#" wildcard when designing Topic Filters.
+- **考虑使用通配符**：  
+  主题过滤器支持使用通配符，包括单层通配符和多层通配符。单层通配符 `"+"` 可匹配单层中的任意字符，而多层通配符 `"#"` 可匹配
+  任意数量层级中的字符。在设计主题过滤器时，可以考虑使用通配符来简化过滤规则并扩展过滤范围。
 
-- Consider Topic Naming Conventions: To ensure the readability and usability of Topics, it’s a good practice to adopt a naming convention for Topics. Topic naming conventions can specify formats, conventions, and rules for naming topics, making topics easier to manage and use.
+- **尽量避免使用 `"#"` 通配符**：  
+  虽然多层通配符 `"#"` 能匹配任意层级的字符，但也可能带来安全问题。如果使用 `"#"` 通配符订阅了高度敏感的主题，
+  可能会导致未经授权的客户端接收到敏感信息。因此，在设计主题过滤器时，应尽量避免使用 `"#"` 通配符。
 
-- Consider the Hierarchical Structure of Topics: The hierarchical structure of Topics can impact the design and usage of Topic Filters. When designing the hierarchy of Topics, consider categorizing Topics by functionality, region, device, etc. This enables more refined Topic Filters and a more flexible Topic subscription mechanism.
+- **考虑主题命名规范**：  
+  为确保主题的可读性和可用性，采用主题命名规范是一个好习惯。主题命名规范可以规定主题的格式、约定和规则，使主题更易于管理和使用。
 
-In summary, the selection and design of Topic Filters should take into account the requirements and scenarios of the application and adhere to suitable conventions and best practices.
+- **考虑主题的层次结构**：  
+  主题的层次结构会影响主题过滤器的设计和使用。在设计主题的层次结构时，可以考虑按照功能、区域、设备等对主题进行分类。
+  这有助于实现更精细的主题过滤器和更灵活的主题订阅机制。
+
+---
+
+总之，主题过滤器的选择和设计应充分考虑应用程序的需求和场景，并遵循适当的规范和最佳实践。

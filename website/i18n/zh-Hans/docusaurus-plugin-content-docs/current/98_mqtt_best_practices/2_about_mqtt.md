@@ -1,45 +1,64 @@
 ---
 sidebar_position: 2
-title: "About MQTT"
+title: "关于MQTT"
 ---
 
-## Why use MQTT protocol for IoT? What are the advantages compared to HTTP protocol?
+## 为什么在物联网中使用 MQTT 协议？与 HTTP 协议相比有哪些优势？
 
-IoT devices typically need to send and receive small data packets, such as sensor readings, device status, etc. MQTT (Message Queuing Telemetry Transport) is a lightweight communication protocol based on the publish/subscribe pattern, designed specifically for low-bandwidth and unreliable network environments, making it ideal for IoT applications.
+物联网设备通常需要发送和接收小数据包，例如传感器读数、设备状态等。MQTT（消息队列遥测传输）是一种基于发布/订阅模式的轻量级通信协议，专为低带宽
+和不可靠网络环境设计，非常适合物联网应用。
 
-Compared to the HTTP protocol, MQTT has the following advantages:
+与 HTTP 协议相比，MQTT 协议具有以下优势：
 
-- More lightweight: Compared to the bulky protocol header of HTTP, the MQTT protocol is very streamlined, with a smaller message body than HTTP, which can reduce network transmission burden.
-- Lower power consumption: The low power consumption feature of the MQTT protocol makes it very suitable for IoT devices, such as sensors, smart homes, and other devices, which usually have very limited battery life.
-- More efficient: The MQTT protocol uses a push method to deliver messages, which can greatly reduce communication overhead between clients and servers. At the same time, the QoS mechanism of the MQTT protocol can also ensure the reliable transmission of messages, making communication more stable and efficient.
-- More scalable: The MQTT protocol uses the publish/subscribe pattern of topics, making the system more scalable and able to quickly adapt to new devices and application scenarios. In contrast, the HTTP protocol requires the deployment of RESTful interfaces on the server side, limiting the scalability of the system.
+- **更轻量级**：与 HTTP 笨重的协议头相比，MQTT 协议非常简洁，其消息体比 HTTP 小，能够减轻网络传输负担。
+- **更低功耗**：MQTT 协议的低功耗特性使其非常适合物联网设备，例如传感器、智能家居等，这些设备的电池寿命通常非常有限。
+- **更高效**：MQTT 协议采用推送方式传递消息，可以大大减少客户端和服务器之间的通信开销。同时，MQTT 协议的 QoS 机制还能确保消息的可靠传输，
+  使通信更加稳定高效。
+- **更具扩展性**：MQTT 协议采用主题的发布/订阅模式，使系统具有更高的扩展性，能够快速适应新设备和应用场景。相比之下，HTTP 协议需要在服务器端
+  部署 RESTful 接口，限制了系统的扩展性。
 
-In summary, the MQTT protocol is suitable for IoT devices that require low power consumption, small data packets, and efficient transmission, while the HTTP protocol is suitable for application scenarios that require a large amount of data transmission and more complex request/response.
+总的来说，MQTT 协议适用于需要低功耗、小数据包和高效传输的物联网设备，而 HTTP 协议更适用于需要大数据量传输和更复杂请求/响应的应用场景。
 
-## How to deal with abnormal disconnection between the client and the server?
-Considering that IoT devices often work in unstable network environments, the MQTT protocol and common open-source client implementations have corresponding designs and processing for unexpected disconnections.
+---
 
-Please set up automatic reconnection for the client, and if the client is also responsible for subscribing to topics, you also need to set up automatic re-subscription after reconnection.
+## 如何处理客户端与服务器之间的异常断开？
 
-If you do not want to lose important messages during the disconnection period, you can set the cleanSession setting in the subscription setting to False. However, please use this setting carefully and set the topicfilter reasonably, separating important messages from a large number of ordinary messages, and only using them for the most necessary message subscriptions. A large number of unreasonable use of the cleanSession False setting will bring serious performance pressure and greater message loss risks.
+鉴于物联网设备经常工作在不稳定的网络环境中，MQTT 协议和常见的开源客户端实现对异常断开都有相应的设计和处理。
 
-If there is an unexpectedly high frequency of disconnections that do not meet expectations, please check the network link from the client to the server.
+请为客户端设置自动重连功能，并在客户端负责订阅主题的情况下，设置重连后自动重新订阅。
 
-## Why are messages lost and the subscribed message recipient did not receive the message sent successfully?
-There are many possibilities for message loss:
+如果不希望在断开期间丢失重要消息，可以在订阅设置中将 `cleanSession` 设置为 `False`。但请谨慎使用此设置，并合理设置 `topicfilter`，
+将重要消息与大量普通消息分开，仅对最必要的消息订阅使用。大量不合理使用 `cleanSession=False` 的设置会带来严重的性能压力和更大的消息丢失风险。
 
-- Unstable network causing packet loss: Depending on the specific network environment of the IoT device, different degrees of packet loss may occur. If you need to ensure that the message arrives, you can use the qos 1 setting to send and subscribe to messages. This setting will also consume more performance.
-- Subscriber disconnection: If a topic is not subscribed, the message will be directly discarded.
-- Single connection sending and receiving message exceeds the limit: By default, a single client has a limit of 200 messages per second and 512MB bandwidth. If it is a sender, messages that exceed this limit will fail to send, and if it is a subscriber that exceeds it, messages under the cleanSession True setting will be discarded.
-- The message sending frequency is too high, causing downstream overflow: subscription overflow under cleanSession True, rule engine downstream overflow, inbox message cache overflow under cleanSession False, etc. You can reasonably split the topic to reduce the message frequency received by each subscriber, or use shared subscriptions.
-- Insufficient resources: If the memory or CPU resources deployed by the BifroMQ service are insufficient to support the business scale, this situation may also occur, and the business scale needs to be evaluated and expanded reasonably.
+如果出现意外的高频率断开现象，请检查从客户端到服务器的网络链接。
 
-## Is the message order received by the subscriber consistent with the sending order?
-According to the MQTT protocol, we guarantee the message order.
+---
 
-In particular, under QoS 0, the messages sent by a single sender must arrive in the order they were sent. Under QoS 1, because there is a situation of resending messages, there may be occasional disorder, but after resending messages, according to the protocol, the messages after the resend messages will be sent in order again, ensuring that there is at least one subsequence in the message sequence received by the client that is completely ordered.
+## 为什么会出现消息丢失，订阅者未收到成功发送的消息？
 
-## Why does the connection-disconnection-reconnection-disconnection situation occur repeatedly?
-Generally, it is due to mutual kicking. The ClientID must be unique, otherwise, the conflicting device that has already been connected will be disconnected. If both devices have set up automatic reconnection, then they will kick each other repeatedly, causing this problem.
+消息丢失可能有多种原因：
 
+- **网络不稳定导致数据包丢失**：根据物联网设备的具体网络环境，可能会发生不同程度的数据包丢失。如果需要确保消息到达，可以使用 `qos=1` 
+  设置发送和订阅消息，但这也会消耗更多性能。
+- **订阅者断开连接**：如果某个主题未被订阅，该消息会被直接丢弃。
+- **单连接收发消息超出限制**：默认情况下，单个客户端每秒限制为 200 条消息，带宽为 512MB。如果是发送方，超出限制的消息将发送失败；
+  如果是订阅者，超出限制且 `cleanSession=True` 的情况下，消息将被丢弃。
+- **消息发送频率过高导致下游溢出**：可能出现 `cleanSession=True` 下的订阅溢出、规则引擎下游溢出、`cleanSession=False` 
+  下的收件箱消息缓存溢出等情况。可以合理拆分主题，降低每个订阅者接收的消息频率，或使用共享订阅。
+- **资源不足**：如果 BifroMQ 服务部署的内存或 CPU 资源不足以支撑业务规模，也可能出现这种情况，需要合理评估和扩展业务规模。
 
+---
+
+## 订阅者接收的消息顺序是否与发送顺序一致？
+
+根据 MQTT 协议，我们保证消息顺序。
+
+特别是在 QoS 0 下，单个发送者发送的消息必须按照发送顺序到达。在 QoS 1 下，由于存在消息重发的情况，可能会偶尔出现顺序混乱，但在消息重发后，
+根据协议，重发消息后的消息会再次按顺序发送，确保客户端接收的消息序列中至少有一个子序列是完全有序的。
+
+---
+
+## 为什么会出现连接-断开-重连-断开的重复现象？
+
+通常是由于设备间的互相踢出导致的。`ClientID` 必须唯一，否则已经连接的冲突设备会被断开。如果两个设备都设置了自动重连，
+那么它们会不断互相踢出，从而导致此问题。

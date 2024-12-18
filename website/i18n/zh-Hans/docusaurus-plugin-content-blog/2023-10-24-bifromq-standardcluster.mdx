@@ -18,7 +18,7 @@ import APIService from './images/2023-10-24-bifromq-standardcluster/BifroMQ-API-
 
 ## TLDR：
 * 安装包[地址](https://github.com/bifromqio/bifromq/releases)及部署[指南](/zh-Hans/docs/cluster/standardcluster/)
-* 测试[报告](/zh-Hans/docs/test_report/report/)
+<!-- * 测试[报告](/zh-Hans/docs/test_report/report/) -->
 * API[文档](/zh-Hans/docs/user_guide/api/intro/)
 
 ## StandardCluster 的整体结构
@@ -35,7 +35,7 @@ import APIService from './images/2023-10-24-bifromq-standardcluster/BifroMQ-API-
 *注：本文所有插图中括号内的`bifromq-xxx`，即为代码中对应的模块名称*
 
 ## 消息分发能力的水平扩展
-在 StandardCluster 集群模式下，每个节点进程内的 Dist Service 模块构成了逻辑上的负载子集群（Dist-SubCluster）。Dist Service 将订阅信息存储在内置的持久化引擎中，并通过持久化引擎的分布式功能在节点之间同步路由信息。在 StandardCluster 模式下，通过增加节点的方式，可以实现消息分发能力的水平扩展，特别是在 CleanSession 为 True 的情况下，这一点非常明显（详见：[测试报告](/zh-Hans/docs/test_report/report/)）。
+在 StandardCluster 集群模式下，每个节点进程内的 Dist Service 模块构成了逻辑上的负载子集群（Dist-SubCluster）。Dist Service 将订阅信息存储在内置的持久化引擎中，并通过持久化引擎的分布式功能在节点之间同步路由信息。在 StandardCluster 模式下，通过增加节点的方式，可以实现消息分发能力的水平扩展，特别是在 CleanSession 为 True 的情况下，这一点非常明显。
 
 <img src={DistSubCluster} style={{width: 700}} />
 

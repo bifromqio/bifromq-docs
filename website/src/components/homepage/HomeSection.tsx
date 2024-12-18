@@ -128,11 +128,6 @@ export default function HeroSection() {
                   <Translate>Get Started</Translate> <span aria-hidden="true">→</span>
                 </a>
               </div>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
-                <a href="https://mp.weixin.qq.com/s/grq6KfOaCQSL-UW-qREfSg" target='_blank'>
-                  <Translate>The race is on! OpenAtom Open Source Competition - BifroMQ Application Challenge is waiting for you!</Translate>
-                </a>
-              </div>
             </div>
           </div>
         </div>

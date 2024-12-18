@@ -8,9 +8,6 @@
   "is a Java-based high-performance MQTT Broker messaging middleware that adopts Multi-tenancy architecture. Open-sourced by Baidu.": {
     "message": " 是一个高性能的 MQTT 消息中间件，采用原生多租户架构。由百度开源。"
   },
-  "The race is on! OpenAtom Open Source Competition - BifroMQ Application Challenge is waiting for you!": {
-    "message": "开赛啦！开放原子开源大赛-BifroMQ应用挑战赛等你报名"
-  },
   "theme.ErrorPageContent.title": {
     "message": "页面已崩溃。",
     "description": "The title of the fallback page when the page crashed"

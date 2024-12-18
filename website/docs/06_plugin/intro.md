@@ -54,3 +54,7 @@ Example:
 ## Performance Considerations
 
 BifroMQ calls plugin interface methods on worker threads. Ensure plugin interface implementations are lightweight and non-blocking to avoid negatively impacting performance.
+
+## Configuring Parameters in Demo Plugin
+BifroMQ supports configuring demo plugin parameters, which are the Prometheus metrics scraping path and Prometheus
+server port, via environment variables or system properties.

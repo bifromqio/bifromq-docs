@@ -17,7 +17,7 @@ Since the first release of BifroMQ, it has gained wide attention from the commun
 
 ## TLDR:
 * Installation [package](https://github.com/bifromqio/bifromq/releases/) and Deployment [instructions](/docs/cluster/standardcluster/)
-* Test [report](/docs/test_report/report/)
+<!-- * Test [report](/docs/test_report/report/) -->
 * API [documentation](/docs/user_guide/api/intro/)
 
 ## Overall Structure of the Standard Cluster
@@ -34,7 +34,7 @@ From a deployment perspective, BifroMQ StandardCluster encapsulates these indepe
 *Note: In all illustrations in this article, the text within brackets, "bifromq-xxx," corresponds to the module names in the code.*
 
 ## Horizontal Scaling of Message Distribution Capability
-In the Standard Cluster mode, the Dist Service module within each node process forms a logically partitioned subset cluster of workloads (Dist-SubCluster). Dist Service stores subscription information in a built-in persistence engine and synchronizes routing information between nodes using the persistence engine's distributed capabilities. In Standard Cluster mode, horizontal scaling of message distribution capability can be achieved by adding nodes, especially when CleanSession is set to True (see [test report](/docs/test_report/report/)).
+In the Standard Cluster mode, the Dist Service module within each node process forms a logically partitioned subset cluster of workloads (Dist-SubCluster). Dist Service stores subscription information in a built-in persistence engine and synchronizes routing information between nodes using the persistence engine's distributed capabilities. In Standard Cluster mode, horizontal scaling of message distribution capability can be achieved by adding nodes, especially when CleanSession is set to True.
 
 <img src={DistSubCluster} style={{width: 700}} />
 
